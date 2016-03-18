@@ -12,9 +12,11 @@ reactify = require('reactify'),
 webserver = require('gulp-webserver');
 
 
-gulp.task('default',function(){
-		gulp.watch('./develop/assets/jsx/**/*.js', ['build']);
-		gulp.watch('./develop/assets/sass/**/*.scss', ['sass']);
+gulp.task('default',['copy','watch','karma']);
+
+gulp.task('watch',function(){
+	gulp.watch('./develop/assets/jsx/**/*.js', ['build']);
+	gulp.watch('./develop/assets/sass/**/*.scss', ['sass']);
 });
 
 gulp.task('sass',function(){
@@ -56,11 +58,15 @@ gulp.task('karma', function(){
 		}));
 });
 
-gulp.task('webserver', function(){
-	gulp.src('./develop/assets/sass/*.scss')
+gulp.task('server', function(){
+	gulp.src('public')
 		.pipe(webserver({
-			livereload: true
+			livereload: true,
+			fallback: 'index.html'
 		}));
 });
 
-
+gulp.task('copy', function(){
+	gulp.src('./develop/assets/*.html')
+		.pipe(gulp.dest('./public'));
+})
