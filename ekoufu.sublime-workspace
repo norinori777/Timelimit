@@ -1,0 +1,1391 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"br",
+				"browserify"
+			],
+			[
+				"props",
+				"props	React: this.props"
+			],
+			[
+				"import",
+				"import	(ES2015)"
+			],
+			[
+				"no",
+				"node_modules"
+			],
+			[
+				"requi",
+				"require〔function〕"
+			],
+			[
+				"He",
+				"HelloWorld"
+			],
+			[
+				"req",
+				"require〔function〕"
+			],
+			[
+				"j",
+				"jsx/"
+			],
+			[
+				"helloworld",
+				"helloworld"
+			],
+			[
+				"text",
+				"textContent"
+			],
+			[
+				"ran",
+				"range"
+			],
+			[
+				"get",
+				"getElementsByTagName〔function〕"
+			],
+			[
+				"ContentEdit",
+				"ContentEditableLine〔variable〕"
+			],
+			[
+				"se",
+				"select"
+			],
+			[
+				"string",
+				"querystring.stringify"
+			],
+			[
+				"onUpdate",
+				"onUpdateTitle"
+			],
+			[
+				"UP",
+				"UPDATE_TITLE"
+			],
+			[
+				"F",
+				"Fluxxor"
+			],
+			[
+				"Flux",
+				"FluxMixin"
+			],
+			[
+				"func",
+				"function〔keyword〕"
+			],
+			[
+				"on",
+				"onClickPlus={this"
+			],
+			[
+				"C",
+				"CounterStore"
+			],
+			[
+				"getS",
+				"getState"
+			],
+			[
+				"S",
+				"StoreWatchMixin"
+			],
+			[
+				"onC",
+				"onClickMinus"
+			],
+			[
+				"cre",
+				"createClass"
+			],
+			[
+				"hi",
+				"history"
+			],
+			[
+				"scrip",
+				"script"
+			],
+			[
+				"toString",
+				"_.prototype.toString"
+			],
+			[
+				"style",
+				"stylesheet"
+			],
+			[
+				"script",
+				"script	Tag"
+			],
+			[
+				"time",
+				"time	<time>"
+			],
+			[
+				"c",
+				"CurrentTime.js"
+			],
+			[
+				"js",
+				"react.js"
+			],
+			[
+				"title",
+				"title	<title>"
+			],
+			[
+				"seli",
+				"serializeArray	.serializeArray()"
+			],
+			[
+				"li",
+				"listenTo"
+			],
+			[
+				"for",
+				"forEach"
+			],
+			[
+				"filter",
+				"filter	.filter()"
+			],
+			[
+				"shu",
+				"_.shuffle"
+			],
+			[
+				"_sh",
+				"_.shuffle"
+			],
+			[
+				"this",
+				"$this  (variable)"
+			],
+			[
+				"cs",
+				"cs.model.js"
+			],
+			[
+				"article",
+				"article  (variable)"
+			],
+			[
+				"update",
+				"update"
+			],
+			[
+				"b",
+				"black"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "karma.conf.js",
+			"settings":
+			{
+				"buffer_size": 1991,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "develop/assets/jsx/helloworld.js",
+			"settings":
+			{
+				"buffer_size": 163,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"contents": "var React = require('react');\nvar ReactDOM = require('react-dom');\nvar TestUtils = require('react-addons-test-utils');\nvar HelloWorld = require('../develop/assets/jsx/helloworld.js');\n\ndescribe(\"helloworld\",function(){\n	it('should render',function(){\n		myComponent = TestUtils.renderIntoDocument(<HelloWorld name='test'></HelloWorld>);\n		expect(ReactDOM.findDOMNode(myComponent).textContent).toContain(\"Hello\");\n	});\n});\n",
+			"file": "test/helloworldSpec.js",
+			"file_size": 432,
+			"file_write_time": 131027822118139041,
+			"settings":
+			{
+				"buffer_size": 421,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "gulpfile.js",
+			"settings":
+			{
+				"buffer_size": 1560,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "/C/Users/Terunori Kawai/AppData/Roaming/Sublime Text 3/Packages/User/Preferences.sublime-settings",
+			"settings":
+			{
+				"buffer_size": 183,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "package.json",
+			"settings":
+			{
+				"buffer_size": 1493,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": ".babelrc",
+			"settings":
+			{
+				"buffer_size": 42,
+				"line_ending": "Windows"
+			}
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 392.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"package install",
+				"Package Control: Install Package"
+			],
+			[
+				"package",
+				"Package Control: Install Package"
+			],
+			[
+				"package ins",
+				"Package Control: Install Package"
+			],
+			[
+				"emmet",
+				"Emmet: Expand Abbreviation"
+			],
+			[
+				"html",
+				"Set Syntax: HTML"
+			],
+			[
+				"install",
+				"Package Control: Install Package"
+			],
+			[
+				"git:log",
+				"Git: Log All"
+			],
+			[
+				"git:show",
+				"Git: Show Tags"
+			],
+			[
+				"git status",
+				"Git: Status"
+			],
+			[
+				"git show",
+				"Git: Show Tags"
+			],
+			[
+				"git",
+				"Git: Status"
+			],
+			[
+				"Package Control: set",
+				"Package Control: Install Package"
+			],
+			[
+				"pac",
+				"Package Control: Install Package"
+			],
+			[
+				"",
+				"About"
+			],
+			[
+				"Package Control: install",
+				"Package Control: Install Package"
+			],
+			[
+				"Package Control: reve",
+				"Package Control: Remove Package"
+			],
+			[
+				"pacage install",
+				"Package Control: Install Package"
+			],
+			[
+				"Package Control: ",
+				"Package Control: Install Package"
+			],
+			[
+				"Package Control: install Package",
+				"Package Control: Install Package"
+			],
+			[
+				"install pack",
+				"Package Control: Install Package"
+			],
+			[
+				"install package",
+				"Package Control: Install Package"
+			],
+			[
+				"sidebar",
+				"View: Toggle Side Bar"
+			],
+			[
+				"si",
+				"Snippet: input - number"
+			],
+			[
+				"list packages",
+				"Package Control: List Packages"
+			],
+			[
+				"list package",
+				"Package Control: List Packages"
+			],
+			[
+				"install Package",
+				"Package Control: Install Package"
+			],
+			[
+				"instal",
+				"Package Control: Install Package"
+			],
+			[
+				"JSON",
+				"Set Syntax: JSON"
+			]
+		],
+		"width": 517.0
+	},
+	"console":
+	{
+		"height": 202.0,
+		"history":
+		[
+			"import urllib.request,os,sys; exec(\"if sys.version_info < (3,) or os.name != 'nt': raise OSError('This code is for Windows ST3 only!')\"); pr='Preferences.sublime-settings'; ip='ignored_packages'; n='Package Control'; s=sublime.load_settings(pr); ig=s.get(ip); ig.append(n); s.set(ip,ig); sublime.save_settings('Preferences.sublime-settings'); pf=n+'.sublime-package'; urllib.request.install_opener(urllib.request.build_opener(urllib.request.ProxyHandler())); by=urllib.request.urlopen('https://packagecontrol.io/'+pf.replace(' ','%20')).read(); open(os.path.join(sublime.installed_packages_path(),pf),'wb').write(by); ig.remove(n); s.set(ip,ig); sublime.save_settings(pr); print('Package Control: 3.0.0 upgrade successful!')",
+			"import urllib.request,os,hashlib; h = ‘7183a2d3e96f11eeadd761d777e62404e330c659d4bb41d3bdf022e94cab3cd0’; pf = 'Package Control.sublime-package’; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://sublime.wbond.net/’ + pf.replace(’ ’, ’%20’)).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install’ % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb’ ).write(by)",
+			"import urllib2,os; pf='Package Control.sublime-package'; ipp = sublime.installed_packages_path(); ",
+			"git",
+			"import urllib.request,os; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); open(os.path.join(ipp, pf), 'wb').write(urllib.request.urlopen( 'http://sublime.wbond.net/' + pf.replace(' ','%20')).read())"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/C/Users/Terunori Kawai/Desktop/nori/ekoufu"
+	],
+	"file_history":
+	[
+		"/C/Users/Terunori Kawai/AppData/Roaming/Sublime Text 3/Packages/User/LiveStyle.sublime-settings",
+		"/C/Users/Terunori Kawai/AppData/Roaming/Sublime Text 3/Packages/User/Preferences.sublime-settings",
+		"/C/Users/Terunori Kawai/AppData/Roaming/Sublime Text 3/Packages/Default/Preferences.sublime-settings",
+		"/C/Users/Terunori Kawai/Desktop/nori/ekoufu/develop/assets/jsx/helloworld.js",
+		"/C/Users/Terunori Kawai/Desktop/nori/ekoufu/release/assets/js/helloworld.js",
+		"/C/Users/Terunori Kawai/Desktop/nori/ekoufu/package.json",
+		"/C/Users/Terunori Kawai/Desktop/nori/ekoufu/public/index.html",
+		"/C/Users/Terunori Kawai/Desktop/nori/ekoufu/server/lib/crud.js",
+		"/C/Users/Terunori Kawai/Desktop/nori/ekoufu/karma.conf.js",
+		"/C/Users/Terunori Kawai/Desktop/nori/ekoufu/public/js/helloworld.js",
+		"/C/Users/Terunori Kawai/Desktop/nori/ekoufu/.babelrc",
+		"/C/Users/Terunori Kawai/Desktop/nori/ekoufu/server/lib/routes.js",
+		"/C/Users/Terunori Kawai/Desktop/nori/ekoufu/server/app.js",
+		"/C/Users/Terunori Kawai/Desktop/nori/ekoufu/public/test.html",
+		"/C/Users/Terunori Kawai/Desktop/nori/ekoufu/develop/html/index.html",
+		"/C/Users/Terunori Kawai/Desktop/nori/ekoufu/webpack.config.js",
+		"/C/Users/Terunori Kawai/Desktop/nori/ekoufu/release/assets/js/helloworld.js.map",
+		"/C/Users/Terunori Kawai/Desktop/nori/ekoufu/gulpfile.js",
+		"/C/Users/Terunori Kawai/Desktop/nori/ekoufu/develop/assets/jsx/helloworld.jsx",
+		"/C/Users/Terunori Kawai/Desktop/nori/ekoufu/develop/assets/sass/master.scss",
+		"/C/Users/Terunori Kawai/Desktop/nori/ekoufu/develop/assets/sass/block/_header.scss",
+		"/C/Users/Terunori Kawai/Desktop/nori/ekoufu/develop/assets/sass/block/header.scss",
+		"/C/Users/Terunori Kawai/Desktop/nori/ekoufu/release/assets/css/block/header.css",
+		"/C/Users/Terunori Kawai/Desktop/nori/ekoufu/src/js/test/test.js.map",
+		"/C/Users/Terunori Kawai/Desktop/nori/ekoufu/src/js/test/test.js",
+		"/C/Users/Terunori Kawai/Desktop/nori/ekoufu/src/jsx/test/test.jsx",
+		"/C/Users/Terunori Kawai/Desktop/nori/ekoufu/sass/block/header.scss",
+		"/C/Users/Terunori Kawai/Desktop/nori/ekoufu/src/js/main.js",
+		"/C/Users/Terunori Kawai/Desktop/nori/ekoufu/css/block/header.css",
+		"/C/Users/Terunori Kawai/Desktop/nori/ekoufu/sass/block/header.css",
+		"/C/Users/Terunori Kawai/Desktop/nori/ekoufu/sass/block/_header.scss",
+		"/C/Users/Terunori Kawai/Desktop/nori/material-ui/package.json",
+		"/C/Users/Terunori Kawai/Desktop/nori/material-ui/karma.conf.js",
+		"/C/Users/Terunori Kawai/Desktop/nori/material-ui/.gitignore",
+		"/C/Users/Terunori Kawai/Desktop/nori/material-ui/.babelrc",
+		"/C/Users/Terunori Kawai/Desktop/nori/material-ui/.editorconfig",
+		"/C/Users/Terunori Kawai/Desktop/nori/material-ui/gulpfile.js",
+		"/C/Users/Terunori Kawai/Documents/dev-memoer/memoer/README.md",
+		"/C/Users/Terunori Kawai/Documents/dev-memoer/memoer/package.json",
+		"/C/Users/Terunori Kawai/Documents/dev-memoer/memoer/.gitignore",
+		"/C/Users/Terunori Kawai/Documents/dev-memoer/memoer/npm-debug.log",
+		"/C/Users/Terunori Kawai/Documents/dev-memoer/memoer/public/jsx/bundle2.js",
+		"/C/Users/Terunori Kawai/Documents/dev-memoer/memoer/public/jsx/ContentEditable.js",
+		"/C/Users/Terunori Kawai/Documents/dev-memoer/memoer/public/test/index.html",
+		"/C/Users/Terunori Kawai/Documents/dev-memoer/memoer/public/jsx/InputLine.js",
+		"/C/Users/Terunori Kawai/Documents/dev-memoer/memoer/public/jsx/InputMultiLine.js",
+		"/C/Users/Terunori Kawai/Documents/dev-memoer/memoer/public/test2.html",
+		"/C/Users/Terunori Kawai/Documents/dev-memoer/memoer/lib/routes.js",
+		"/C/Users/Terunori Kawai/Documents/dev-memoer/memoer/lib/crud.js",
+		"/C/Users/Terunori Kawai/Documents/dev-memoer/memoer/app.js",
+		"/C/Users/Terunori Kawai/Documents/dev-memoer/memoer/public/jsx/ContentEditableLine.js",
+		"/C/Users/Terunori Kawai/Documents/dev-memoer/memoer/public/jsx/memoer.js",
+		"/C/Users/Terunori Kawai/Documents/dev-memoer/memoer/public/js/util/ControlData.js",
+		"/C/Users/Terunori Kawai/Documents/dev-memoer/memoer/public/js/MemoStore.js",
+		"/C/Users/Terunori Kawai/Documents/dev-memoer/memoer/public/js/MemoAction.js",
+		"/C/Users/Terunori Kawai/Documents/dev-memoer/memoer/node_modules/karma/node_modules/socket.io/node_modules/socket.io-client/node_modules/uglify-js/lib/process.js",
+		"/C/Users/Terunori Kawai/Documents/dev-memoer/memoer/public/test/range.js",
+		"/C/Users/Terunori Kawai/Documents/dev-memoer/memoer/public/range.html",
+		"/C/Users/Terunori Kawai/Documents/dev-memoer/memoer/karma.conf.js",
+		"/C/Users/Terunori Kawai/Documents/dev-memoer/memoer/node_modules/karma/node_modules/http-proxy/node_modules/colors/example.html",
+		"/C/Users/Terunori Kawai/Documents/dev-memoer/memoer/public/test/js.js",
+		"/C/Users/Terunori Kawai/Documents/dev-memoer/memoer/public/jsx/InputDataLine.js",
+		"/C/Users/Terunori Kawai/Documents/dev-memoer/memoer/public/jsx/CurrentTime.js",
+		"/C/Users/Terunori Kawai/Documents/dev-memoer/memoer/public/js/MemoStore_b.js",
+		"/C/Users/Terunori Kawai/Documents/dev-memoer/memoer/memoer.sublime-workspace",
+		"/C/Users/Terunori Kawai/Desktop/workspace/flux/public/jsx/bundle.js",
+		"/C/Users/Terunori Kawai/Desktop/workspace/flux/app.js",
+		"/C/Users/Terunori Kawai/Desktop/workspace/flux/package.json",
+		"/C/Users/Terunori Kawai/AppData/Roaming/Sublime Text 3/Packages/Default/Default (Windows).sublime-keymap",
+		"/C/Users/Terunori Kawai/AppData/Roaming/Sublime Text 3/Packages/Emmet/Default (Windows).sublime-keymap",
+		"/C/Users/Terunori Kawai/AppData/Roaming/Sublime Text 3/Packages/User/Default (Windows).sublime-keymap",
+		"/C/Users/Terunori Kawai/Desktop/workspace/flux/public/app.html",
+		"/C/Users/Terunori Kawai/AppData/Roaming/Sublime Text 3/Packages/User/Emmet.sublime-settings",
+		"/C/Users/Terunori Kawai/AppData/Roaming/Sublime Text 3/Packages/Emmet/Emmet.sublime-settings",
+		"/C/Users/Terunori Kawai/Desktop/workspace/flux/lib/routes.js",
+		"/C/Users/Terunori Kawai/Desktop/workspace/flux/lib/crud.js",
+		"/C/Users/Terunori Kawai/Documents/dev-memoer/memoer/public/jsx/button.js",
+		"/C/Users/Terunori Kawai/Documents/dev-memoer/memoer/public/js/memoer.app.js",
+		"/C/Users/Terunori Kawai/Documents/dev-memoer/memoer/public/js/memoer.collection.js",
+		"/C/Users/Terunori Kawai/Documents/dev-memoer/memoer/public/js/momer.router.js",
+		"/C/Users/Terunori Kawai/Documents/dev-memoer/memoer/public/js/memoer.model.js",
+		"/C/Users/Terunori Kawai/Documents/dev-memoer/memoer/public/js/memoerCollection.js",
+		"/C/Users/Terunori Kawai/Documents/dev-memoer/memoer/public/css/memoer.css",
+		"/C/Users/Terunori Kawai/Documents/dev-memoer/memoer/public/test.html",
+		"/C/Users/Terunori Kawai/AppData/Roaming/Sublime Text 3/Packages/WakaTime/WakaTime.sublime-settings",
+		"/C/Users/Terunori Kawai/Desktop/test_memoer.bat",
+		"/C/Users/Terunori Kawai/Desktop/watch_memoer.bat",
+		"/C/Users/Terunori Kawai/Documents/memoer/public/jsx/ContentEditable.js",
+		"/C/Users/Terunori Kawai/Documents/memoer/public/test2.html",
+		"/C/Users/Terunori Kawai/Documents/memoer/public/css/memoer.css",
+		"/C/Users/Terunori Kawai/Documents/memoer/public/test/js.js",
+		"/C/Users/Terunori Kawai/Documents/memoer/public/test/css.css",
+		"/C/Users/Terunori Kawai/Documents/memoer/public/test/index.html",
+		"/C/Users/Terunori Kawai/AppData/Roaming/Sublime Text 3/Packages/Package Control/Package Control.sublime-settings",
+		"/C/Users/Terunori Kawai/AppData/Roaming/Sublime Text 3/Packages/Tag/Tag Package.sublime-settings",
+		"/C/Users/Terunori Kawai/Documents/memoer/karma.conf.js",
+		"/C/Users/Terunori Kawai/Documents/memoer/public/jsx/InputLine.js",
+		"/C/Users/Terunori Kawai/Documents/memoer/karma/spec/InputLineSpec.js",
+		"/C/Users/Terunori Kawai/Documents/memoer/karma/spec/ContentEditableSpec.js",
+		"/C/Users/Terunori Kawai/Documents/memoer/package.json",
+		"/C/Users/Terunori Kawai/Documents/memoer/public/test.html",
+		"/C/Users/Terunori Kawai/Documents/memoer/public/jsx/hello2.js",
+		"/C/Users/Terunori Kawai/Documents/memoer/public/jsx/bundle.js",
+		"/C/Users/Terunori Kawai/Documents/memoer/public/jsx/hoge.js",
+		"/C/Users/Terunori Kawai/Documents/memoer/public/jsx/hello.js",
+		"/C/Users/Terunori Kawai/Documents/memoer/karma/spec/helloWorldSpec.js",
+		"/C/Users/Terunori Kawai/Documents/memoer/public/jsx/MemoTitle.js",
+		"/C/Users/Terunori Kawai/Desktop/mongo_start.bat",
+		"/C/Users/Terunori Kawai/Desktop/dev_memoer.bat",
+		"/C/Users/Terunori Kawai/Documents/memoer/public/jsx/bundle2.js",
+		"/C/Users/Terunori Kawai/Documents/memoer/node_modules/karma-browserify/README.md",
+		"/C/Users/Terunori Kawai/Documents/memoer/npm-debug.log",
+		"/C/Users/Terunori Kawai/Documents/memoer/node_modules/jasmine/package.json",
+		"/C/Users/Terunori Kawai/Documents/memoer/karma/karma.conf.js",
+		"/C/Users/Terunori Kawai/Documents/memoer/karma/spec/clickMeSpec.js",
+		"/C/Users/Terunori Kawai/Documents/memoer/public/favicon.ico",
+		"/C/Users/Terunori Kawai/Documents/memoer/bundle.js",
+		"/C/Users/Terunori Kawai/Documents/memoer/public/jsx/app.js",
+		"/C/Users/Terunori Kawai/Documents/memoer/public/jsx/clickme.js",
+		"/C/Users/Terunori Kawai/Documents/memoer/README.md",
+		"/C/Users/Terunori Kawai/Documents/memoer/public/index.html",
+		"/C/Users/Terunori Kawai/Desktop/memoer/app.js",
+		"/C/Users/Terunori Kawai/Desktop/memoer/package.json",
+		"/C/Users/Terunori Kawai/Desktop/react-0.13.3/examples/basic/index.html",
+		"/C/Users/Terunori Kawai/Desktop/memoer/public/js/lib/react.js",
+		"/C/Users/Terunori Kawai/Desktop/memoer/lib/routes.js",
+		"/C/Users/Terunori Kawai/Desktop/memoer/lib/crud.js",
+		"/C/Users/Terunori Kawai/Desktop/memoer/node_modules/mongodb/index.js"
+	],
+	"find":
+	{
+		"height": 34.0
+	},
+	"find_in_files":
+	{
+		"height": 90.0,
+		"where_history":
+		[
+			"C:\\Users\\Terunori Kawai\\Desktop\\nori\\ekoufu/",
+			"C:\\Users\\Terunori Kawai\\Desktop\\nori\\ekoufu/node_module",
+			""
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"HelloWorld",
+			"react/lib/ReactDOM",
+			"fbjs",
+			"invariant",
+			"webpack",
+			"__webpack_require__",
+			"react",
+			"helloworld",
+			"/******/",
+			"Hello",
+			"hellow",
+			"enter_flg",
+			"{/*\ntest",
+			"test",
+			"ContentEditableLine",
+			"classes",
+			"\n	",
+			"onChange",
+			"constans",
+			"5",
+			"joe@example.com",
+			"a",
+			"3",
+			"tab",
+			"5",
+			":",
+			"5",
+			"ctrl+e",
+			"cntrl+e",
+			"ctrl+e",
+			"tab",
+			"ctrl+e",
+			"	",
+			"title",
+			"	",
+			"\\t",
+			"adons",
+			"27017",
+			"DEFAULT_PORT",
+			"search",
+			"show-detail-id",
+			"article-edit",
+			"create",
+			"article-edit-button",
+			"article-data",
+			"showDetail",
+			"inputForm",
+			"input-",
+			"inputForm",
+			"hidden",
+			"trriger",
+			"inputForm",
+			"article-data",
+			"hidden",
+			"knowledge",
+			"stats-template",
+			"				<",
+			"\n			",
+			"},\n",
+			", ",
+			"stats-template",
+			"meta",
+			">",
+			"makeSubTag",
+			"setSubArticle",
+			"onAddSubArticle",
+			"setSubArticle",
+			"setArticle_url_map",
+			"createArticle",
+			"createArticle_url_map",
+			"main_form",
+			"onCreateMainArticle"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"constants",
+			"5",
+			"     ",
+			"    ",
+			"editForm",
+			"edit-",
+			"editForm",
+			"showDetail"
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 0,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "karma.conf.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1991,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								642,
+								642
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"auto_complete": false,
+							"bh_regions":
+							[
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content"
+							],
+							"origin_encoding": "UTF-8",
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 117.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "develop/assets/jsx/helloworld.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 163,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								151,
+								161
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"auto_complete": false,
+							"bh_regions":
+							[
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content"
+							],
+							"origin_encoding": "ASCII",
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "test/helloworldSpec.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 421,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								421,
+								421
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"auto_complete": false,
+							"bh_regions":
+							[
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content"
+							],
+							"origin_encoding": "ASCII",
+							"syntax": "Packages/JSX/JSX.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				}
+			]
+		},
+		{
+			"selected": 1,
+			"sheets":
+			[
+				{
+					"buffer": 3,
+					"file": "gulpfile.js",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1560,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								228,
+								228
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"auto_complete": false,
+							"bh_regions":
+							[
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content"
+							],
+							"origin_encoding": "UTF-8",
+							"syntax": "Packages/JavaScript/JavaScript.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "/C/Users/Terunori Kawai/AppData/Roaming/Sublime Text 3/Packages/User/Preferences.sublime-settings",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 183,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"bh_regions":
+							[
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content"
+							],
+							"origin_encoding": "ASCII",
+							"syntax": "Packages/JavaScript/JSON.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "package.json",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1493,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								167,
+								167
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"auto_complete": true,
+							"bh_regions":
+							[
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content"
+							],
+							"origin_encoding": "ASCII",
+							"syntax": "Packages/JavaScript/JSON.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": ".babelrc",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 42,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								30,
+								30
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"bh_regions":
+							[
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content"
+							],
+							"origin_encoding": "ASCII",
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 6,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 21.0
+	},
+	"input":
+	{
+		"height": 29.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			],
+			[
+				1,
+				0,
+				2,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			0.530691980376,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 88.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"output.git":
+	{
+		"height": 100.0
+	},
+	"pinned_build_system": "",
+	"project": "ekoufu.sublime-project",
+	"replace":
+	{
+		"height": 38.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 500.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"",
+				"C:\\Users\\Terunori Kawai\\Documents\\dev-memoer\\memoer\\memoer.sublime-project"
+			]
+		],
+		"width": 380.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 1,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 202.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}
