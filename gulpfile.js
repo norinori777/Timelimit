@@ -6,9 +6,11 @@ sourcemaps = require('gulp-sourcemaps')
 using = require('gulp-using'),
 karma = require('gulp-karma'),
 browserify = require('browserify'),
-source = require('vinyl-source-stream');
-buffer = require('vinyl-buffer');
-reactify = require('reactify');
+source = require('vinyl-source-stream'),
+buffer = require('vinyl-buffer'),
+reactify = require('reactify'),
+webserver = require('gulp-webserver');
+
 
 gulp.task('default',function(){
 		gulp.watch('./develop/assets/jsx/**/*.js', ['build']);
@@ -51,6 +53,13 @@ gulp.task('karma', function(){
 		.pipe(karma({
 			configFile: 'karma.conf.js',
 			action: 'watch'
+		}));
+});
+
+gulp.task('webserver', function(){
+	gulp.src('./develop/assets/sass/*.scss')
+		.pipe(webserver({
+			livereload: true
 		}));
 });
 
