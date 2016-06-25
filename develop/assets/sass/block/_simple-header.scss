@@ -1,0 +1,18 @@
+.simple-header {
+	.simple-header__title{
+		color: #FFF;
+		width: 80%;
+		margin: 0 auto;
+		padding: $simple-header-padding;
+		text-align: center;
+	}
+	background-color: $main-color;
+
+	& .simple-header--lg {
+		font-size: $font-size-lg;
+	}
+
+	& .simple-header--sm {
+		font-size: $font-size-sm;
+	}
+}

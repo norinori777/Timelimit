@@ -1,1 +1,9 @@
-@import "block/_header.scss";
+// Variable and mixin
+@import "setting/_variables.scss";
+
+// Reset
+@import "base/_normalize.scss";
+@import "base/_reboot.scss";
+
+// Component
+@import "block/_simple-header.scss";

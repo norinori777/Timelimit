@@ -8,18 +8,24 @@ karma = require('gulp-karma'),
 browserify = require('browserify'),
 source = require('vinyl-source-stream'),
 buffer = require('vinyl-buffer'),
-reactify = require('reactify'),
+babelify = require('babelify'),
 webserver = require('gulp-webserver');
+del = require('del');
 
 
-gulp.task('default',['copy','watch','karma']);
+// gulp.task('default',['copy','watch','karma']);
+gulp.task('default',['copy','watch']);
 
 gulp.task('watch',function(){
+	gulp.watch('./develop/assets/js/**/*.js', ['build']);
 	gulp.watch('./develop/assets/jsx/**/*.js', ['build']);
 	gulp.watch('./develop/assets/sass/**/*.scss', ['sass']);
+	gulp.watch('./develop/html/*.html',['copy']);
 });
 
 gulp.task('sass',function(){
+	del(["./release/assets/css/*",
+		"./public/css/*"]);
 	gulp.src('./develop/assets/sass/*.scss')
 		.pipe(plumber())
 		.pipe(using())
@@ -27,25 +33,27 @@ gulp.task('sass',function(){
 			console.log(err.message)
 		}))
 		.pipe(cssnext())
-		.pipe(gulp.dest('./release/assets/css'));
-	gulp.src('./release/assets/css/*.css').pipe(gulp.dest('public/css'));
+		.pipe(gulp.dest('./release/css'));
+	gulp.src('./release/css/*.css').pipe(gulp.dest('public/css'));
 });
 
 gulp.task('build', function () {
-	browserify('./develop/assets/jsx/helloworld.js')
-		.transform(reactify)
+	del(["./release/js/*",
+		"./public/js/*"]);
+	browserify('./develop/assets/js/app.js')
+		.transform(babelify)
 		.bundle()
 		.on("error", function(err){
 			console.log("error:" + err.message);
 			console.log("error:" + err.stack);
 		})
-		.pipe(source('helloworld.js'))
+		.pipe(source('app.js'))
 		.pipe(buffer())
 		.pipe(sourcemaps.init({loadMaps:true}))
 		.pipe(sourcemaps.write('./'))
-		.pipe(gulp.dest('./release/assets/js/'));
-	gulp.src('./release/assets/js/*.js').pipe(gulp.dest('public/js'));
-	gulp.src('./release/assets/js/*.map').pipe(gulp.dest('public/js'));
+		.pipe(gulp.dest('./release/js'));
+	gulp.src('./release/js/*.js').pipe(gulp.dest('public/js'));
+	gulp.src('./release/js/*.map').pipe(gulp.dest('public/js'));
 });
 
 gulp.task('karma', function(){
@@ -67,6 +75,7 @@ gulp.task('server', function(){
 });
 
 gulp.task('copy', function(){
-	gulp.src('./develop/assets/*.html')
-		.pipe(gulp.dest('./public'));
+	del(["./public/*.html","release/*.html"]);
+	gulp.src('./develop/html/*.html').pipe(gulp.dest('release'));
+	gulp.src('./release/*.html').pipe(gulp.dest('public'));
 })

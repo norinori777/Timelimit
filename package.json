@@ -19,6 +19,7 @@
     "browser-sync": "^2.11.1",
     "browserify": "^13.0.1",
     "classnames": "^2.2.3",
+    "del": "^2.2.1",
     "express": "^4.13.4",
     "fs": "0.0.2",
     "gulp": "^3.9.1",
