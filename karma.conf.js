@@ -31,21 +31,27 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-        'develop/assets/jsx/*.js' : ['browserify'],
         './test/*.js':['browserify']
     },
 
     browserify: {
         watch: true,
         debug: true,
-        transform: ['reactify']
+        transform: [
+            require('browserify-istanbul')({
+                instrumenter: require('isparta'),
+                ignore: ['**/test/**']
+            }),
+            'babelify'
+        ]
     },
 
 
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['progress'],
+    reporters: ['progress','coverage'],
+    coverageReporter: {type: 'lcov'},
 
 
     // web server port

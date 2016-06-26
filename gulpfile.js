@@ -13,8 +13,7 @@ webserver = require('gulp-webserver');
 del = require('del');
 
 
-// gulp.task('default',['copy','watch','karma']);
-gulp.task('default',['copy','watch']);
+gulp.task('default',['copy','watch','karma']);
 
 gulp.task('watch',function(){
 	gulp.watch('./develop/assets/js/**/*.js', ['build']);

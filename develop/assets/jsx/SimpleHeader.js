@@ -14,7 +14,6 @@ export default class simpleHeader extends Component {
 			</div>
 		)
 	}
-
 }
 simpleHeader.propTypes = {
 	title: React.PropTypes.string.isRequired
