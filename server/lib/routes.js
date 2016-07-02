@@ -1,19 +1,27 @@
 'use strict';
 
-var configRoutes, 
+var
+configRoutes, 
 auth		= require('basic-auth'),
 crud		= require('./crud'),
 fs 			= require('fs'),
-multer		= require('multer'),
+multer = require('multer'),
 makeMongoId	= crud.makeMongoId;
 
 configRoutes = function(app, server){
-	/*
-	app.all('/:obj_type/*?', function(req,res,next){
-		res.contentType('json');
-		next();
+
+	var upload = multer({dest:'./upload/',
+		rename: function (fieldname, filename) {
+			return filename+Date.now();
+		},
+		onFileUploadStart: function (file) {
+			console.log(file.originalname + ' is starting ...');
+		},
+		onFileUploadComplete: function (file) {
+			console.log(file.fieldname + ' uploaded to  ' + file.path);
+		}		
 	});
-	*/
+	var type = upload.single('upfile');
 
 	app.get('/:obj_type',function(req,res){
 		crud.read(
@@ -55,85 +63,23 @@ configRoutes = function(app, server){
 			{ _id: makeMongoId( req.params.id ) },
 			function(result_map){res.send(result_map);}
 		);		
-	})
-
-	/*
-	app.post('/:obj_type/list',function(req,res){
-		crud.read(
-			req.params.obj_type,
-			{},{},
-			function(map_list){res.json(map_list);}
-		);
 	});
 
-	app.get('/:obj_type/list',function(req,res){
-		crud.read(
-			req.params.obj_type,
-			{},{},
-			function(map_list){res.json(map_list);}
-		);
-	});
+	app.post('/test/upload', type, function(req, res){
+		/** When using the "single"
+		 data come in "req.file" regardless of the attribute "name". **/
+		var tmp_path = req.file.path;
 
-	app.post('/:obj_type/add', function(req,res){
-		var
-		user = auth(req),
-		send_data = req.body,
-		data = {$push:{sub:{name:user.name,article:send_data.data,insertdt: new Date()}}};
+		/** The original name of the uploaded file
+			 stored in the variable "originalname". **/
+		var target_path = 'upload/' + req.file.originalname;
 
-		crud.update(
-			req.params.obj_type,
-			{_id: makeMongoId(send_data.filter._id)},
-			data,
-			function(result_map){res.json(result_map);}
-		);
+		/** A better way to copy the uploaded file. **/
+		var src = fs.createReadStream(tmp_path);
+		var dest = fs.createWriteStream(target_path);
+		src.pipe(dest);
+		res.end("File uploaded");
 	});
-	
-	app.post('/:obj_type/create',function(req,res){
-		var
-		user = auth(req),
-		send_data = req.body,
-		data = {name:user.name,article:send_data.data,insertdt: new Date()};
-
-		crud.construct(
-			req.params.obj_type,
-			data,
-			function(result_map){res.json(result_map);}
-		);
-	});
-
-	app.get('/:obj_type/read/:id',function(req,res){
-		crud.read(
-			req.params.obj_type,
-			{ _id: makeMongoId( req.params.id ) },
-			request.body,
-			function(result_map){res.send(result_map);}
-		);
-	});
-		
-	app.get('/:obj_type/update/:id',function(req,res){
-		crud.update(
-			req.params.obj_type,
-			{ _id: makeMongoId( req.params.id ) },
-			req.body,
-			function(result_map){res.send(result_map);}
-		);
-	});
-
-	app.get('/:obj_type/delete/:id([0-9]+)',function(req,res){
-		crud.destroy(
-			req.params.obj_type,
-			{ _id: makeMongoId( req.params.id ) },
-			function(result_map){res.send(result_map);}
-		);
-	});
-		
-	app.get('/', function (req, res) {
-		res.send('Hello, World!');
-	});
-	app.get( '/test', function(req,res){
-		res.send( {title: 'I want to sleep now' });
-	});
-	*/
 };
 
 module.exports = {configRoutes: configRoutes};
