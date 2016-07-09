@@ -1,9 +1,15 @@
 // Variable and mixin
 @import "setting/_variables.scss";
+@import "tool/_mixins.scss";
 
 // Reset
 @import "base/_normalize.scss";
 @import "base/_reboot.scss";
 
 // Component
+@import "block/_button.scss";
+@import "block/_input-date.scss";
+@import "block/_input-img.scss";
 @import "block/_simple-header.scss";
+@import "block/_input-calendar.scss";
+

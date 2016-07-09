@@ -1,0 +1,10 @@
+.input-date {
+    margin: 0;
+    @include clearfix;
+    &__label {
+        float:left;
+    }
+    &__calendar {
+        float:left;
+    }
+}

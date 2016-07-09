@@ -1,3 +1,4 @@
+@charset "UTF-8";
 /*! normalize.css commit fe56763 | MIT License | github.com/necolas/normalize.css */
 html {
   font-family: sans-serif;
@@ -197,6 +198,109 @@ body {
   color: #373a3c;
   background-color: #fff; }
 
+.btn {
+  display: inline-block;
+  text-align: center;
+  vertical-align: middle;
+  cursor: pointer;
+  font-weight: normal;
+  text-decoration: none;
+  padding: 8px 16px;
+  padding: 0.5rem 1rem;
+  font-size: 16px;
+  font-size: 1rem;
+  border-radius: 0.25rem; }
+  .btn--primary {
+    color: #fff;
+    background-color: #0275d8;
+    border-color: #0275d8;
+    　　box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 1px rgba(0, 0, 0, 0.075); }
+    .btn--primary:hover {
+      color: #fff;
+      background-color: #025aa5;
+      border-color: #01549b; }
+  .btn--secoundary {
+    color: #373a3c;
+    background-color: #fff;
+    border-color: #ccc;
+    　　box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 1px rgba(0, 0, 0, 0.075); }
+    .btn--secoundary:hover {
+      color: #373a3c;
+      background-color: #e6e6e6;
+      border-color: #adadad; }
+  .btn--success {
+    color: #fff;
+    background-color: #5cb85c;
+    border-color: #5cb85c;
+    　　box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 1px rgba(0, 0, 0, 0.075); }
+    .btn--success:hover {
+      color: #fff;
+      background-color: #449d44;
+      border-color: #419641; }
+  .btn--info {
+    color: #fff;
+    background-color: #5bc0de;
+    border-color: #5bc0de;
+    　　box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 1px rgba(0, 0, 0, 0.075); }
+    .btn--info:hover {
+      color: #fff;
+      background-color: #31b0d5;
+      border-color: #2aabd2; }
+  .btn--warning {
+    color: #fff;
+    background-color: #f0ad4e;
+    border-color: #f0ad4e;
+    　　box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 1px rgba(0, 0, 0, 0.075); }
+    .btn--warning:hover {
+      color: #fff;
+      background-color: #ec971f;
+      border-color: #eb9316; }
+  .btn--danger {
+    color: #fff;
+    background-color: #d9534f;
+    border-color: #d9534f;
+    　　box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 1px rgba(0, 0, 0, 0.075); }
+    .btn--danger:hover {
+      color: #fff;
+      background-color: #c9302c;
+      border-color: #c12e2a; }
+  .btn--sm {
+    padding: 8px 16px;
+    padding: 0.5rem 1rem;
+    font-size: 14px;
+    font-size: 0.875rem;
+    border-radius: 0.25rem; }
+  .btn--lg {
+    padding: 8px 16px;
+    padding: 0.5rem 1rem;
+    font-size: 20px;
+    font-size: 1.25rem;
+    border-radius: 0.25rem; }
+
+.input-date {
+  margin: 0;
+  *zoom: 1; }
+  .input-date:after {
+    content: "";
+    display: table;
+    clear: both; }
+  .input-date__label {
+    float: left; }
+  .input-date__calendar {
+    float: left; }
+
+.input-img {
+  margin: 0; }
+  .input-img__label {
+    display: block; }
+  .input-img__input {
+    width: 0px;
+    height: 0px;
+    margin: 0px;
+    padding: 0px; }
+  .input-img__img {
+    display: block; }
+
 .simple-header {
   background-color: #29aabf; }
   .simple-header .simple-header__title {
@@ -212,3 +316,139 @@ body {
   .simple-header .simple-header--sm {
     font-size: 14px;
     font-size: 0.875rem; }
+
+.input-calendar {
+  font-family: 'Pontano Sans', sans-serif;
+  position: relative; }
+
+.input-calendar-wrapper {
+  position: absolute;
+  padding: 5px 12px;
+  border: 1px solid #c4c4c4;
+  border-radius: 5px;
+  box-shadow: 0 0 9px 5px rgba(0, 0, 0, 0.05);
+  background-color: #fff;
+  text-align: center;
+  left: 140px;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none; }
+
+.input-calendar .input-calendar-field {
+  width: 120px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-family: 'Pontano Sans', sans-serif;
+  font-size: 16px;
+  padding: 2px 8px; }
+
+.input-calendar .input-calendar-field:focus {
+  outline: none;
+  border: 1px solid #f39c12; }
+
+.input-calendar .calendar-icon {
+  display: inline-block;
+  padding: 0px 1px 0 5px;
+  height: 27px;
+  line-height: 27px;
+  -webkit-transform: translateY(4px);
+          transform: translateY(4px);
+  cursor: pointer; }
+
+.input-calendar .days,
+.input-calendar .months,
+.input-calendar .years {
+  width: 189px;
+  padding-bottom: 2px; }
+
+.input-calendar .cell {
+  display: inline-block;
+  text-align: center;
+  cursor: pointer;
+  border: 1px solid #fff;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none; }
+
+.input-calendar .cell:hover {
+  color: #f39c12;
+  border: 1px solid #f39c12;
+  border-radius: 4px; }
+
+.input-calendar .cell.current {
+  background: #f39c12;
+  color: #fff;
+  border-radius: 4px;
+  opacity: .8; }
+
+.input-calendar .day {
+  width: 25px;
+  height: 25px;
+  line-height: 25px; }
+
+.input-calendar .day.prev,
+.input-calendar .day.next {
+  opacity: .4; }
+
+.input-calendar .month {
+  width: 58px;
+  height: 38px;
+  line-height: 38px; }
+
+.input-calendar .year {
+  width: 58px;
+  height: 38px;
+  line-height: 38px; }
+
+.input-calendar .days-title .cell {
+  height: 25px;
+  line-height: 28px;
+  opacity: 0.5;
+  cursor: default; }
+
+.input-calendar .days-title .cell:hover {
+  color: #000;
+  border: 1px solid #fff; }
+
+.input-calendar .navigation-title {
+  width: 100px;
+  display: inline-block;
+  cursor: pointer; }
+
+.input-calendar .years-view .navigation-title {
+  cursor: default; }
+
+.input-calendar .years-view .navigation-title:hover {
+  color: #000; }
+
+.input-calendar .navigation-title:hover {
+  color: #f39c12; }
+
+.input-calendar .icon-wrapper {
+  cursor: pointer; }
+
+.input-calendar .icon:hover,
+.input-calendar .today-btn:hover,
+.input-calendar .icon-wrapper:hover {
+  color: #f39c12; }
+
+.input-calendar .icon {
+  cursor: pointer;
+  width: 20px; }
+
+.input-calendar .today-btn {
+  cursor: pointer; }
+
+.input-calendar .cell.day.today {
+  position: relative; }
+
+.input-calendar .cell.day.today:after {
+  content: '.';
+  position: absolute;
+  bottom: 15px;
+  font-size: 20px;
+  color: #F39C12; }

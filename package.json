@@ -43,6 +43,8 @@
     "karma-coverage": "^1.0.0",
     "karma-jasmine": "^0.3.7",
     "karma-sourcemap-loader": "^0.3.7",
+    "moment": "^2.13.0",
+    "moment-range": "^2.2.0",
     "mongodb": "^2.1.7",
     "morgan": "^1.7.0",
     "multer": "^1.1.0",

@@ -1,11 +1,11 @@
 {/*
     ・インプットファイルを読み込む
-    ・読み込んだファイルをStoreに保存する。
+    ・読み込んだファイルをimgタグで表示する
 */}
 import React, {Component, PropTypes} from 'react'
 import classNames from 'classnames'
 
-export default class InputFile extends Component {
+export default class InputImg extends Component {
 	constructor(props) {
 	  super(props)
 
@@ -22,22 +22,28 @@ export default class InputFile extends Component {
     }
 
 	render(){
+        let container, button, input, img
+        container = classNames('input-img')
+        button = classNames('btn', 'btn--info')
+        input = classNames('input-img__input')
+        img = classNames('input-img__img')
+        
 		return (
-			<form method="post"
-                    encType="multipart/form-data"
-                    action="/test/upload">
-				<input type="file"
+            <div className={container}>
+                <label className={button} htmlFor="upfile">{this.props.title}</label>
+                <input type="file"
+                        className={input}
                         name="upfile"
                         id="upfile"
                         accept="image/*"
                         capture="camera"
                         onChange={this.handleChange} />
-                <input type="submit" />
-                <img ref={x => this.img = x} width={200} />
-			</form>
-		)
-	}
+                <img className={img} ref={x => this.img = x} width={200} />
+            </div>
+        )
+    }
 }
 
-InputFile.propTypes = {
+InputImg.propTypes = {
 }
+

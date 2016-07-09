@@ -1,0 +1,15 @@
+.input-img {
+    margin: 0;
+    &__label {
+        display: block;
+    }
+    &__input {
+        width:0px;
+        height:0px;
+        margin:0px;
+        padding:0px;
+    }
+    &__img {
+        display: block;
+    }
+}

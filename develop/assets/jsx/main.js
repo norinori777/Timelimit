@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 import {createStore} from 'redux'
 import {connect} from 'react-redux'
 import SimpleHeader from './SimpleHeader.js'
-import InputFile from './InputFile.js'
+import AddForm from './AddForm.js'
 
 class Main extends Component {
     render(){
@@ -11,7 +11,7 @@ class Main extends Component {
             <div>
                 <SimpleHeader title={this.props.title} />
                 <br />
-                <InputFile></InputFile>
+                <AddForm></AddForm>
             </div>
         )
     }

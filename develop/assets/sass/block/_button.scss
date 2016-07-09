@@ -1,0 +1,34 @@
+.btn{
+  display: inline-block;
+  text-align: center;
+  vertical-align: middle;
+  cursor: pointer;
+  font-weight: normal;
+  text-decoration: none;
+  @include button-size($btn-padding-y, $btn-padding-x, $font-size-base, $btn-border-radius);
+
+  &--primary{
+    @include button-variant($btn-primary-color, $btn-primary-bg, $btn-primary-border);
+  }
+  &--secoundary{
+    @include button-variant($btn-secondary-color, $btn-secondary-bg, $btn-secondary-border);
+  }
+  &--success{
+    @include button-variant($btn-success-color, $btn-success-bg, $btn-success-border);
+  }
+  &--info{
+    @include button-variant($btn-info-color, $btn-info-bg, $btn-info-border);
+  }
+  &--warning{
+    @include button-variant($btn-warning-color, $btn-warning-bg, $btn-warning-border);
+  }
+  &--danger{
+    @include button-variant($btn-danger-color, $btn-danger-bg, $btn-danger-border);
+  }
+  &--sm{
+    @include button-size($btn-padding-y, $btn-padding-x, $font-size-sm, $btn-border-radius);
+  }
+  &--lg{
+    @include button-size($btn-padding-y, $btn-padding-x, $font-size-lg, $btn-border-radius);
+  }
+}
