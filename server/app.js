@@ -12,7 +12,7 @@ auth = require('basic-auth'),
 server = http.createServer(app);
 
 app.use(logger('combined'));
-app.use(parser.json());
+app.use(parser.json({limit:'10mb'}));
 app.use(function(req, res, next) {
 	var user = auth(req);
 

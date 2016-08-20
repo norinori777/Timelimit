@@ -12,7 +12,7 @@ describe("InputDate",() => {
 				title={'テストタイトル'}
 				id={'testid'}
 				format={'YYYY-MM-DD'}
-				defaultDate={'2016-07-07'}
+				date={'2016-07-07'}
 				></InputDate>)
 		})
 		it('should render',() =>{
@@ -22,7 +22,6 @@ describe("InputDate",() => {
 
 			input = TestUtils.findRenderedDOMComponentWithTag(myComponent, "input")
 			expect(ReactDOM.findDOMNode(input).getAttribute('value').trim()).toBe('2016-07-07')
-			expect(ReactDOM.findDOMNode(input).getAttribute('id').trim()).toBe('testid')
 		})
 	})
 })

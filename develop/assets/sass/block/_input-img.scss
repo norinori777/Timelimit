@@ -1,15 +1,16 @@
 .input-img {
     margin: 0;
+    box-sizing: border-box;
     &__label {
-        display: block;
+      margin-bottom: 1rem;
     }
     &__input {
-        width:0px;
-        height:0px;
-        margin:0px;
-        padding:0px;
+      display: none;
     }
     &__img {
-        display: block;
+      display: block;
+    }
+    &__img-hidden {
+      display: none;
     }
 }

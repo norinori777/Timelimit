@@ -43,6 +43,42 @@ configRoutes = function(app, server){
 		);
 	});
 
+	app.post('/timelimit/add',function(req,res){
+		var
+		user = auth(req),
+		data = {insertdt: new Date(),name:user.name};
+		data = Object.assign({}, data, req.body);
+		crud.construct(
+			'timelimit',
+			data,
+			function(result_map){
+				if(result_map.result.ok === 1){
+					var
+					user = auth(req),
+					filter = {name:user.name};
+					crud.read(
+						'timelimit',
+						filter,{},
+						function(map_list){
+							res.json(map_list);
+						}
+					)
+				}
+			}
+		);
+	});
+
+	app.get('/timelimit/', function(req,res){
+		var
+		user = auth(req),
+		filter = {name:user.name};
+		crud.read(
+			'timelimit',
+			filter,{},
+			function(map_list){res.json(map_list);}
+		);
+	})
+
 	app.put('/:obj_type/:id',function(req,res){
 		var
 		user = auth(req),
@@ -64,6 +100,8 @@ configRoutes = function(app, server){
 			function(result_map){res.send(result_map);}
 		);		
 	});
+
+
 
 	app.post('/test/upload', type, function(req, res){
 		/** When using the "single"

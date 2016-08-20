@@ -21,7 +21,7 @@ fsHandle        = require('fs'),
 // JSV             = require('JSV').JSV,
 
 mongoServer     = new mongodb.Server(
-        '192.168.65.7',
+        'localhost',
         27017
 ),
 

@@ -6,12 +6,18 @@
 */}
 import React, {Component, PropTypes} from 'react'
 import classNames from 'classnames'
-import Calendar from 'react-input-calendar'
+import {DateField} from 'react-date-picker'
+import {updateDate} from '../js/redux/actions'
 
 export default class InputDate extends Component {
 	constructor(props) {
 	  super(props)
+      this.handleChange = this.handleChange.bind(this)
 	}
+
+    handleChange(dateString, { dateMoment, timestamp }){
+        updateDate({dispatch:this.props.dispatch, category: this.props.id, date:dateString })
+    }
 
 	render(){
         let InputDate = classNames('input-date')
@@ -22,12 +28,11 @@ export default class InputDate extends Component {
             <div className={InputDate}>
                 <label className={InputDate__label} labelFor={this.props.id}>{this.props.title}</label>
                 <div className={InputDate__calendar}>
-                    <Calendar
-                        format={this.props.format}
-                        computableFormat={this.props.format}
-                        inputFieldId={this.props.id}
-                        date={this.props.defaultDate}
-                        closeOnSelect={false} />
+                    <DateField
+                        forceValidDate
+                        dateFormat={this.props.format}
+                        defaultValue={this.props.date}
+                        onChange={this.handleChange} />
                 </div>
             </div>
 		)
@@ -37,6 +42,6 @@ export default class InputDate extends Component {
 InputDate.propTypes = {
     id: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
-    defaultDate: PropTypes.string.isRequired
+    date: PropTypes.string.isRequired
 }
 
