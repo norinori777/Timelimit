@@ -31,7 +31,7 @@ export default class InputDate extends Component {
                     <DateField
                         forceValidDate
                         dateFormat={this.props.format}
-                        defaultValue={this.props.date}
+                        value={this.props.date}
                         onChange={this.handleChange} />
                 </div>
             </div>

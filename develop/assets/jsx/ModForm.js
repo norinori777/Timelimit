@@ -8,7 +8,7 @@ import InputDate from './InputDate.js'
 import classNames from 'classnames'
 import {addTimeLimit} from '../js/redux/actions'
 
-export default class AddForm extends Component {
+export default class ModForm extends Component {
 	constructor(props){
 	  super(props)
       this.handleClick = this.handleClick.bind(this)
@@ -23,7 +23,8 @@ export default class AddForm extends Component {
     }
 
 	render(){
-        let submit = classNames('btn', 'btn--success', 'simple-form__submit')
+        let update = classNames('btn', 'btn--warning', 'simple-form__submit')
+        let del = classNames('btn', 'btn--danger', 'simple-form__submit')
         let inputImg = classNames('simple-form__img')
         let inputDate = classNames('simple-form__date')
 
@@ -48,11 +49,12 @@ export default class AddForm extends Component {
                         date={this.props.endDate} 
                         dispatch={this.props.dispatch} />
                 </div> 
-                <input type="button" className={submit} value="登録" onClick={this.handleClick} />                
+                <input type="button" className={update} value="変更" onClick={this.handleClick} />
+                <input type="button" className={del} value="削除" onClick={this.handleClick} />
 			</div>
 		)
 	}
 }
 
-AddForm.propTypes = {
+ModForm.propTypes = {
 }

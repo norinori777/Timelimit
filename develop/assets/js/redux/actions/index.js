@@ -2,15 +2,22 @@ import ControlData from '../../util/ControlData.js'
 
 const constants = {
     UPDATE_MENU: "UPDATE_MENU",
+    UPDATE_MOD_MENU: "UPDATE_MOD_MENU",
     UPDATE_IMG: "UPDATE_IMG",
     UPDATE_START_DATE: "UPDATE_START_DATE",
     UPDATE_END_DATE: "UPDATE_END_DATE",
     ADD_TIME_LIMIT: "ADD_TIME_LIMIT",
-    GET_TIME_LIMIT: "GET_TIME_LIMIT"
+    GET_TIME_LIMIT: "GET_TIME_LIMIT",
+    UPDATE_TIME_LIMIT: "UPDATE_TIME_LIMIT",
+    DELETE_TIME_LIMIT: "DELETE_TIME_LIMIT"
 }
 
 let updateMenuFlg = (dispatch) => {
     dispatch({type:constants.UPDATE_MENU})
+}
+
+let updateModMenuFlg = (dispatch, id) => {
+    dispatch({type:constants.UPDATE_MOD_MENU, id: id})
 }
 
 let updateImg = (data) => {
@@ -49,8 +56,14 @@ let getTimeLimit = (dispatch) => {
     )
 }
 
+let updateTimeLimit = (data) => {
+    ControlData('PUT',
+        '/timelimit/')
+}
+
 export {
     updateMenuFlg,
+    updateModMenuFlg,
     updateImg,
     updateDate,
     addTimeLimit,

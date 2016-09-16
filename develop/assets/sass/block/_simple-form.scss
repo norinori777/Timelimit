@@ -1,0 +1,92 @@
+.simple-form {
+    &__img {
+        @media #{$small} {
+          & {
+              margin-top: 1rem;
+              margin-left: 1rem;
+              margin-bottom: 0.5rem;
+          }
+        }
+        @media #{$middle} {
+          & {
+              margin-top: 1rem;
+              margin-left: 2rem;
+              margin-bottom: 0.5rem;
+          }
+        }
+        @media #{$large} {
+          & {
+              margin-top: 1rem;
+              margin-left: 3rem;
+              margin-bottom: 0.5rem;
+          }
+        }
+        @media #{$xlarge}{
+          & {
+              margin-top: 1rem;
+              margin-left: 3rem;
+              margin-bottom: 0.5rem;
+          }
+        }
+    }
+    &__date {
+        @media #{$small} {
+          & {
+              margin-top: 1rem;
+              margin-left: 1rem;
+              margin-bottom: 0.5rem;
+          }
+        }
+        @media #{$middle} {
+          & {
+              margin-top: 1rem;
+              margin-left: 2rem;
+              margin-bottom: 0.5rem;
+          }
+        }
+        @media #{$large} {
+          & {
+              margin-top: 1rem;
+              margin-left: 3rem;
+              margin-bottom: 0.5rem;
+          }
+        }
+        @media #{$xlarge}{
+          & {
+              margin-top: 1rem;
+              margin-left: 3rem;
+              margin-bottom: 0.5rem;
+          }
+        }
+    }
+    &__submit {
+        @media #{$small} {
+          & {
+              margin-top: 1rem;
+              margin-left: 1rem;
+              margin-bottom: 0.5rem;
+          }
+        }
+        @media #{$middle} {
+          & {
+              margin-top: 1rem;
+              margin-left: 2rem;
+              margin-bottom: 0.5rem;
+          }
+        }
+        @media #{$large} {
+          & {
+              margin-top: 1rem;
+              margin-left: 3rem;
+              margin-bottom: 0.5rem;
+          }
+        }
+        @media #{$xlarge}{
+          & {
+              margin-top: 1rem;
+              margin-left: 3rem;
+              margin-bottom: 0.5rem;
+          }
+        }
+    }
+}

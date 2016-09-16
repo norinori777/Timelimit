@@ -5,6 +5,7 @@ import {connect} from 'react-redux'
 import SimpleHeader from './SimpleHeader.js'
 import TileLayout from './TileLayout.js'
 import DrawerMenu from './DrawerMenu.js'
+import DrawerMenu1 from './DrawerMenu1.js'
 import {getTimeLimit} from '../js/redux/actions'
 
 class Main extends Component {
@@ -17,8 +18,9 @@ class Main extends Component {
                 <SimpleHeader path={'/icon/menu-1.png'}
                     title={this.props.title}
                     dispatch={this.props.dispatch} />
-                <TileLayout timeLimit={this.props.timeLimit} />
+                <TileLayout {...this.props} />
                 <DrawerMenu {...this.props} />
+                <DrawerMenu1 {...this.props} />
             </div>
         )
     }
