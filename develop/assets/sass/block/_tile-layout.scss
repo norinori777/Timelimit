@@ -1,24 +1,28 @@
 .tilelayout {
-  margin: 10px;
-  
-  background: #B9B7B7;
-  box-shadow: #CCC 0px 2px 3px;
+  position: fixed;
+  top: 3rem;
+  z-index: 1;
   
   &__items {
-    list-style: none;
     @include clearfix;
+    list-style: none;
     margin: 0 auto;
+    -webkit-padding-start: 15px;
   }
   &__item {
       box-sizing: border-box;
+      margin-top: 15px;
       margin-right: 10px;
       float: left;
       width: 20%;
       min-width: 140px;
       background: #FFF;
+      box-shadow: #CCC 0px 2px 3px;
+      overflow: hidden;
   }
   &__item-img {
-    max-width: 100%; 
+    max-height: 9.5em;
+    object-fit: cover;
   }
   &__item-hidden {
     display: none;

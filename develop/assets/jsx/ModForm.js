@@ -6,20 +6,28 @@ import React, {Component, PropTypes} from 'react'
 import InputImg from './InputImg.js'
 import InputDate from './InputDate.js'
 import classNames from 'classnames'
-import {addTimeLimit} from '../js/redux/actions'
+import {updateTimeLimit} from '../js/redux/actions'
+import {deleteTimeLimit} from '../js/redux/actions'
 
 export default class ModForm extends Component {
 	constructor(props){
 	  super(props)
-      this.handleClick = this.handleClick.bind(this)
+      this.handleModClick = this.handleModClick.bind(this)
+      this.handleDelClick = this.handleDelClick.bind(this)
     }
 
-    handleClick(e){
+    handleModClick(e){
+        let item_id = this.props.item_id
         let startDate = this.props.startDate
         let endDate = this.props.endDate
         let img = this.props.img
         let dispatch = this.props.dispatch
-        addTimeLimit({startDate, endDate, img, dispatch})
+        updateTimeLimit({item_id, startDate, endDate, img, dispatch})
+    }
+    handleDelClick(e){
+        let item_id = this.props.item_id
+        let dispatch = this.props.dispatch
+        deleteTimeLimit({item_id, dispatch})
     }
 
 	render(){
@@ -49,8 +57,8 @@ export default class ModForm extends Component {
                         date={this.props.endDate} 
                         dispatch={this.props.dispatch} />
                 </div> 
-                <input type="button" className={update} value="変更" onClick={this.handleClick} />
-                <input type="button" className={del} value="削除" onClick={this.handleClick} />
+                <input type="button" className={update} value="変更" onClick={this.handleModClick} />
+                <input type="button" className={del} value="削除" onClick={this.handleDelClick} />
 			</div>
 		)
 	}

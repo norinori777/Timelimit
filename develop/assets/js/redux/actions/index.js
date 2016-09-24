@@ -34,10 +34,10 @@ let updateDate = (data) => {
 
 let addTimeLimit = (data) => {
 	ControlData('POST',
-		'/timelimit/add/',
+		'/timelimit/',
 		false,
 		data,
-		(inLineData) => {
+		(inLineData) => {　
 			let response = JSON.parse(inLineData.response)
 			data.dispatch({ type:constants.ADD_TIME_LIMIT, data: response})
 		}
@@ -58,7 +58,25 @@ let getTimeLimit = (dispatch) => {
 
 let updateTimeLimit = (data) => {
     ControlData('PUT',
-        '/timelimit/')
+        '/timelimit/',
+        false,
+        data,
+        (inlineData) => {
+            let response = JSON.parse(inlineData.response)
+            data.dispatch({type:constants.UPDATE_TIME_LIMIT, data: response})
+        })
+}
+
+let deleteTimeLimit = (data) => {
+    ControlData('DELETE',
+        '/timelimit/',
+        false,
+        data,
+        (inlineData) => {
+            let response = JSON.parse(inlineData.response)
+            data.dispatch({type:constants.DELETE_TIME_LIMIT, data: response})
+        }
+    )
 }
 
 export {
@@ -67,5 +85,7 @@ export {
     updateImg,
     updateDate,
     addTimeLimit,
-    getTimeLimit
+    getTimeLimit,
+    updateTimeLimit,
+    deleteTimeLimit
 }

@@ -2652,54 +2652,50 @@ body {
 .react-date-picker__multi-month-view .react-date-picker__month-view {
   border: none; }
 
-.drawer-menu {
-  position: relative;
-  overflow: hidden;
+.drawer-menu__menu {
+  position: fixed;
+  top: 48px;
+  top: 3rem;
   height: 100vh;
+  left: -432px;
+  left: -27rem;
+  width: 432px;
+  width: 27rem;
+  z-index: 3;
+  opacity: 1;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  background: rgba(10, 2, 2, 0.8); }
+  @media only screen and (max-width: 599px) {
+    .drawer-menu__menu {
+      left: -27rem;
+      width: 27rem; } }
+  @media only screen and (min-width: 600px) and (max-width: 767px) {
+    .drawer-menu__menu {
+      left: -27rem;
+      width: 27rem; } }
+  @media only screen and (min-width: 768px) and (max-width: 999px) {
+    .drawer-menu__menu {
+      left: -35rem;
+      width: 35rem; } }
+  @media only screen and (min-width: 1000px) {
+    .drawer-menu__menu {
+      left: -35rem;
+      width: 35rem; } }
+
+.drawer-menu__overlay {
+  position: fixed;
+  top: 48px;
+  top: 3rem;
+  left: 0;
+  background: #413e3e;
   width: 100%;
-  z-index: 1; }
-  .drawer-menu__menu {
-    position: fixed;
-    top: 48px;
-    top: 3rem;
-    height: 100vh;
-    left: -432px;
-    left: -27rem;
-    width: 432px;
-    width: 27rem;
-    z-index: 3;
-    opacity: 1;
-    overflow: auto;
-    -webkit-overflow-scrolling: touch;
-    background: rgba(10, 2, 2, 0.8); }
-    @media only screen and (max-width: 599px) {
-      .drawer-menu__menu {
-        left: -27rem;
-        width: 27rem; } }
-    @media only screen and (min-width: 600px) and (max-width: 767px) {
-      .drawer-menu__menu {
-        left: -27rem;
-        width: 27rem; } }
-    @media only screen and (min-width: 768px) and (max-width: 999px) {
-      .drawer-menu__menu {
-        left: -35rem;
-        width: 35rem; } }
-    @media only screen and (min-width: 1000px) {
-      .drawer-menu__menu {
-        left: -35rem;
-        width: 35rem; } }
-  .drawer-menu__overlay {
-    position: fixed;
-    top: 48px;
-    top: 3rem;
-    left: 0;
-    background: #413e3e;
-    width: 100%;
-    height: 100vh;
-    z-index: 2;
-    opacity: 0.7; }
-  .drawer-menu__opened {
-    left: 0; }
+  height: 100vh;
+  z-index: 2;
+  opacity: 0.7; }
+
+.drawer-menu__opened {
+  left: 0; }
 
 .btn {
   display: inline-block;
@@ -2823,6 +2819,8 @@ body {
     float: left;
     margin: auto 8px;
     margin: auto 0.5rem;
+    margin-top: 4px;
+    margin-top: 0.25rem;
     width: 40px;
     width: 2.5rem;
     max-width: 100%;
@@ -2914,26 +2912,33 @@ body {
     margin-bottom: 0.5rem; } }
 
 .tilelayout {
-  margin: 10px;
-  background: #B9B7B7;
-  box-shadow: #CCC 0px 2px 3px; }
+  position: fixed;
+  top: 48px;
+  top: 3rem;
+  z-index: 1; }
   .tilelayout__items {
-    list-style: none;
     *zoom: 1;
-    margin: 0 auto; }
+    list-style: none;
+    margin: 0 auto;
+    -webkit-padding-start: 15px; }
     .tilelayout__items:after {
       content: "";
       display: table;
       clear: both; }
   .tilelayout__item {
     box-sizing: border-box;
+    margin-top: 15px;
     margin-right: 10px;
     float: left;
     width: 20%;
     min-width: 140px;
-    background: #FFF; }
+    background: #FFF;
+    box-shadow: #CCC 0px 2px 3px;
+    overflow: hidden; }
   .tilelayout__item-img {
-    max-width: 100%; }
+    max-height: 9.5em;
+    -o-object-fit: cover;
+       object-fit: cover; }
   .tilelayout__item-hidden {
     display: none; }
   .tilelayout__item-msg {

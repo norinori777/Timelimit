@@ -23,6 +23,7 @@ export default class DrawerMenu1 extends Component {
             <div className={root}>
                 <div className={drawermenu}>
                     <ModForm dispatch={this.props.dispatch}
+                        item_id={this.props.item_id }
                         img={this.props.img}
                         startDate={this.props.startDate}
                         endDate={this.props.endDate} />

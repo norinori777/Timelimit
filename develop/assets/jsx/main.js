@@ -14,7 +14,7 @@ class Main extends Component {
     }
     render(){
         return (
-            <div className={'page'}>
+            <div>
                 <SimpleHeader path={'/icon/menu-1.png'}
                     title={this.props.title}
                     dispatch={this.props.dispatch} />

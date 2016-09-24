@@ -7,7 +7,9 @@ const constants = {
 	UPDATE_START_DATE: "UPDATE_START_DATE",
 	UPDATE_END_DATE: "UPDATE_END_DATE",
 	ADD_TIME_LIMIT: "ADD_TIME_LIMIT",
-	GET_TIME_LIMIT: "GET_TIME_LIMIT"
+	GET_TIME_LIMIT: "GET_TIME_LIMIT",
+	UPDATE_TIME_LIMIT: "UPDATE_TIME_LIMIT",
+	DELETE_TIME_LIMIT: "DELETE_TIME_LIMIT"
 };
 
 function main(state = {},	action){
@@ -27,7 +29,7 @@ function main(state = {},	action){
 			if(state.isModOpen == true){
 				data = {
 					item_id: '',
-					isModOpen: state.isModOpen ? false : true,
+					isModOpen: false,
 					isOpen: false,
 					startDate: '',
 					endDate: '',
@@ -68,7 +70,27 @@ function main(state = {},	action){
 				timeLimit: action.data,
 				startDate: '',
 				endDate: '',
-				img: ''
+				img: '',
+				isOpen: false,
+				isModOpen: false
+			})
+		case constants.UPDATE_TIME_LIMIT:
+			return Object.assign({}, state, {
+				timeLimit: action.data,
+				startDate: '',
+				endDate: '',
+				img: '',
+				isOpen: false,
+				isModOpen: false
+			})
+		case constants.DELETE_TIME_LIMIT:
+			return Object.assign({}, state, {
+				timeLimit: action.data,
+				startDate: '',
+				endDate: '',
+				img: '',
+				isOpen: false,
+				isModOpen: false
 			})
 		case constants.GET_TIME_LIMIT:
 			return Object.assign({}, state, {

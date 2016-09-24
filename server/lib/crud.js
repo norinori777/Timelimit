@@ -64,18 +64,13 @@ readObj = function ( obj_type, find_map, fields_map, callback ) {
 updateObj = function ( obj_type, find_map, set_map, callback ) {
 	dbHandle.collection(
 		obj_type,
-		function(error, collection){
+		function(outer_error, collection){
 			collection.update(
 				find_map,
 				set_map,
 				{},
-				function ( inner_error, update_count ) {
-					/*
-					callback({ update_count : update_count, _id: find_map._id, name: set_map.$push.sub.name,
-							article:  set_map.$push.sub.article, insertdt: set_map.$push.sub.insertdt });
-							*/
-					callback({ update_count : update_count });
-
+				function ( inner_error, map_list ) {
+					callback( map_list );
 				}
 			);
 		}

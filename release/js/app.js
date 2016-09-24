@@ -45,7 +45,7 @@ var store = (0, _redux.createStore)(_main4.default, initialState);
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.getTimeLimit = exports.addTimeLimit = exports.updateDate = exports.updateImg = exports.updateModMenuFlg = exports.updateMenuFlg = undefined;
+exports.deleteTimeLimit = exports.updateTimeLimit = exports.getTimeLimit = exports.addTimeLimit = exports.updateDate = exports.updateImg = exports.updateModMenuFlg = exports.updateMenuFlg = undefined;
 
 var _ControlData = require("../../util/ControlData.js");
 
@@ -86,7 +86,7 @@ var updateDate = function updateDate(data) {
 };
 
 var addTimeLimit = function addTimeLimit(data) {
-    (0, _ControlData2.default)('POST', '/timelimit/add/', false, data, function (inLineData) {
+    (0, _ControlData2.default)('POST', '/timelimit/', false, data, function (inLineData) {
         var response = JSON.parse(inLineData.response);
         data.dispatch({ type: constants.ADD_TIME_LIMIT, data: response });
     });
@@ -100,7 +100,17 @@ var getTimeLimit = function getTimeLimit(dispatch) {
 };
 
 var updateTimeLimit = function updateTimeLimit(data) {
-    (0, _ControlData2.default)('PUT', '/timelimit/');
+    (0, _ControlData2.default)('PUT', '/timelimit/', false, data, function (inlineData) {
+        var response = JSON.parse(inlineData.response);
+        data.dispatch({ type: constants.UPDATE_TIME_LIMIT, data: response });
+    });
+};
+
+var deleteTimeLimit = function deleteTimeLimit(data) {
+    (0, _ControlData2.default)('DELETE', '/timelimit/', false, data, function (inlineData) {
+        var response = JSON.parse(inlineData.response);
+        data.dispatch({ type: constants.DELETE_TIME_LIMIT, data: response });
+    });
 };
 
 exports.updateMenuFlg = updateMenuFlg;
@@ -109,6 +119,8 @@ exports.updateImg = updateImg;
 exports.updateDate = updateDate;
 exports.addTimeLimit = addTimeLimit;
 exports.getTimeLimit = getTimeLimit;
+exports.updateTimeLimit = updateTimeLimit;
+exports.deleteTimeLimit = deleteTimeLimit;
 
 },{"../../util/ControlData.js":4}],3:[function(require,module,exports){
 "use strict";
@@ -130,7 +142,9 @@ var constants = {
 	UPDATE_START_DATE: "UPDATE_START_DATE",
 	UPDATE_END_DATE: "UPDATE_END_DATE",
 	ADD_TIME_LIMIT: "ADD_TIME_LIMIT",
-	GET_TIME_LIMIT: "GET_TIME_LIMIT"
+	GET_TIME_LIMIT: "GET_TIME_LIMIT",
+	UPDATE_TIME_LIMIT: "UPDATE_TIME_LIMIT",
+	DELETE_TIME_LIMIT: "DELETE_TIME_LIMIT"
 };
 
 function main() {
@@ -154,7 +168,7 @@ function main() {
 			if (state.isModOpen == true) {
 				data = {
 					item_id: '',
-					isModOpen: state.isModOpen ? false : true,
+					isModOpen: false,
 					isOpen: false,
 					startDate: '',
 					endDate: '',
@@ -195,7 +209,27 @@ function main() {
 				timeLimit: action.data,
 				startDate: '',
 				endDate: '',
-				img: ''
+				img: '',
+				isOpen: false,
+				isModOpen: false
+			});
+		case constants.UPDATE_TIME_LIMIT:
+			return Object.assign({}, state, {
+				timeLimit: action.data,
+				startDate: '',
+				endDate: '',
+				img: '',
+				isOpen: false,
+				isModOpen: false
+			});
+		case constants.DELETE_TIME_LIMIT:
+			return Object.assign({}, state, {
+				timeLimit: action.data,
+				startDate: '',
+				endDate: '',
+				img: '',
+				isOpen: false,
+				isModOpen: false
 			});
 		case constants.GET_TIME_LIMIT:
 			return Object.assign({}, state, {
@@ -505,6 +539,7 @@ var DrawerMenu1 = function (_Component) {
                     'div',
                     { className: drawermenu },
                     _react2.default.createElement(_ModForm2.default, { dispatch: this.props.dispatch,
+                        item_id: this.props.item_id,
                         img: this.props.img,
                         startDate: this.props.startDate,
                         endDate: this.props.endDate })
@@ -775,18 +810,27 @@ var ModForm = function (_Component) {
 
         var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(ModForm).call(this, props));
 
-        _this.handleClick = _this.handleClick.bind(_this);
+        _this.handleModClick = _this.handleModClick.bind(_this);
+        _this.handleDelClick = _this.handleDelClick.bind(_this);
         return _this;
     }
 
     _createClass(ModForm, [{
-        key: 'handleClick',
-        value: function handleClick(e) {
+        key: 'handleModClick',
+        value: function handleModClick(e) {
+            var item_id = this.props.item_id;
             var startDate = this.props.startDate;
             var endDate = this.props.endDate;
             var img = this.props.img;
             var dispatch = this.props.dispatch;
-            (0, _actions.addTimeLimit)({ startDate: startDate, endDate: endDate, img: img, dispatch: dispatch });
+            (0, _actions.updateTimeLimit)({ item_id: item_id, startDate: startDate, endDate: endDate, img: img, dispatch: dispatch });
+        }
+    }, {
+        key: 'handleDelClick',
+        value: function handleDelClick(e) {
+            var item_id = this.props.item_id;
+            var dispatch = this.props.dispatch;
+            (0, _actions.deleteTimeLimit)({ item_id: item_id, dispatch: dispatch });
         }
     }, {
         key: 'render',
@@ -824,8 +868,8 @@ var ModForm = function (_Component) {
                         date: this.props.endDate,
                         dispatch: this.props.dispatch })
                 ),
-                _react2.default.createElement('input', { type: 'button', className: update, value: '変更', onClick: this.handleClick }),
-                _react2.default.createElement('input', { type: 'button', className: del, value: '削除', onClick: this.handleClick })
+                _react2.default.createElement('input', { type: 'button', className: update, value: '変更', onClick: this.handleModClick }),
+                _react2.default.createElement('input', { type: 'button', className: del, value: '削除', onClick: this.handleDelClick })
             );
         }
     }]);
@@ -1200,7 +1244,7 @@ var Main = function (_Component) {
         value: function render() {
             return _react2.default.createElement(
                 'div',
-                { className: 'page' },
+                null,
                 _react2.default.createElement(_SimpleHeader2.default, { path: '/icon/menu-1.png',
                     title: this.props.title,
                     dispatch: this.props.dispatch }),
