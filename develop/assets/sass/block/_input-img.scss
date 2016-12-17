@@ -1,16 +1,20 @@
 .input-img {
-    margin: 0;
-    box-sizing: border-box;
-    &__label {
-      margin-bottom: 1rem;
-    }
-    &__input {
-      display: none;
-    }
-    &__img {
-      display: block;
-    }
-    &__img-hidden {
-      display: none;
-    }
+  box-sizing: border-box;
+  margin: 0;
+
+  &__label {
+    margin-bottom: 1rem;
+  }
+
+  &__input {
+    display: none;
+  }
+
+  &__img {
+    display: block;
+  }
+
+  &__img-hidden {
+    display: none;
+  }
 }

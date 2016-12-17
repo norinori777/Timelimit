@@ -1,4 +1,4 @@
-import getDate from '../../util/GetDate.js'
+import { getDate } from '../../util/GetDate.js'
 
 const constants = {
 	UPDATE_MENU: "UPDATE_MENU",

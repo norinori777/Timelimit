@@ -6,9 +6,55 @@ auth		= require('basic-auth'),
 crud		= require('./crud'),
 fs 			= require('fs'),
 multer = require('multer'),
-makeMongoId	= crud.makeMongoId;
+ImageMagick = require('imagemagick'),
+easyimage = require('easyimage'),
+makeMongoId	= crud.makeMongoId,
+base64 = require('./util/base64.js'),
+getDate = require('./util/getDate.js');
 
 configRoutes = function(app, server){
+	var resizeImg = function(data){
+		return new Promise((resolve, reject) => {
+			var filename = getDate.getDate_YYYYMMDDhhmmss();
+			var img =data.match(/data:image\/(.*);base64,(.*)/) 
+			var suffix = img[1];
+			var base64str = img[2];
+			var header = 'data:image/' + suffix + '; base64,';
+			var src_file_path = './upload/' + filename + "." + suffix;
+			var dst_file_path = './out/' + filename + "." + suffix;
+
+			base64.base64_decode(base64str, src_file_path);
+			easyimage.info(src_file_path).then(
+				function(file_info){
+					if(file_info.height > file_info.width){
+						easyimage.resize({
+							src: src_file_path,
+							dst: dst_file_path,
+							height: 280
+						}).then(function(img){
+							var base64str = base64.base64_encode(dst_file_path);
+							resolve(header + base64str);
+						}).then(function(err){
+							throw err;
+						});
+					} else {
+						easyimage.resize({
+							src: src_file_path,
+							dst: dst_file_path,
+							width: 140
+						}).then(function(img){
+							var base64str = base64.base64_encode(dst_file_path);
+							resolve(header + base64str);
+						}).then(function(err){
+							throw err;
+						});
+					}
+				}, function(err){
+					throw err;
+				}
+			);
+		})
+	}
 
 	var upload = multer({dest:'./upload/',
 		rename: function (fieldname, filename) {
@@ -28,25 +74,28 @@ configRoutes = function(app, server){
 		var
 		user = auth(req),
 		data = {insertdt: new Date(),name:user.name};
-		data = Object.assign({}, data, req.body);
-		crud.construct(
-			'timelimit',
-			data,
-			function(result_map){
-				if(result_map.result.ok === 1){
-					var
-					user = auth(req),
-					filter = {name:user.name};
-					crud.read(
-						'timelimit',
-						filter,{},
-						function(map_list){
-							res.json(map_list);
-						}
-					)
+		resizeImg(req.body.img).then(function(img){
+			req.body.img = img;
+			data = Object.assign({}, data, req.body);
+			crud.construct(
+				'timelimit',
+				data,
+				function(result_map){
+					if(result_map.result.ok === 1){
+						var
+						user = auth(req),
+						filter = {name:user.name};
+						crud.read(
+							'timelimit',
+							filter,{},
+							function(map_list){
+								res.json(map_list);
+							}
+						)
+					}
 				}
-			}
-		);
+			);
+		})
 	});
 
 	// 更新

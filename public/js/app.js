@@ -131,10 +131,6 @@ Object.defineProperty(exports, "__esModule", {
 
 var _GetDate = require("../../util/GetDate.js");
 
-var _GetDate2 = _interopRequireDefault(_GetDate);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 var constants = {
 	UPDATE_MENU: "UPDATE_MENU",
 	UPDATE_MOD_MENU: "UPDATE_MOD_MENU",
@@ -154,7 +150,7 @@ function main() {
 	switch (action.type) {
 		case constants.UPDATE_MENU:
 			var date = void 0;
-			date = (0, _GetDate2.default)();
+			date = (0, _GetDate.getDate)();
 			return Object.assign({}, state, {
 				isOpen: state.isOpen ? false : true,
 				isModOpen: false,
@@ -281,7 +277,19 @@ var getDate = function getDate() {
     return year + "-" + month + "-" + day;
 };
 
-exports.default = getDate;
+var getDate_YYYYMMDDhhmmss = function getDate_YYYYMMDDhhmmss() {
+    var date = new Date();
+    var year = date.getFullYear();
+    var month = dateZellFill(date.getMonth() + 1);
+    var day = dateZellFill(date.getDate());
+    var hh = dataZellFill(data.getHours());
+    var mm = dataZellFill(data.getMinutes());
+    var ss = dataZellFill(data.getSeconds());
+    return year + month + day + hh + mm + ss;
+};
+
+exports.getDate = getDate;
+exports.getDate_YYYYMMDDhhmmss = getDate_YYYYMMDDhhmmss;
 
 },{}],6:[function(require,module,exports){
 'use strict';
@@ -996,16 +1004,35 @@ var TileItem = function (_Component) {
     }
 
     _createClass(TileItem, [{
+        key: 'toDoubleDigits',
+        value: function toDoubleDigits(num) {
+            num += "";
+            if (num.length === 1) {
+                num = "0" + num;
+            }
+            return num;
+        }
+    }, {
         key: 'getTermTime',
         value: function getTermTime(startDate, endDate) {
-            var calc = new Date(+new Date(endDate + " 00:00:00") - +new Date(startDate + " 00:00:00"));
-            return calc.getUTCDate() - 1;
+            // let calc = new Date((+new Date(endDate + " 00:00:00")) - (+new Date(startDate + " 00:00:00")))
+            // return calc.getUTCDate() - 1
+            var calc = (Date.parse(endDate) - Date.parse(startDate)) / 86400000;
+            return calc;
         }
     }, {
         key: 'getRestTime',
         value: function getRestTime(endDate) {
-            var calc = new Date(+new Date(endDate + " 00:00:00") - +new Date());
-            return calc.getUTCDate() - 1;
+            // let calc = new Date((+new Date(endDate + " 00:00:00")) - (+new Date()))
+            // return calc.getUTCDate() -1
+
+            var date = new Date();
+            var year = date.getFullYear();
+            var month = this.toDoubleDigits(date.getMonth() + 1);
+            var day = this.toDoubleDigits(date.getDate());
+            var now = year + "-" + month + "-" + day;
+            var calc = (Date.parse(endDate) - Date.parse(now)) / 86400000;
+            return calc;
         }
         /* 自動更新処理を入れる
         updateDate(){
@@ -1017,12 +1044,17 @@ var TileItem = function (_Component) {
         value: function render() {
             var tileItem__img = (0, _classnames2.default)('tilelayout__item-img');
             var tileItem__msg = (0, _classnames2.default)('tilelayout__item-msg');
+            var tileItem__overflow = (0, _classnames2.default)('tilelayout__item-overflow');
 
             return _react2.default.createElement(
                 'div',
                 null,
-                _react2.default.createElement('img', { className: tileItem__img,
-                    src: this.props.img }),
+                _react2.default.createElement(
+                    'div',
+                    { className: tileItem__overflow },
+                    _react2.default.createElement('img', { className: tileItem__img,
+                        src: this.props.img })
+                ),
                 _react2.default.createElement(
                     'p',
                     { className: tileItem__msg },

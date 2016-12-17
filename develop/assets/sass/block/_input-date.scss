@@ -1,11 +1,13 @@
 .input-date {
-    margin: 0;
-    @include clearfix;
-    &__label {
-        float:left;
-        color: #FFF;
-    }
-    &__calendar {
-        float:left;
-    }
+  @include clearfix;
+  margin: 0;
+
+  &__label {
+    color: #FFF;
+    float: left;
+  }
+
+  &__calendar {
+    float: left;
+  }
 }

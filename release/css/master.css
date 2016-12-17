@@ -2777,21 +2777,21 @@ body {
     border-radius: 0.25rem; }
 
 .input-date {
-  margin: 0;
-  *zoom: 1; }
+  *zoom: 1;
+  margin: 0; }
   .input-date:after {
     content: "";
     display: table;
     clear: both; }
   .input-date__label {
-    float: left;
-    color: #FFF; }
+    color: #FFF;
+    float: left; }
   .input-date__calendar {
     float: left; }
 
 .input-img {
-  margin: 0;
-  box-sizing: border-box; }
+  box-sizing: border-box;
+  margin: 0; }
   .input-img__label {
     margin-bottom: 16px;
     margin-bottom: 1rem; }
@@ -2803,28 +2803,28 @@ body {
     display: none; }
 
 .simple-header {
-  position: fixed;
-  top: 0px;
-  left: 0px;
-  width: 100%;
+  *zoom: 1;
+  background-color: #29aabf;
   height: 48px;
   height: 3rem;
-  background-color: #29aabf;
-  *zoom: 1; }
+  left: 0;
+  position: fixed;
+  top: 0;
+  width: 100%; }
   .simple-header:after {
     content: "";
     display: table;
     clear: both; }
   .simple-header__img {
     float: left;
+    height: auto;
     margin: auto 8px;
-    margin: auto 0.5rem;
+    margin: auto .5rem;
     margin-top: 4px;
-    margin-top: 0.25rem;
-    width: 40px;
-    width: 2.5rem;
+    margin-top: .25rem;
     max-width: 100%;
-    height: auto; }
+    width: 40px;
+    width: 2.5rem; }
   .simple-header__title {
     color: #FFF;
     width: 80%;
@@ -2918,27 +2918,25 @@ body {
   z-index: 1; }
   .tilelayout__items {
     *zoom: 1;
+    -webkit-padding-start: 15px;
     list-style: none;
-    margin: 0 auto;
-    -webkit-padding-start: 15px; }
+    margin: 0 auto; }
     .tilelayout__items:after {
       content: "";
       display: table;
       clear: both; }
   .tilelayout__item {
-    box-sizing: border-box;
-    margin-top: 15px;
-    margin-right: 10px;
-    float: left;
-    width: 20%;
-    min-width: 140px;
     background: #FFF;
-    box-shadow: #CCC 0px 2px 3px;
+    float: left;
+    margin-right: 10px;
+    margin-top: 15px;
+    min-width: 140px;
+    box-sizing: border-box;
+    width: 20%; }
+  .tilelayout__item-overflow {
     overflow: hidden; }
   .tilelayout__item-img {
-    max-height: 9.5em;
-    -o-object-fit: cover;
-       object-fit: cover; }
+    height: 9.5em; }
   .tilelayout__item-hidden {
     display: none; }
   .tilelayout__item-msg {
