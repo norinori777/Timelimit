@@ -18,8 +18,8 @@ export default class ModForm extends Component {
 
     handleModClick(e){
         let item_id = this.props.item_id
-        let startDate = this.props.startDate
-        let endDate = this.props.endDate
+        let startDate = this.props.startDate.format('YYYY-MM-DD')
+        let endDate = this.props.endDate.format('YYYY-MM-DD')
         let img = this.props.img
         let dispatch = this.props.dispatch
         updateTimeLimit({item_id, startDate, endDate, img, dispatch})

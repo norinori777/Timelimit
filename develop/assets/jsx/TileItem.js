@@ -43,7 +43,14 @@ export default class TileItem extends Component {
         let tileItem__img = classNames('tilelayout__item-img')
         let tileItem__msg = classNames('tilelayout__item-msg')
         let tileItem__overflow = classNames('tilelayout__item-overflow')
+        let tileItem__msg2
 
+        if(this.getRestTime(this.props.endDate) < 0){
+           tileItem__msg2 = classNames('tilelayout__item-msg', 'tilelayout__item-msg-alert')         
+        } else {
+           tileItem__msg2 = classNames('tilelayout__item-msg')         
+            
+        }
         return(
             <div>
                 <div className={tileItem__overflow}>
@@ -53,7 +60,7 @@ export default class TileItem extends Component {
                 <p className={tileItem__msg}>開始：{this.props.startDate}</p>
                 <p className={tileItem__msg}>終了：{this.props.endDate}</p>
                 <p className={tileItem__msg}>期間:{this.getTermTime(this.props.startDate, this.props.endDate)}日</p>
-                <p className={tileItem__msg}>残り:{this.getRestTime(this.props.endDate)}日</p>
+                <p className={tileItem__msg2}>残り:{this.getRestTime(this.props.endDate)}日</p>
             </div>
         )
     }

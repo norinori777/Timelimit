@@ -9,7 +9,8 @@ const constants = {
     ADD_TIME_LIMIT: "ADD_TIME_LIMIT",
     GET_TIME_LIMIT: "GET_TIME_LIMIT",
     UPDATE_TIME_LIMIT: "UPDATE_TIME_LIMIT",
-    DELETE_TIME_LIMIT: "DELETE_TIME_LIMIT"
+    DELETE_TIME_LIMIT: "DELETE_TIME_LIMIT",
+    START_TITLE: "開始日"
 }
 
 let updateMenuFlg = (dispatch) => {
@@ -25,7 +26,7 @@ let updateImg = (data) => {
 }
 
 let updateDate = (data) => {
-    if(data.category === 'startDate'){
+    if(data.title === constants.START_TITLE){
         data.dispatch({type:constants.UPDATE_START_DATE, date: data.date})
     } else {
         data.dispatch({type:constants.UPDATE_END_DATE, date: data.date})

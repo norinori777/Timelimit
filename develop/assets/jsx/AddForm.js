@@ -15,8 +15,8 @@ export default class AddForm extends Component {
     }
 
     handleClick(e){
-        let startDate = this.props.startDate
-        let endDate = this.props.endDate
+        let startDate = this.props.startDate.format('YYYY-MM-DD')
+        let endDate = this.props.endDate.format('YYYY-MM-DD')
         let img = this.props.img
         let dispatch = this.props.dispatch
         addTimeLimit({startDate, endDate, img, dispatch})

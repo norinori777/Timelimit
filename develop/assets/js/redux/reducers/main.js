@@ -1,4 +1,5 @@
 import { getDate } from '../../util/GetDate.js'
+import moment from 'moment'
 
 const constants = {
 	UPDATE_MENU: "UPDATE_MENU",
@@ -16,7 +17,7 @@ function main(state = {},	action){
 	switch(action.type) {
 		case constants.UPDATE_MENU:
 		    let date
-			date = getDate()
+			date = moment()
 			return Object.assign({}, state, {
 				isOpen: state.isOpen ? false : true,
 				isModOpen: false,
@@ -25,7 +26,7 @@ function main(state = {},	action){
 				endDate: date
 			})
 		case constants.UPDATE_MOD_MENU:
-			let i, data
+			let i, data, startday, endday
 			if(state.isModOpen == true){
 				data = {
 					item_id: '',
@@ -39,12 +40,14 @@ function main(state = {},	action){
 				if(Array.isArray(state.timeLimit)){
 					for(i = 0; i < state.timeLimit.length; i++){
 						if(state.timeLimit[i]._id == action.id){
+							startday = moment(state.timeLimit[i].startDate)
+							endday = moment(state.timeLimit[i].endDate)
 							data = {
 								item_id: action.id,
 								isModOpen: state.isModOpen ? false : true,
 								isOpen: false,
-								startDate: state.timeLimit[i].startDate,
-								endDate: state.timeLimit[i].endDate,
+								startDate: startday,
+								endDate: endday,
 								img: state.timeLimit[i].img							
 							}
 							break

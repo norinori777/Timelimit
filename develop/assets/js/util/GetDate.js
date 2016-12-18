@@ -4,10 +4,11 @@ const dateZellFill = (number) => {
 
 const getDate = () => {
     let date = new Date()
-    let year = date.getFullYear()
-    let month = dateZellFill(date.getMonth() + 1)
-    let day = dateZellFill(date.getDate())
-    return year + "-" + month + "-" + day
+    // let year = date.getFullYear()
+    // let month = dateZellFill(date.getMonth() + 1)
+    // let day = dateZellFill(date.getDate())
+    // return year + "-" + month + "-" + day
+    return date
 }
 
 const getDate_YYYYMMDDhhmmss = () => {

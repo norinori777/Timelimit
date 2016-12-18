@@ -39,7 +39,7 @@ var store = (0, _redux.createStore)(_main4.default, initialState);
 	_react2.default.createElement(_main2.default, null)
 ), document.getElementById('main'));
 
-},{"../jsx/main.js":15,"./redux/reducers/main.js":3,"react":263,"react-dom":101,"react-redux":118,"redux":269}],2:[function(require,module,exports){
+},{"../jsx/main.js":15,"./redux/reducers/main.js":3,"react":190,"react-dom":54,"react-redux":57,"redux":196}],2:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -62,7 +62,8 @@ var constants = {
     ADD_TIME_LIMIT: "ADD_TIME_LIMIT",
     GET_TIME_LIMIT: "GET_TIME_LIMIT",
     UPDATE_TIME_LIMIT: "UPDATE_TIME_LIMIT",
-    DELETE_TIME_LIMIT: "DELETE_TIME_LIMIT"
+    DELETE_TIME_LIMIT: "DELETE_TIME_LIMIT",
+    START_TITLE: "開始日"
 };
 
 var updateMenuFlg = function updateMenuFlg(dispatch) {
@@ -78,7 +79,7 @@ var updateImg = function updateImg(data) {
 };
 
 var updateDate = function updateDate(data) {
-    if (data.category === 'startDate') {
+    if (data.title === constants.START_TITLE) {
         data.dispatch({ type: constants.UPDATE_START_DATE, date: data.date });
     } else {
         data.dispatch({ type: constants.UPDATE_END_DATE, date: data.date });
@@ -123,13 +124,19 @@ exports.updateTimeLimit = updateTimeLimit;
 exports.deleteTimeLimit = deleteTimeLimit;
 
 },{"../../util/ControlData.js":4}],3:[function(require,module,exports){
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 
-var _GetDate = require("../../util/GetDate.js");
+var _GetDate = require('../../util/GetDate.js');
+
+var _moment = require('moment');
+
+var _moment2 = _interopRequireDefault(_moment);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var constants = {
 	UPDATE_MENU: "UPDATE_MENU",
@@ -150,7 +157,7 @@ function main() {
 	switch (action.type) {
 		case constants.UPDATE_MENU:
 			var date = void 0;
-			date = (0, _GetDate.getDate)();
+			date = (0, _moment2.default)();
 			return Object.assign({}, state, {
 				isOpen: state.isOpen ? false : true,
 				isModOpen: false,
@@ -160,7 +167,9 @@ function main() {
 			});
 		case constants.UPDATE_MOD_MENU:
 			var i = void 0,
-			    data = void 0;
+			    data = void 0,
+			    startday = void 0,
+			    endday = void 0;
 			if (state.isModOpen == true) {
 				data = {
 					item_id: '',
@@ -174,12 +183,14 @@ function main() {
 				if (Array.isArray(state.timeLimit)) {
 					for (i = 0; i < state.timeLimit.length; i++) {
 						if (state.timeLimit[i]._id == action.id) {
+							startday = (0, _moment2.default)(state.timeLimit[i].startDate);
+							endday = (0, _moment2.default)(state.timeLimit[i].endDate);
 							data = {
 								item_id: action.id,
 								isModOpen: state.isModOpen ? false : true,
 								isOpen: false,
-								startDate: state.timeLimit[i].startDate,
-								endDate: state.timeLimit[i].endDate,
+								startDate: startday,
+								endDate: endday,
 								img: state.timeLimit[i].img
 							};
 							break;
@@ -238,7 +249,7 @@ function main() {
 
 exports.default = main;
 
-},{"../../util/GetDate.js":5}],4:[function(require,module,exports){
+},{"../../util/GetDate.js":5,"moment":50}],4:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -271,10 +282,11 @@ var dateZellFill = function dateZellFill(number) {
 
 var getDate = function getDate() {
     var date = new Date();
-    var year = date.getFullYear();
-    var month = dateZellFill(date.getMonth() + 1);
-    var day = dateZellFill(date.getDate());
-    return year + "-" + month + "-" + day;
+    // let year = date.getFullYear()
+    // let month = dateZellFill(date.getMonth() + 1)
+    // let day = dateZellFill(date.getDate())
+    // return year + "-" + month + "-" + day
+    return date;
 };
 
 var getDate_YYYYMMDDhhmmss = function getDate_YYYYMMDDhhmmss() {
@@ -346,8 +358,8 @@ var AddForm = function (_Component) {
     _createClass(AddForm, [{
         key: 'handleClick',
         value: function handleClick(e) {
-            var startDate = this.props.startDate;
-            var endDate = this.props.endDate;
+            var startDate = this.props.startDate.format('YYYY-MM-DD');
+            var endDate = this.props.endDate.format('YYYY-MM-DD');
             var img = this.props.img;
             var dispatch = this.props.dispatch;
             (0, _actions.addTimeLimit)({ startDate: startDate, endDate: endDate, img: img, dispatch: dispatch });
@@ -400,7 +412,7 @@ exports.default = AddForm;
 
 AddForm.propTypes = {};
 
-},{"../js/redux/actions":2,"./InputDate.js":9,"./InputImg.js":10,"classnames":16,"react":263}],7:[function(require,module,exports){
+},{"../js/redux/actions":2,"./InputDate.js":9,"./InputImg.js":10,"classnames":16,"react":190}],7:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -482,7 +494,7 @@ exports.default = DrawerMenu;
 
 DrawerMenu.propTypes = {};
 
-},{"../js/redux/actions":2,"./AddForm.js":6,"classnames":16,"react":263}],8:[function(require,module,exports){
+},{"../js/redux/actions":2,"./AddForm.js":6,"classnames":16,"react":190}],8:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -565,7 +577,7 @@ exports.default = DrawerMenu1;
 
 DrawerMenu1.propTypes = {};
 
-},{"../js/redux/actions":2,"./ModForm.js":11,"classnames":16,"react":263}],9:[function(require,module,exports){
+},{"../js/redux/actions":2,"./ModForm.js":11,"classnames":16,"react":190}],9:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -582,7 +594,9 @@ var _classnames = require('classnames');
 
 var _classnames2 = _interopRequireDefault(_classnames);
 
-var _reactDatePicker = require('react-date-picker');
+var _reactDatepicker = require('react-datepicker');
+
+var _reactDatepicker2 = _interopRequireDefault(_reactDatepicker);
 
 var _actions = require('../js/redux/actions');
 
@@ -615,11 +629,8 @@ var InputDate = function (_Component) {
 
     _createClass(InputDate, [{
         key: 'handleChange',
-        value: function handleChange(dateString, _ref) {
-            var dateMoment = _ref.dateMoment;
-            var timestamp = _ref.timestamp;
-
-            (0, _actions.updateDate)({ dispatch: this.props.dispatch, category: this.props.id, date: dateString });
+        value: function handleChange(date) {
+            (0, _actions.updateDate)({ dispatch: this.props.dispatch, title: this.props.title, date: date });
         }
     }, {
         key: 'render',
@@ -639,10 +650,9 @@ var InputDate = function (_Component) {
                 _react2.default.createElement(
                     'div',
                     { className: InputDate__calendar },
-                    _react2.default.createElement(_reactDatePicker.DateField, {
-                        forceValidDate: true,
+                    _react2.default.createElement(_reactDatepicker2.default, {
                         dateFormat: this.props.format,
-                        value: this.props.date,
+                        selected: this.props.date,
                         onChange: this.handleChange })
                 )
             );
@@ -657,11 +667,10 @@ exports.default = InputDate;
 
 InputDate.propTypes = {
     id: _react.PropTypes.string.isRequired,
-    title: _react.PropTypes.string.isRequired,
-    date: _react.PropTypes.string.isRequired
+    title: _react.PropTypes.string.isRequired
 };
 
-},{"../js/redux/actions":2,"classnames":16,"react":263,"react-date-picker":89}],10:[function(require,module,exports){
+},{"../js/redux/actions":2,"classnames":16,"react":190,"react-datepicker":52}],10:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -770,7 +779,7 @@ exports.default = InputImg;
 
 InputImg = {};
 
-},{"../js/redux/actions":2,"classnames":16,"react":263,"react-dom":101}],11:[function(require,module,exports){
+},{"../js/redux/actions":2,"classnames":16,"react":190,"react-dom":54}],11:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -827,8 +836,8 @@ var ModForm = function (_Component) {
         key: 'handleModClick',
         value: function handleModClick(e) {
             var item_id = this.props.item_id;
-            var startDate = this.props.startDate;
-            var endDate = this.props.endDate;
+            var startDate = this.props.startDate.format('YYYY-MM-DD');
+            var endDate = this.props.endDate.format('YYYY-MM-DD');
             var img = this.props.img;
             var dispatch = this.props.dispatch;
             (0, _actions.updateTimeLimit)({ item_id: item_id, startDate: startDate, endDate: endDate, img: img, dispatch: dispatch });
@@ -890,7 +899,7 @@ exports.default = ModForm;
 
 ModForm.propTypes = {};
 
-},{"../js/redux/actions":2,"./InputDate.js":9,"./InputImg.js":10,"classnames":16,"react":263}],12:[function(require,module,exports){
+},{"../js/redux/actions":2,"./InputDate.js":9,"./InputImg.js":10,"classnames":16,"react":190}],12:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -964,7 +973,7 @@ simpleHeader.propTypes = {
 	title: _react2.default.PropTypes.string.isRequired
 };
 
-},{"../js/redux/actions":2,"classnames":16,"react":263}],13:[function(require,module,exports){
+},{"../js/redux/actions":2,"classnames":16,"react":190}],13:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1045,7 +1054,13 @@ var TileItem = function (_Component) {
             var tileItem__img = (0, _classnames2.default)('tilelayout__item-img');
             var tileItem__msg = (0, _classnames2.default)('tilelayout__item-msg');
             var tileItem__overflow = (0, _classnames2.default)('tilelayout__item-overflow');
+            var tileItem__msg2 = void 0;
 
+            if (this.getRestTime(this.props.endDate) < 0) {
+                tileItem__msg2 = (0, _classnames2.default)('tilelayout__item-msg', 'tilelayout__item-msg-alert');
+            } else {
+                tileItem__msg2 = (0, _classnames2.default)('tilelayout__item-msg');
+            }
             return _react2.default.createElement(
                 'div',
                 null,
@@ -1076,7 +1091,7 @@ var TileItem = function (_Component) {
                 ),
                 _react2.default.createElement(
                     'p',
-                    { className: tileItem__msg },
+                    { className: tileItem__msg2 },
                     '残り:',
                     this.getRestTime(this.props.endDate),
                     '日'
@@ -1090,7 +1105,7 @@ var TileItem = function (_Component) {
 
 exports.default = TileItem;
 
-},{"classnames":16,"react":263}],14:[function(require,module,exports){
+},{"classnames":16,"react":190}],14:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1210,7 +1225,7 @@ var TileLayout = function (_Component) {
 
 exports.default = TileLayout;
 
-},{"../js/redux/actions":2,"./TileItem.js":13,"classnames":16,"react":263}],15:[function(require,module,exports){
+},{"../js/redux/actions":2,"./TileItem.js":13,"classnames":16,"react":190}],15:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1295,7 +1310,7 @@ var mapStateToProps = function mapStateToProps(state) {
 };
 exports.default = (0, _reactRedux.connect)(mapStateToProps)(Main);
 
-},{"../js/redux/actions":2,"./DrawerMenu.js":7,"./DrawerMenu1.js":8,"./SimpleHeader.js":12,"./TileLayout.js":14,"react":263,"react-dom":101,"react-redux":118,"redux":269}],16:[function(require,module,exports){
+},{"../js/redux/actions":2,"./DrawerMenu.js":7,"./DrawerMenu1.js":8,"./SimpleHeader.js":12,"./TileLayout.js":14,"react":190,"react-dom":54,"react-redux":57,"redux":196}],16:[function(require,module,exports){
 /*!
   Copyright (c) 2016 Jed Watson.
   Licensed under the MIT License (MIT), see
@@ -1432,7 +1447,7 @@ var EventListener = {
 
 module.exports = EventListener;
 }).call(this,require('_process'))
-},{"./emptyFunction":24,"_process":54}],18:[function(require,module,exports){
+},{"./emptyFunction":24,"_process":51}],18:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -1772,7 +1787,7 @@ function createNodesFromMarkup(markup, handleScript) {
 
 module.exports = createNodesFromMarkup;
 }).call(this,require('_process'))
-},{"./ExecutionEnvironment":18,"./createArrayFromMixed":22,"./getMarkupWrap":28,"./invariant":32,"_process":54}],24:[function(require,module,exports){
+},{"./ExecutionEnvironment":18,"./createArrayFromMixed":22,"./getMarkupWrap":28,"./invariant":32,"_process":51}],24:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -1834,7 +1849,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 module.exports = emptyObject;
 }).call(this,require('_process'))
-},{"_process":54}],26:[function(require,module,exports){
+},{"_process":51}],26:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -1995,7 +2010,7 @@ function getMarkupWrap(nodeName) {
 
 module.exports = getMarkupWrap;
 }).call(this,require('_process'))
-},{"./ExecutionEnvironment":18,"./invariant":32,"_process":54}],29:[function(require,module,exports){
+},{"./ExecutionEnvironment":18,"./invariant":32,"_process":51}],29:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -2161,7 +2176,7 @@ function invariant(condition, format, a, b, c, d, e, f) {
 
 module.exports = invariant;
 }).call(this,require('_process'))
-},{"_process":54}],33:[function(require,module,exports){
+},{"_process":51}],33:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -2262,7 +2277,7 @@ var keyMirror = function (obj) {
 
 module.exports = keyMirror;
 }).call(this,require('_process'))
-},{"./invariant":32,"_process":54}],36:[function(require,module,exports){
+},{"./invariant":32,"_process":51}],36:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -2552,7 +2567,7 @@ function toArray(obj) {
 
 module.exports = toArray;
 }).call(this,require('_process'))
-},{"./invariant":32,"_process":54}],43:[function(require,module,exports){
+},{"./invariant":32,"_process":51}],43:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2014-2015, Facebook, Inc.
@@ -2612,7 +2627,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 module.exports = warning;
 }).call(this,require('_process'))
-},{"./emptyFunction":24,"_process":54}],44:[function(require,module,exports){
+},{"./emptyFunction":24,"_process":51}],44:[function(require,module,exports){
 /**
  * Copyright 2015, Yahoo! Inc.
  * Copyrights licensed under the New BSD License. See the accompanying LICENSE file for terms.
@@ -2719,505 +2734,7 @@ var invariant = function(condition, format, a, b, c, d, e, f) {
 module.exports = invariant;
 
 }).call(this,require('_process'))
-},{"_process":54}],46:[function(require,module,exports){
-/**
- * lodash 4.0.6 (Custom Build) <https://lodash.com/>
- * Build: `lodash modularize exports="npm" -o ./`
- * Copyright jQuery Foundation and other contributors <https://jquery.org/>
- * Released under MIT license <https://lodash.com/license>
- * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
- * Copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
- */
-
-/** Used as the `TypeError` message for "Functions" methods. */
-var FUNC_ERROR_TEXT = 'Expected a function';
-
-/** Used as references for various `Number` constants. */
-var NAN = 0 / 0;
-
-/** `Object#toString` result references. */
-var funcTag = '[object Function]',
-    genTag = '[object GeneratorFunction]',
-    symbolTag = '[object Symbol]';
-
-/** Used to match leading and trailing whitespace. */
-var reTrim = /^\s+|\s+$/g;
-
-/** Used to detect bad signed hexadecimal string values. */
-var reIsBadHex = /^[-+]0x[0-9a-f]+$/i;
-
-/** Used to detect binary string values. */
-var reIsBinary = /^0b[01]+$/i;
-
-/** Used to detect octal string values. */
-var reIsOctal = /^0o[0-7]+$/i;
-
-/** Built-in method references without a dependency on `root`. */
-var freeParseInt = parseInt;
-
-/** Used for built-in method references. */
-var objectProto = Object.prototype;
-
-/**
- * Used to resolve the
- * [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
- * of values.
- */
-var objectToString = objectProto.toString;
-
-/* Built-in method references for those with the same name as other `lodash` methods. */
-var nativeMax = Math.max,
-    nativeMin = Math.min;
-
-/**
- * Gets the timestamp of the number of milliseconds that have elapsed since
- * the Unix epoch (1 January 1970 00:00:00 UTC).
- *
- * @static
- * @memberOf _
- * @since 2.4.0
- * @type {Function}
- * @category Date
- * @returns {number} Returns the timestamp.
- * @example
- *
- * _.defer(function(stamp) {
- *   console.log(_.now() - stamp);
- * }, _.now());
- * // => Logs the number of milliseconds it took for the deferred function to be invoked.
- */
-var now = Date.now;
-
-/**
- * Creates a debounced function that delays invoking `func` until after `wait`
- * milliseconds have elapsed since the last time the debounced function was
- * invoked. The debounced function comes with a `cancel` method to cancel
- * delayed `func` invocations and a `flush` method to immediately invoke them.
- * Provide an options object to indicate whether `func` should be invoked on
- * the leading and/or trailing edge of the `wait` timeout. The `func` is invoked
- * with the last arguments provided to the debounced function. Subsequent calls
- * to the debounced function return the result of the last `func` invocation.
- *
- * **Note:** If `leading` and `trailing` options are `true`, `func` is invoked
- * on the trailing edge of the timeout only if the debounced function is
- * invoked more than once during the `wait` timeout.
- *
- * See [David Corbacho's article](https://css-tricks.com/debouncing-throttling-explained-examples/)
- * for details over the differences between `_.debounce` and `_.throttle`.
- *
- * @static
- * @memberOf _
- * @since 0.1.0
- * @category Function
- * @param {Function} func The function to debounce.
- * @param {number} [wait=0] The number of milliseconds to delay.
- * @param {Object} [options={}] The options object.
- * @param {boolean} [options.leading=false]
- *  Specify invoking on the leading edge of the timeout.
- * @param {number} [options.maxWait]
- *  The maximum time `func` is allowed to be delayed before it's invoked.
- * @param {boolean} [options.trailing=true]
- *  Specify invoking on the trailing edge of the timeout.
- * @returns {Function} Returns the new debounced function.
- * @example
- *
- * // Avoid costly calculations while the window size is in flux.
- * jQuery(window).on('resize', _.debounce(calculateLayout, 150));
- *
- * // Invoke `sendMail` when clicked, debouncing subsequent calls.
- * jQuery(element).on('click', _.debounce(sendMail, 300, {
- *   'leading': true,
- *   'trailing': false
- * }));
- *
- * // Ensure `batchLog` is invoked once after 1 second of debounced calls.
- * var debounced = _.debounce(batchLog, 250, { 'maxWait': 1000 });
- * var source = new EventSource('/stream');
- * jQuery(source).on('message', debounced);
- *
- * // Cancel the trailing debounced invocation.
- * jQuery(window).on('popstate', debounced.cancel);
- */
-function debounce(func, wait, options) {
-  var lastArgs,
-      lastThis,
-      maxWait,
-      result,
-      timerId,
-      lastCallTime = 0,
-      lastInvokeTime = 0,
-      leading = false,
-      maxing = false,
-      trailing = true;
-
-  if (typeof func != 'function') {
-    throw new TypeError(FUNC_ERROR_TEXT);
-  }
-  wait = toNumber(wait) || 0;
-  if (isObject(options)) {
-    leading = !!options.leading;
-    maxing = 'maxWait' in options;
-    maxWait = maxing ? nativeMax(toNumber(options.maxWait) || 0, wait) : maxWait;
-    trailing = 'trailing' in options ? !!options.trailing : trailing;
-  }
-
-  function invokeFunc(time) {
-    var args = lastArgs,
-        thisArg = lastThis;
-
-    lastArgs = lastThis = undefined;
-    lastInvokeTime = time;
-    result = func.apply(thisArg, args);
-    return result;
-  }
-
-  function leadingEdge(time) {
-    // Reset any `maxWait` timer.
-    lastInvokeTime = time;
-    // Start the timer for the trailing edge.
-    timerId = setTimeout(timerExpired, wait);
-    // Invoke the leading edge.
-    return leading ? invokeFunc(time) : result;
-  }
-
-  function remainingWait(time) {
-    var timeSinceLastCall = time - lastCallTime,
-        timeSinceLastInvoke = time - lastInvokeTime,
-        result = wait - timeSinceLastCall;
-
-    return maxing ? nativeMin(result, maxWait - timeSinceLastInvoke) : result;
-  }
-
-  function shouldInvoke(time) {
-    var timeSinceLastCall = time - lastCallTime,
-        timeSinceLastInvoke = time - lastInvokeTime;
-
-    // Either this is the first call, activity has stopped and we're at the
-    // trailing edge, the system time has gone backwards and we're treating
-    // it as the trailing edge, or we've hit the `maxWait` limit.
-    return (!lastCallTime || (timeSinceLastCall >= wait) ||
-      (timeSinceLastCall < 0) || (maxing && timeSinceLastInvoke >= maxWait));
-  }
-
-  function timerExpired() {
-    var time = now();
-    if (shouldInvoke(time)) {
-      return trailingEdge(time);
-    }
-    // Restart the timer.
-    timerId = setTimeout(timerExpired, remainingWait(time));
-  }
-
-  function trailingEdge(time) {
-    clearTimeout(timerId);
-    timerId = undefined;
-
-    // Only invoke if we have `lastArgs` which means `func` has been
-    // debounced at least once.
-    if (trailing && lastArgs) {
-      return invokeFunc(time);
-    }
-    lastArgs = lastThis = undefined;
-    return result;
-  }
-
-  function cancel() {
-    if (timerId !== undefined) {
-      clearTimeout(timerId);
-    }
-    lastCallTime = lastInvokeTime = 0;
-    lastArgs = lastThis = timerId = undefined;
-  }
-
-  function flush() {
-    return timerId === undefined ? result : trailingEdge(now());
-  }
-
-  function debounced() {
-    var time = now(),
-        isInvoking = shouldInvoke(time);
-
-    lastArgs = arguments;
-    lastThis = this;
-    lastCallTime = time;
-
-    if (isInvoking) {
-      if (timerId === undefined) {
-        return leadingEdge(lastCallTime);
-      }
-      if (maxing) {
-        // Handle invocations in a tight loop.
-        clearTimeout(timerId);
-        timerId = setTimeout(timerExpired, wait);
-        return invokeFunc(lastCallTime);
-      }
-    }
-    if (timerId === undefined) {
-      timerId = setTimeout(timerExpired, wait);
-    }
-    return result;
-  }
-  debounced.cancel = cancel;
-  debounced.flush = flush;
-  return debounced;
-}
-
-/**
- * Checks if `value` is classified as a `Function` object.
- *
- * @static
- * @memberOf _
- * @since 0.1.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is correctly classified,
- *  else `false`.
- * @example
- *
- * _.isFunction(_);
- * // => true
- *
- * _.isFunction(/abc/);
- * // => false
- */
-function isFunction(value) {
-  // The use of `Object#toString` avoids issues with the `typeof` operator
-  // in Safari 8 which returns 'object' for typed array and weak map constructors,
-  // and PhantomJS 1.9 which returns 'function' for `NodeList` instances.
-  var tag = isObject(value) ? objectToString.call(value) : '';
-  return tag == funcTag || tag == genTag;
-}
-
-/**
- * Checks if `value` is the
- * [language type](http://www.ecma-international.org/ecma-262/6.0/#sec-ecmascript-language-types)
- * of `Object`. (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
- *
- * @static
- * @memberOf _
- * @since 0.1.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is an object, else `false`.
- * @example
- *
- * _.isObject({});
- * // => true
- *
- * _.isObject([1, 2, 3]);
- * // => true
- *
- * _.isObject(_.noop);
- * // => true
- *
- * _.isObject(null);
- * // => false
- */
-function isObject(value) {
-  var type = typeof value;
-  return !!value && (type == 'object' || type == 'function');
-}
-
-/**
- * Checks if `value` is object-like. A value is object-like if it's not `null`
- * and has a `typeof` result of "object".
- *
- * @static
- * @memberOf _
- * @since 4.0.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
- * @example
- *
- * _.isObjectLike({});
- * // => true
- *
- * _.isObjectLike([1, 2, 3]);
- * // => true
- *
- * _.isObjectLike(_.noop);
- * // => false
- *
- * _.isObjectLike(null);
- * // => false
- */
-function isObjectLike(value) {
-  return !!value && typeof value == 'object';
-}
-
-/**
- * Checks if `value` is classified as a `Symbol` primitive or object.
- *
- * @static
- * @memberOf _
- * @since 4.0.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is correctly classified,
- *  else `false`.
- * @example
- *
- * _.isSymbol(Symbol.iterator);
- * // => true
- *
- * _.isSymbol('abc');
- * // => false
- */
-function isSymbol(value) {
-  return typeof value == 'symbol' ||
-    (isObjectLike(value) && objectToString.call(value) == symbolTag);
-}
-
-/**
- * Converts `value` to a number.
- *
- * @static
- * @memberOf _
- * @since 4.0.0
- * @category Lang
- * @param {*} value The value to process.
- * @returns {number} Returns the number.
- * @example
- *
- * _.toNumber(3);
- * // => 3
- *
- * _.toNumber(Number.MIN_VALUE);
- * // => 5e-324
- *
- * _.toNumber(Infinity);
- * // => Infinity
- *
- * _.toNumber('3');
- * // => 3
- */
-function toNumber(value) {
-  if (typeof value == 'number') {
-    return value;
-  }
-  if (isSymbol(value)) {
-    return NAN;
-  }
-  if (isObject(value)) {
-    var other = isFunction(value.valueOf) ? value.valueOf() : value;
-    value = isObject(other) ? (other + '') : other;
-  }
-  if (typeof value != 'string') {
-    return value === 0 ? value : +value;
-  }
-  value = value.replace(reTrim, '');
-  var isBinary = reIsBinary.test(value);
-  return (isBinary || reIsOctal.test(value))
-    ? freeParseInt(value.slice(2), isBinary ? 2 : 8)
-    : (reIsBadHex.test(value) ? NAN : +value);
-}
-
-module.exports = debounce;
-
-},{}],47:[function(require,module,exports){
-/**
- * lodash 4.0.1 (Custom Build) <https://lodash.com/>
- * Build: `lodash modularize exports="npm" -o ./`
- * Copyright 2012-2016 The Dojo Foundation <http://dojofoundation.org/>
- * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
- * Copyright 2009-2016 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
- * Available under MIT license <https://lodash.com/license>
- */
-var debounce = require('lodash.debounce');
-
-/** Used as the `TypeError` message for "Functions" methods. */
-var FUNC_ERROR_TEXT = 'Expected a function';
-
-/**
- * Creates a throttled function that only invokes `func` at most once per
- * every `wait` milliseconds. The throttled function comes with a `cancel`
- * method to cancel delayed `func` invocations and a `flush` method to
- * immediately invoke them. Provide an options object to indicate whether
- * `func` should be invoked on the leading and/or trailing edge of the `wait`
- * timeout. The `func` is invoked with the last arguments provided to the
- * throttled function. Subsequent calls to the throttled function return the
- * result of the last `func` invocation.
- *
- * **Note:** If `leading` and `trailing` options are `true`, `func` is invoked
- * on the trailing edge of the timeout only if the throttled function is
- * invoked more than once during the `wait` timeout.
- *
- * See [David Corbacho's article](http://drupalmotion.com/article/debounce-and-throttle-visual-explanation)
- * for details over the differences between `_.throttle` and `_.debounce`.
- *
- * @static
- * @memberOf _
- * @category Function
- * @param {Function} func The function to throttle.
- * @param {number} [wait=0] The number of milliseconds to throttle invocations to.
- * @param {Object} [options] The options object.
- * @param {boolean} [options.leading=true] Specify invoking on the leading
- *  edge of the timeout.
- * @param {boolean} [options.trailing=true] Specify invoking on the trailing
- *  edge of the timeout.
- * @returns {Function} Returns the new throttled function.
- * @example
- *
- * // Avoid excessively updating the position while scrolling.
- * jQuery(window).on('scroll', _.throttle(updatePosition, 100));
- *
- * // Invoke `renewToken` when the click event is fired, but not more than once every 5 minutes.
- * var throttled = _.throttle(renewToken, 300000, { 'trailing': false });
- * jQuery(element).on('click', throttled);
- *
- * // Cancel the trailing throttled invocation.
- * jQuery(window).on('popstate', throttled.cancel);
- */
-function throttle(func, wait, options) {
-  var leading = true,
-      trailing = true;
-
-  if (typeof func != 'function') {
-    throw new TypeError(FUNC_ERROR_TEXT);
-  }
-  if (isObject(options)) {
-    leading = 'leading' in options ? !!options.leading : leading;
-    trailing = 'trailing' in options ? !!options.trailing : trailing;
-  }
-  return debounce(func, wait, {
-    'leading': leading,
-    'maxWait': wait,
-    'trailing': trailing
-  });
-}
-
-/**
- * Checks if `value` is the [language type](https://es5.github.io/#x8) of `Object`.
- * (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
- *
- * @static
- * @memberOf _
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is an object, else `false`.
- * @example
- *
- * _.isObject({});
- * // => true
- *
- * _.isObject([1, 2, 3]);
- * // => true
- *
- * _.isObject(_.noop);
- * // => true
- *
- * _.isObject(null);
- * // => false
- */
-function isObject(value) {
-  var type = typeof value;
-  return !!value && (type == 'object' || type == 'function');
-}
-
-module.exports = throttle;
-
-},{"lodash.debounce":46}],48:[function(require,module,exports){
+},{"_process":51}],46:[function(require,module,exports){
 /* Built-in method references for those with the same name as other `lodash` methods. */
 var nativeGetPrototype = Object.getPrototypeOf;
 
@@ -3234,7 +2751,7 @@ function getPrototype(value) {
 
 module.exports = getPrototype;
 
-},{}],49:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 /**
  * Checks if `value` is a host object in IE < 9.
  *
@@ -3256,7 +2773,7 @@ function isHostObject(value) {
 
 module.exports = isHostObject;
 
-},{}],50:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 /**
  * Checks if `value` is object-like. A value is object-like if it's not `null`
  * and has a `typeof` result of "object".
@@ -3287,7 +2804,7 @@ function isObjectLike(value) {
 
 module.exports = isObjectLike;
 
-},{}],51:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 var getPrototype = require('./_getPrototype'),
     isHostObject = require('./_isHostObject'),
     isObjectLike = require('./isObjectLike');
@@ -3359,9 +2876,9 @@ function isPlainObject(value) {
 
 module.exports = isPlainObject;
 
-},{"./_getPrototype":48,"./_isHostObject":49,"./isObjectLike":50}],52:[function(require,module,exports){
+},{"./_getPrototype":46,"./_isHostObject":47,"./isObjectLike":48}],50:[function(require,module,exports){
 //! moment.js
-//! version : 2.14.1
+//! version : 2.17.1
 //! authors : Tim Wood, Iskren Chernev, Moment.js contributors
 //! license : MIT
 //! momentjs.com
@@ -3370,4228 +2887,4299 @@ module.exports = isPlainObject;
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
     typeof define === 'function' && define.amd ? define(factory) :
     global.moment = factory()
-}(this, function () { 'use strict';
+}(this, (function () { 'use strict';
 
-    var hookCallback;
+var hookCallback;
 
-    function utils_hooks__hooks () {
-        return hookCallback.apply(null, arguments);
+function hooks () {
+    return hookCallback.apply(null, arguments);
+}
+
+// This is done to register the method called with moment()
+// without creating circular dependencies.
+function setHookCallback (callback) {
+    hookCallback = callback;
+}
+
+function isArray(input) {
+    return input instanceof Array || Object.prototype.toString.call(input) === '[object Array]';
+}
+
+function isObject(input) {
+    // IE8 will treat undefined and null as object if it wasn't for
+    // input != null
+    return input != null && Object.prototype.toString.call(input) === '[object Object]';
+}
+
+function isObjectEmpty(obj) {
+    var k;
+    for (k in obj) {
+        // even if its not own property I'd still call it non-empty
+        return false;
     }
+    return true;
+}
 
-    // This is done to register the method called with moment()
-    // without creating circular dependencies.
-    function setHookCallback (callback) {
-        hookCallback = callback;
+function isNumber(input) {
+    return typeof input === 'number' || Object.prototype.toString.call(input) === '[object Number]';
+}
+
+function isDate(input) {
+    return input instanceof Date || Object.prototype.toString.call(input) === '[object Date]';
+}
+
+function map(arr, fn) {
+    var res = [], i;
+    for (i = 0; i < arr.length; ++i) {
+        res.push(fn(arr[i], i));
     }
+    return res;
+}
 
-    function isArray(input) {
-        return input instanceof Array || Object.prototype.toString.call(input) === '[object Array]';
-    }
+function hasOwnProp(a, b) {
+    return Object.prototype.hasOwnProperty.call(a, b);
+}
 
-    function isObject(input) {
-        return Object.prototype.toString.call(input) === '[object Object]';
-    }
-
-    function isObjectEmpty(obj) {
-        var k;
-        for (k in obj) {
-            // even if its not own property I'd still call it non-empty
-            return false;
+function extend(a, b) {
+    for (var i in b) {
+        if (hasOwnProp(b, i)) {
+            a[i] = b[i];
         }
-        return true;
     }
 
-    function isDate(input) {
-        return input instanceof Date || Object.prototype.toString.call(input) === '[object Date]';
+    if (hasOwnProp(b, 'toString')) {
+        a.toString = b.toString;
     }
 
-    function map(arr, fn) {
-        var res = [], i;
-        for (i = 0; i < arr.length; ++i) {
-            res.push(fn(arr[i], i));
-        }
-        return res;
+    if (hasOwnProp(b, 'valueOf')) {
+        a.valueOf = b.valueOf;
     }
 
-    function hasOwnProp(a, b) {
-        return Object.prototype.hasOwnProperty.call(a, b);
-    }
+    return a;
+}
 
-    function extend(a, b) {
-        for (var i in b) {
-            if (hasOwnProp(b, i)) {
-                a[i] = b[i];
+function createUTC (input, format, locale, strict) {
+    return createLocalOrUTC(input, format, locale, strict, true).utc();
+}
+
+function defaultParsingFlags() {
+    // We need to deep clone this object.
+    return {
+        empty           : false,
+        unusedTokens    : [],
+        unusedInput     : [],
+        overflow        : -2,
+        charsLeftOver   : 0,
+        nullInput       : false,
+        invalidMonth    : null,
+        invalidFormat   : false,
+        userInvalidated : false,
+        iso             : false,
+        parsedDateParts : [],
+        meridiem        : null
+    };
+}
+
+function getParsingFlags(m) {
+    if (m._pf == null) {
+        m._pf = defaultParsingFlags();
+    }
+    return m._pf;
+}
+
+var some;
+if (Array.prototype.some) {
+    some = Array.prototype.some;
+} else {
+    some = function (fun) {
+        var t = Object(this);
+        var len = t.length >>> 0;
+
+        for (var i = 0; i < len; i++) {
+            if (i in t && fun.call(this, t[i], i, t)) {
+                return true;
             }
         }
 
-        if (hasOwnProp(b, 'toString')) {
-            a.toString = b.toString;
+        return false;
+    };
+}
+
+var some$1 = some;
+
+function isValid(m) {
+    if (m._isValid == null) {
+        var flags = getParsingFlags(m);
+        var parsedParts = some$1.call(flags.parsedDateParts, function (i) {
+            return i != null;
+        });
+        var isNowValid = !isNaN(m._d.getTime()) &&
+            flags.overflow < 0 &&
+            !flags.empty &&
+            !flags.invalidMonth &&
+            !flags.invalidWeekday &&
+            !flags.nullInput &&
+            !flags.invalidFormat &&
+            !flags.userInvalidated &&
+            (!flags.meridiem || (flags.meridiem && parsedParts));
+
+        if (m._strict) {
+            isNowValid = isNowValid &&
+                flags.charsLeftOver === 0 &&
+                flags.unusedTokens.length === 0 &&
+                flags.bigHour === undefined;
         }
 
-        if (hasOwnProp(b, 'valueOf')) {
-            a.valueOf = b.valueOf;
-        }
-
-        return a;
-    }
-
-    function create_utc__createUTC (input, format, locale, strict) {
-        return createLocalOrUTC(input, format, locale, strict, true).utc();
-    }
-
-    function defaultParsingFlags() {
-        // We need to deep clone this object.
-        return {
-            empty           : false,
-            unusedTokens    : [],
-            unusedInput     : [],
-            overflow        : -2,
-            charsLeftOver   : 0,
-            nullInput       : false,
-            invalidMonth    : null,
-            invalidFormat   : false,
-            userInvalidated : false,
-            iso             : false,
-            parsedDateParts : [],
-            meridiem        : null
-        };
-    }
-
-    function getParsingFlags(m) {
-        if (m._pf == null) {
-            m._pf = defaultParsingFlags();
-        }
-        return m._pf;
-    }
-
-    var some;
-    if (Array.prototype.some) {
-        some = Array.prototype.some;
-    } else {
-        some = function (fun) {
-            var t = Object(this);
-            var len = t.length >>> 0;
-
-            for (var i = 0; i < len; i++) {
-                if (i in t && fun.call(this, t[i], i, t)) {
-                    return true;
-                }
-            }
-
-            return false;
-        };
-    }
-
-    function valid__isValid(m) {
-        if (m._isValid == null) {
-            var flags = getParsingFlags(m);
-            var parsedParts = some.call(flags.parsedDateParts, function (i) {
-                return i != null;
-            });
-            m._isValid = !isNaN(m._d.getTime()) &&
-                flags.overflow < 0 &&
-                !flags.empty &&
-                !flags.invalidMonth &&
-                !flags.invalidWeekday &&
-                !flags.nullInput &&
-                !flags.invalidFormat &&
-                !flags.userInvalidated &&
-                (!flags.meridiem || (flags.meridiem && parsedParts));
-
-            if (m._strict) {
-                m._isValid = m._isValid &&
-                    flags.charsLeftOver === 0 &&
-                    flags.unusedTokens.length === 0 &&
-                    flags.bigHour === undefined;
-            }
-        }
-        return m._isValid;
-    }
-
-    function valid__createInvalid (flags) {
-        var m = create_utc__createUTC(NaN);
-        if (flags != null) {
-            extend(getParsingFlags(m), flags);
+        if (Object.isFrozen == null || !Object.isFrozen(m)) {
+            m._isValid = isNowValid;
         }
         else {
-            getParsingFlags(m).userInvalidated = true;
+            return isNowValid;
         }
+    }
+    return m._isValid;
+}
 
-        return m;
+function createInvalid (flags) {
+    var m = createUTC(NaN);
+    if (flags != null) {
+        extend(getParsingFlags(m), flags);
+    }
+    else {
+        getParsingFlags(m).userInvalidated = true;
     }
 
-    function isUndefined(input) {
-        return input === void 0;
+    return m;
+}
+
+function isUndefined(input) {
+    return input === void 0;
+}
+
+// Plugins that add properties should also add the key here (null value),
+// so we can properly clone ourselves.
+var momentProperties = hooks.momentProperties = [];
+
+function copyConfig(to, from) {
+    var i, prop, val;
+
+    if (!isUndefined(from._isAMomentObject)) {
+        to._isAMomentObject = from._isAMomentObject;
+    }
+    if (!isUndefined(from._i)) {
+        to._i = from._i;
+    }
+    if (!isUndefined(from._f)) {
+        to._f = from._f;
+    }
+    if (!isUndefined(from._l)) {
+        to._l = from._l;
+    }
+    if (!isUndefined(from._strict)) {
+        to._strict = from._strict;
+    }
+    if (!isUndefined(from._tzm)) {
+        to._tzm = from._tzm;
+    }
+    if (!isUndefined(from._isUTC)) {
+        to._isUTC = from._isUTC;
+    }
+    if (!isUndefined(from._offset)) {
+        to._offset = from._offset;
+    }
+    if (!isUndefined(from._pf)) {
+        to._pf = getParsingFlags(from);
+    }
+    if (!isUndefined(from._locale)) {
+        to._locale = from._locale;
     }
 
-    // Plugins that add properties should also add the key here (null value),
-    // so we can properly clone ourselves.
-    var momentProperties = utils_hooks__hooks.momentProperties = [];
-
-    function copyConfig(to, from) {
-        var i, prop, val;
-
-        if (!isUndefined(from._isAMomentObject)) {
-            to._isAMomentObject = from._isAMomentObject;
-        }
-        if (!isUndefined(from._i)) {
-            to._i = from._i;
-        }
-        if (!isUndefined(from._f)) {
-            to._f = from._f;
-        }
-        if (!isUndefined(from._l)) {
-            to._l = from._l;
-        }
-        if (!isUndefined(from._strict)) {
-            to._strict = from._strict;
-        }
-        if (!isUndefined(from._tzm)) {
-            to._tzm = from._tzm;
-        }
-        if (!isUndefined(from._isUTC)) {
-            to._isUTC = from._isUTC;
-        }
-        if (!isUndefined(from._offset)) {
-            to._offset = from._offset;
-        }
-        if (!isUndefined(from._pf)) {
-            to._pf = getParsingFlags(from);
-        }
-        if (!isUndefined(from._locale)) {
-            to._locale = from._locale;
-        }
-
-        if (momentProperties.length > 0) {
-            for (i in momentProperties) {
-                prop = momentProperties[i];
-                val = from[prop];
-                if (!isUndefined(val)) {
-                    to[prop] = val;
-                }
+    if (momentProperties.length > 0) {
+        for (i in momentProperties) {
+            prop = momentProperties[i];
+            val = from[prop];
+            if (!isUndefined(val)) {
+                to[prop] = val;
             }
         }
-
-        return to;
     }
 
-    var updateInProgress = false;
+    return to;
+}
 
-    // Moment prototype object
-    function Moment(config) {
-        copyConfig(this, config);
-        this._d = new Date(config._d != null ? config._d.getTime() : NaN);
-        // Prevent infinite loop in case updateOffset creates new moment
-        // objects.
-        if (updateInProgress === false) {
-            updateInProgress = true;
-            utils_hooks__hooks.updateOffset(this);
-            updateInProgress = false;
+var updateInProgress = false;
+
+// Moment prototype object
+function Moment(config) {
+    copyConfig(this, config);
+    this._d = new Date(config._d != null ? config._d.getTime() : NaN);
+    if (!this.isValid()) {
+        this._d = new Date(NaN);
+    }
+    // Prevent infinite loop in case updateOffset creates new moment
+    // objects.
+    if (updateInProgress === false) {
+        updateInProgress = true;
+        hooks.updateOffset(this);
+        updateInProgress = false;
+    }
+}
+
+function isMoment (obj) {
+    return obj instanceof Moment || (obj != null && obj._isAMomentObject != null);
+}
+
+function absFloor (number) {
+    if (number < 0) {
+        // -0 -> 0
+        return Math.ceil(number) || 0;
+    } else {
+        return Math.floor(number);
+    }
+}
+
+function toInt(argumentForCoercion) {
+    var coercedNumber = +argumentForCoercion,
+        value = 0;
+
+    if (coercedNumber !== 0 && isFinite(coercedNumber)) {
+        value = absFloor(coercedNumber);
+    }
+
+    return value;
+}
+
+// compare two arrays, return the number of differences
+function compareArrays(array1, array2, dontConvert) {
+    var len = Math.min(array1.length, array2.length),
+        lengthDiff = Math.abs(array1.length - array2.length),
+        diffs = 0,
+        i;
+    for (i = 0; i < len; i++) {
+        if ((dontConvert && array1[i] !== array2[i]) ||
+            (!dontConvert && toInt(array1[i]) !== toInt(array2[i]))) {
+            diffs++;
         }
     }
+    return diffs + lengthDiff;
+}
 
-    function isMoment (obj) {
-        return obj instanceof Moment || (obj != null && obj._isAMomentObject != null);
+function warn(msg) {
+    if (hooks.suppressDeprecationWarnings === false &&
+            (typeof console !==  'undefined') && console.warn) {
+        console.warn('Deprecation warning: ' + msg);
     }
+}
 
-    function absFloor (number) {
-        if (number < 0) {
-            // -0 -> 0
-            return Math.ceil(number) || 0;
-        } else {
-            return Math.floor(number);
+function deprecate(msg, fn) {
+    var firstTime = true;
+
+    return extend(function () {
+        if (hooks.deprecationHandler != null) {
+            hooks.deprecationHandler(null, msg);
         }
-    }
-
-    function toInt(argumentForCoercion) {
-        var coercedNumber = +argumentForCoercion,
-            value = 0;
-
-        if (coercedNumber !== 0 && isFinite(coercedNumber)) {
-            value = absFloor(coercedNumber);
-        }
-
-        return value;
-    }
-
-    // compare two arrays, return the number of differences
-    function compareArrays(array1, array2, dontConvert) {
-        var len = Math.min(array1.length, array2.length),
-            lengthDiff = Math.abs(array1.length - array2.length),
-            diffs = 0,
-            i;
-        for (i = 0; i < len; i++) {
-            if ((dontConvert && array1[i] !== array2[i]) ||
-                (!dontConvert && toInt(array1[i]) !== toInt(array2[i]))) {
-                diffs++;
-            }
-        }
-        return diffs + lengthDiff;
-    }
-
-    function warn(msg) {
-        if (utils_hooks__hooks.suppressDeprecationWarnings === false &&
-                (typeof console !==  'undefined') && console.warn) {
-            console.warn('Deprecation warning: ' + msg);
-        }
-    }
-
-    function deprecate(msg, fn) {
-        var firstTime = true;
-
-        return extend(function () {
-            if (utils_hooks__hooks.deprecationHandler != null) {
-                utils_hooks__hooks.deprecationHandler(null, msg);
-            }
-            if (firstTime) {
-                warn(msg + '\nArguments: ' + Array.prototype.slice.call(arguments).join(', ') + '\n' + (new Error()).stack);
-                firstTime = false;
-            }
-            return fn.apply(this, arguments);
-        }, fn);
-    }
-
-    var deprecations = {};
-
-    function deprecateSimple(name, msg) {
-        if (utils_hooks__hooks.deprecationHandler != null) {
-            utils_hooks__hooks.deprecationHandler(name, msg);
-        }
-        if (!deprecations[name]) {
-            warn(msg);
-            deprecations[name] = true;
-        }
-    }
-
-    utils_hooks__hooks.suppressDeprecationWarnings = false;
-    utils_hooks__hooks.deprecationHandler = null;
-
-    function isFunction(input) {
-        return input instanceof Function || Object.prototype.toString.call(input) === '[object Function]';
-    }
-
-    function locale_set__set (config) {
-        var prop, i;
-        for (i in config) {
-            prop = config[i];
-            if (isFunction(prop)) {
-                this[i] = prop;
-            } else {
-                this['_' + i] = prop;
-            }
-        }
-        this._config = config;
-        // Lenient ordinal parsing accepts just a number in addition to
-        // number + (possibly) stuff coming from _ordinalParseLenient.
-        this._ordinalParseLenient = new RegExp(this._ordinalParse.source + '|' + (/\d{1,2}/).source);
-    }
-
-    function mergeConfigs(parentConfig, childConfig) {
-        var res = extend({}, parentConfig), prop;
-        for (prop in childConfig) {
-            if (hasOwnProp(childConfig, prop)) {
-                if (isObject(parentConfig[prop]) && isObject(childConfig[prop])) {
-                    res[prop] = {};
-                    extend(res[prop], parentConfig[prop]);
-                    extend(res[prop], childConfig[prop]);
-                } else if (childConfig[prop] != null) {
-                    res[prop] = childConfig[prop];
+        if (firstTime) {
+            var args = [];
+            var arg;
+            for (var i = 0; i < arguments.length; i++) {
+                arg = '';
+                if (typeof arguments[i] === 'object') {
+                    arg += '\n[' + i + '] ';
+                    for (var key in arguments[0]) {
+                        arg += key + ': ' + arguments[0][key] + ', ';
+                    }
+                    arg = arg.slice(0, -2); // Remove trailing comma and space
                 } else {
-                    delete res[prop];
+                    arg = arguments[i];
                 }
+                args.push(arg);
+            }
+            warn(msg + '\nArguments: ' + Array.prototype.slice.call(args).join('') + '\n' + (new Error()).stack);
+            firstTime = false;
+        }
+        return fn.apply(this, arguments);
+    }, fn);
+}
+
+var deprecations = {};
+
+function deprecateSimple(name, msg) {
+    if (hooks.deprecationHandler != null) {
+        hooks.deprecationHandler(name, msg);
+    }
+    if (!deprecations[name]) {
+        warn(msg);
+        deprecations[name] = true;
+    }
+}
+
+hooks.suppressDeprecationWarnings = false;
+hooks.deprecationHandler = null;
+
+function isFunction(input) {
+    return input instanceof Function || Object.prototype.toString.call(input) === '[object Function]';
+}
+
+function set (config) {
+    var prop, i;
+    for (i in config) {
+        prop = config[i];
+        if (isFunction(prop)) {
+            this[i] = prop;
+        } else {
+            this['_' + i] = prop;
+        }
+    }
+    this._config = config;
+    // Lenient ordinal parsing accepts just a number in addition to
+    // number + (possibly) stuff coming from _ordinalParseLenient.
+    this._ordinalParseLenient = new RegExp(this._ordinalParse.source + '|' + (/\d{1,2}/).source);
+}
+
+function mergeConfigs(parentConfig, childConfig) {
+    var res = extend({}, parentConfig), prop;
+    for (prop in childConfig) {
+        if (hasOwnProp(childConfig, prop)) {
+            if (isObject(parentConfig[prop]) && isObject(childConfig[prop])) {
+                res[prop] = {};
+                extend(res[prop], parentConfig[prop]);
+                extend(res[prop], childConfig[prop]);
+            } else if (childConfig[prop] != null) {
+                res[prop] = childConfig[prop];
+            } else {
+                delete res[prop];
             }
         }
-        for (prop in parentConfig) {
-            if (hasOwnProp(parentConfig, prop) &&
-                    !hasOwnProp(childConfig, prop) &&
-                    isObject(parentConfig[prop])) {
-                // make sure changes to properties don't modify parent config
-                res[prop] = extend({}, res[prop]);
+    }
+    for (prop in parentConfig) {
+        if (hasOwnProp(parentConfig, prop) &&
+                !hasOwnProp(childConfig, prop) &&
+                isObject(parentConfig[prop])) {
+            // make sure changes to properties don't modify parent config
+            res[prop] = extend({}, res[prop]);
+        }
+    }
+    return res;
+}
+
+function Locale(config) {
+    if (config != null) {
+        this.set(config);
+    }
+}
+
+var keys;
+
+if (Object.keys) {
+    keys = Object.keys;
+} else {
+    keys = function (obj) {
+        var i, res = [];
+        for (i in obj) {
+            if (hasOwnProp(obj, i)) {
+                res.push(i);
             }
         }
         return res;
-    }
-
-    function Locale(config) {
-        if (config != null) {
-            this.set(config);
-        }
-    }
-
-    var keys;
-
-    if (Object.keys) {
-        keys = Object.keys;
-    } else {
-        keys = function (obj) {
-            var i, res = [];
-            for (i in obj) {
-                if (hasOwnProp(obj, i)) {
-                    res.push(i);
-                }
-            }
-            return res;
-        };
-    }
-
-    var defaultCalendar = {
-        sameDay : '[Today at] LT',
-        nextDay : '[Tomorrow at] LT',
-        nextWeek : 'dddd [at] LT',
-        lastDay : '[Yesterday at] LT',
-        lastWeek : '[Last] dddd [at] LT',
-        sameElse : 'L'
     };
+}
 
-    function locale_calendar__calendar (key, mom, now) {
-        var output = this._calendar[key] || this._calendar['sameElse'];
-        return isFunction(output) ? output.call(mom, now) : output;
-    }
+var keys$1 = keys;
 
-    var defaultLongDateFormat = {
-        LTS  : 'h:mm:ss A',
-        LT   : 'h:mm A',
-        L    : 'MM/DD/YYYY',
-        LL   : 'MMMM D, YYYY',
-        LLL  : 'MMMM D, YYYY h:mm A',
-        LLLL : 'dddd, MMMM D, YYYY h:mm A'
-    };
+var defaultCalendar = {
+    sameDay : '[Today at] LT',
+    nextDay : '[Tomorrow at] LT',
+    nextWeek : 'dddd [at] LT',
+    lastDay : '[Yesterday at] LT',
+    lastWeek : '[Last] dddd [at] LT',
+    sameElse : 'L'
+};
 
-    function longDateFormat (key) {
-        var format = this._longDateFormat[key],
-            formatUpper = this._longDateFormat[key.toUpperCase()];
+function calendar (key, mom, now) {
+    var output = this._calendar[key] || this._calendar['sameElse'];
+    return isFunction(output) ? output.call(mom, now) : output;
+}
 
-        if (format || !formatUpper) {
-            return format;
-        }
+var defaultLongDateFormat = {
+    LTS  : 'h:mm:ss A',
+    LT   : 'h:mm A',
+    L    : 'MM/DD/YYYY',
+    LL   : 'MMMM D, YYYY',
+    LLL  : 'MMMM D, YYYY h:mm A',
+    LLLL : 'dddd, MMMM D, YYYY h:mm A'
+};
 
-        this._longDateFormat[key] = formatUpper.replace(/MMMM|MM|DD|dddd/g, function (val) {
-            return val.slice(1);
-        });
+function longDateFormat (key) {
+    var format = this._longDateFormat[key],
+        formatUpper = this._longDateFormat[key.toUpperCase()];
 
-        return this._longDateFormat[key];
-    }
-
-    var defaultInvalidDate = 'Invalid date';
-
-    function invalidDate () {
-        return this._invalidDate;
-    }
-
-    var defaultOrdinal = '%d';
-    var defaultOrdinalParse = /\d{1,2}/;
-
-    function ordinal (number) {
-        return this._ordinal.replace('%d', number);
-    }
-
-    var defaultRelativeTime = {
-        future : 'in %s',
-        past   : '%s ago',
-        s  : 'a few seconds',
-        m  : 'a minute',
-        mm : '%d minutes',
-        h  : 'an hour',
-        hh : '%d hours',
-        d  : 'a day',
-        dd : '%d days',
-        M  : 'a month',
-        MM : '%d months',
-        y  : 'a year',
-        yy : '%d years'
-    };
-
-    function relative__relativeTime (number, withoutSuffix, string, isFuture) {
-        var output = this._relativeTime[string];
-        return (isFunction(output)) ?
-            output(number, withoutSuffix, string, isFuture) :
-            output.replace(/%d/i, number);
-    }
-
-    function pastFuture (diff, output) {
-        var format = this._relativeTime[diff > 0 ? 'future' : 'past'];
-        return isFunction(format) ? format(output) : format.replace(/%s/i, output);
-    }
-
-    var aliases = {};
-
-    function addUnitAlias (unit, shorthand) {
-        var lowerCase = unit.toLowerCase();
-        aliases[lowerCase] = aliases[lowerCase + 's'] = aliases[shorthand] = unit;
-    }
-
-    function normalizeUnits(units) {
-        return typeof units === 'string' ? aliases[units] || aliases[units.toLowerCase()] : undefined;
-    }
-
-    function normalizeObjectUnits(inputObject) {
-        var normalizedInput = {},
-            normalizedProp,
-            prop;
-
-        for (prop in inputObject) {
-            if (hasOwnProp(inputObject, prop)) {
-                normalizedProp = normalizeUnits(prop);
-                if (normalizedProp) {
-                    normalizedInput[normalizedProp] = inputObject[prop];
-                }
-            }
-        }
-
-        return normalizedInput;
-    }
-
-    var priorities = {};
-
-    function addUnitPriority(unit, priority) {
-        priorities[unit] = priority;
-    }
-
-    function getPrioritizedUnits(unitsObj) {
-        var units = [];
-        for (var u in unitsObj) {
-            units.push({unit: u, priority: priorities[u]});
-        }
-        units.sort(function (a, b) {
-            return a.priority - b.priority;
-        });
-        return units;
-    }
-
-    function makeGetSet (unit, keepTime) {
-        return function (value) {
-            if (value != null) {
-                get_set__set(this, unit, value);
-                utils_hooks__hooks.updateOffset(this, keepTime);
-                return this;
-            } else {
-                return get_set__get(this, unit);
-            }
-        };
-    }
-
-    function get_set__get (mom, unit) {
-        return mom.isValid() ?
-            mom._d['get' + (mom._isUTC ? 'UTC' : '') + unit]() : NaN;
-    }
-
-    function get_set__set (mom, unit, value) {
-        if (mom.isValid()) {
-            mom._d['set' + (mom._isUTC ? 'UTC' : '') + unit](value);
-        }
-    }
-
-    // MOMENTS
-
-    function stringGet (units) {
-        units = normalizeUnits(units);
-        if (isFunction(this[units])) {
-            return this[units]();
-        }
-        return this;
-    }
-
-
-    function stringSet (units, value) {
-        if (typeof units === 'object') {
-            units = normalizeObjectUnits(units);
-            var prioritized = getPrioritizedUnits(units);
-            for (var i = 0; i < prioritized.length; i++) {
-                this[prioritized[i].unit](units[prioritized[i].unit]);
-            }
-        } else {
-            units = normalizeUnits(units);
-            if (isFunction(this[units])) {
-                return this[units](value);
-            }
-        }
-        return this;
-    }
-
-    function zeroFill(number, targetLength, forceSign) {
-        var absNumber = '' + Math.abs(number),
-            zerosToFill = targetLength - absNumber.length,
-            sign = number >= 0;
-        return (sign ? (forceSign ? '+' : '') : '-') +
-            Math.pow(10, Math.max(0, zerosToFill)).toString().substr(1) + absNumber;
-    }
-
-    var formattingTokens = /(\[[^\[]*\])|(\\)?([Hh]mm(ss)?|Mo|MM?M?M?|Do|DDDo|DD?D?D?|ddd?d?|do?|w[o|w]?|W[o|W]?|Qo?|YYYYYY|YYYYY|YYYY|YY|gg(ggg?)?|GG(GGG?)?|e|E|a|A|hh?|HH?|kk?|mm?|ss?|S{1,9}|x|X|zz?|ZZ?|.)/g;
-
-    var localFormattingTokens = /(\[[^\[]*\])|(\\)?(LTS|LT|LL?L?L?|l{1,4})/g;
-
-    var formatFunctions = {};
-
-    var formatTokenFunctions = {};
-
-    // token:    'M'
-    // padded:   ['MM', 2]
-    // ordinal:  'Mo'
-    // callback: function () { this.month() + 1 }
-    function addFormatToken (token, padded, ordinal, callback) {
-        var func = callback;
-        if (typeof callback === 'string') {
-            func = function () {
-                return this[callback]();
-            };
-        }
-        if (token) {
-            formatTokenFunctions[token] = func;
-        }
-        if (padded) {
-            formatTokenFunctions[padded[0]] = function () {
-                return zeroFill(func.apply(this, arguments), padded[1], padded[2]);
-            };
-        }
-        if (ordinal) {
-            formatTokenFunctions[ordinal] = function () {
-                return this.localeData().ordinal(func.apply(this, arguments), token);
-            };
-        }
-    }
-
-    function removeFormattingTokens(input) {
-        if (input.match(/\[[\s\S]/)) {
-            return input.replace(/^\[|\]$/g, '');
-        }
-        return input.replace(/\\/g, '');
-    }
-
-    function makeFormatFunction(format) {
-        var array = format.match(formattingTokens), i, length;
-
-        for (i = 0, length = array.length; i < length; i++) {
-            if (formatTokenFunctions[array[i]]) {
-                array[i] = formatTokenFunctions[array[i]];
-            } else {
-                array[i] = removeFormattingTokens(array[i]);
-            }
-        }
-
-        return function (mom) {
-            var output = '', i;
-            for (i = 0; i < length; i++) {
-                output += array[i] instanceof Function ? array[i].call(mom, format) : array[i];
-            }
-            return output;
-        };
-    }
-
-    // format date using native date object
-    function formatMoment(m, format) {
-        if (!m.isValid()) {
-            return m.localeData().invalidDate();
-        }
-
-        format = expandFormat(format, m.localeData());
-        formatFunctions[format] = formatFunctions[format] || makeFormatFunction(format);
-
-        return formatFunctions[format](m);
-    }
-
-    function expandFormat(format, locale) {
-        var i = 5;
-
-        function replaceLongDateFormatTokens(input) {
-            return locale.longDateFormat(input) || input;
-        }
-
-        localFormattingTokens.lastIndex = 0;
-        while (i >= 0 && localFormattingTokens.test(format)) {
-            format = format.replace(localFormattingTokens, replaceLongDateFormatTokens);
-            localFormattingTokens.lastIndex = 0;
-            i -= 1;
-        }
-
+    if (format || !formatUpper) {
         return format;
     }
 
-    var match1         = /\d/;            //       0 - 9
-    var match2         = /\d\d/;          //      00 - 99
-    var match3         = /\d{3}/;         //     000 - 999
-    var match4         = /\d{4}/;         //    0000 - 9999
-    var match6         = /[+-]?\d{6}/;    // -999999 - 999999
-    var match1to2      = /\d\d?/;         //       0 - 99
-    var match3to4      = /\d\d\d\d?/;     //     999 - 9999
-    var match5to6      = /\d\d\d\d\d\d?/; //   99999 - 999999
-    var match1to3      = /\d{1,3}/;       //       0 - 999
-    var match1to4      = /\d{1,4}/;       //       0 - 9999
-    var match1to6      = /[+-]?\d{1,6}/;  // -999999 - 999999
+    this._longDateFormat[key] = formatUpper.replace(/MMMM|MM|DD|dddd/g, function (val) {
+        return val.slice(1);
+    });
 
-    var matchUnsigned  = /\d+/;           //       0 - inf
-    var matchSigned    = /[+-]?\d+/;      //    -inf - inf
+    return this._longDateFormat[key];
+}
 
-    var matchOffset    = /Z|[+-]\d\d:?\d\d/gi; // +00:00 -00:00 +0000 -0000 or Z
-    var matchShortOffset = /Z|[+-]\d\d(?::?\d\d)?/gi; // +00 -00 +00:00 -00:00 +0000 -0000 or Z
+var defaultInvalidDate = 'Invalid date';
 
-    var matchTimestamp = /[+-]?\d+(\.\d{1,3})?/; // 123456789 123456789.123
+function invalidDate () {
+    return this._invalidDate;
+}
 
-    // any word (or two) characters or numbers including two/three word month in arabic.
-    // includes scottish gaelic two word and hyphenated months
-    var matchWord = /[0-9]*['a-z\u00A0-\u05FF\u0700-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+|[\u0600-\u06FF\/]+(\s*?[\u0600-\u06FF]+){1,2}/i;
+var defaultOrdinal = '%d';
+var defaultOrdinalParse = /\d{1,2}/;
 
+function ordinal (number) {
+    return this._ordinal.replace('%d', number);
+}
 
-    var regexes = {};
+var defaultRelativeTime = {
+    future : 'in %s',
+    past   : '%s ago',
+    s  : 'a few seconds',
+    m  : 'a minute',
+    mm : '%d minutes',
+    h  : 'an hour',
+    hh : '%d hours',
+    d  : 'a day',
+    dd : '%d days',
+    M  : 'a month',
+    MM : '%d months',
+    y  : 'a year',
+    yy : '%d years'
+};
 
-    function addRegexToken (token, regex, strictRegex) {
-        regexes[token] = isFunction(regex) ? regex : function (isStrict, localeData) {
-            return (isStrict && strictRegex) ? strictRegex : regex;
-        };
-    }
+function relativeTime (number, withoutSuffix, string, isFuture) {
+    var output = this._relativeTime[string];
+    return (isFunction(output)) ?
+        output(number, withoutSuffix, string, isFuture) :
+        output.replace(/%d/i, number);
+}
 
-    function getParseRegexForToken (token, config) {
-        if (!hasOwnProp(regexes, token)) {
-            return new RegExp(unescapeFormat(token));
-        }
+function pastFuture (diff, output) {
+    var format = this._relativeTime[diff > 0 ? 'future' : 'past'];
+    return isFunction(format) ? format(output) : format.replace(/%s/i, output);
+}
 
-        return regexes[token](config._strict, config._locale);
-    }
+var aliases = {};
 
-    // Code from http://stackoverflow.com/questions/3561493/is-there-a-regexp-escape-function-in-javascript
-    function unescapeFormat(s) {
-        return regexEscape(s.replace('\\', '').replace(/\\(\[)|\\(\])|\[([^\]\[]*)\]|\\(.)/g, function (matched, p1, p2, p3, p4) {
-            return p1 || p2 || p3 || p4;
-        }));
-    }
+function addUnitAlias (unit, shorthand) {
+    var lowerCase = unit.toLowerCase();
+    aliases[lowerCase] = aliases[lowerCase + 's'] = aliases[shorthand] = unit;
+}
 
-    function regexEscape(s) {
-        return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
-    }
+function normalizeUnits(units) {
+    return typeof units === 'string' ? aliases[units] || aliases[units.toLowerCase()] : undefined;
+}
 
-    var tokens = {};
+function normalizeObjectUnits(inputObject) {
+    var normalizedInput = {},
+        normalizedProp,
+        prop;
 
-    function addParseToken (token, callback) {
-        var i, func = callback;
-        if (typeof token === 'string') {
-            token = [token];
-        }
-        if (typeof callback === 'number') {
-            func = function (input, array) {
-                array[callback] = toInt(input);
-            };
-        }
-        for (i = 0; i < token.length; i++) {
-            tokens[token[i]] = func;
-        }
-    }
-
-    function addWeekParseToken (token, callback) {
-        addParseToken(token, function (input, array, config, token) {
-            config._w = config._w || {};
-            callback(input, config._w, config, token);
-        });
-    }
-
-    function addTimeToArrayFromToken(token, input, config) {
-        if (input != null && hasOwnProp(tokens, token)) {
-            tokens[token](input, config._a, config, token);
+    for (prop in inputObject) {
+        if (hasOwnProp(inputObject, prop)) {
+            normalizedProp = normalizeUnits(prop);
+            if (normalizedProp) {
+                normalizedInput[normalizedProp] = inputObject[prop];
+            }
         }
     }
 
-    var YEAR = 0;
-    var MONTH = 1;
-    var DATE = 2;
-    var HOUR = 3;
-    var MINUTE = 4;
-    var SECOND = 5;
-    var MILLISECOND = 6;
-    var WEEK = 7;
-    var WEEKDAY = 8;
+    return normalizedInput;
+}
 
-    var indexOf;
+var priorities = {};
 
-    if (Array.prototype.indexOf) {
-        indexOf = Array.prototype.indexOf;
+function addUnitPriority(unit, priority) {
+    priorities[unit] = priority;
+}
+
+function getPrioritizedUnits(unitsObj) {
+    var units = [];
+    for (var u in unitsObj) {
+        units.push({unit: u, priority: priorities[u]});
+    }
+    units.sort(function (a, b) {
+        return a.priority - b.priority;
+    });
+    return units;
+}
+
+function makeGetSet (unit, keepTime) {
+    return function (value) {
+        if (value != null) {
+            set$1(this, unit, value);
+            hooks.updateOffset(this, keepTime);
+            return this;
+        } else {
+            return get(this, unit);
+        }
+    };
+}
+
+function get (mom, unit) {
+    return mom.isValid() ?
+        mom._d['get' + (mom._isUTC ? 'UTC' : '') + unit]() : NaN;
+}
+
+function set$1 (mom, unit, value) {
+    if (mom.isValid()) {
+        mom._d['set' + (mom._isUTC ? 'UTC' : '') + unit](value);
+    }
+}
+
+// MOMENTS
+
+function stringGet (units) {
+    units = normalizeUnits(units);
+    if (isFunction(this[units])) {
+        return this[units]();
+    }
+    return this;
+}
+
+
+function stringSet (units, value) {
+    if (typeof units === 'object') {
+        units = normalizeObjectUnits(units);
+        var prioritized = getPrioritizedUnits(units);
+        for (var i = 0; i < prioritized.length; i++) {
+            this[prioritized[i].unit](units[prioritized[i].unit]);
+        }
     } else {
-        indexOf = function (o) {
-            // I know
-            var i;
-            for (i = 0; i < this.length; ++i) {
-                if (this[i] === o) {
-                    return i;
-                }
-            }
-            return -1;
+        units = normalizeUnits(units);
+        if (isFunction(this[units])) {
+            return this[units](value);
+        }
+    }
+    return this;
+}
+
+function zeroFill(number, targetLength, forceSign) {
+    var absNumber = '' + Math.abs(number),
+        zerosToFill = targetLength - absNumber.length,
+        sign = number >= 0;
+    return (sign ? (forceSign ? '+' : '') : '-') +
+        Math.pow(10, Math.max(0, zerosToFill)).toString().substr(1) + absNumber;
+}
+
+var formattingTokens = /(\[[^\[]*\])|(\\)?([Hh]mm(ss)?|Mo|MM?M?M?|Do|DDDo|DD?D?D?|ddd?d?|do?|w[o|w]?|W[o|W]?|Qo?|YYYYYY|YYYYY|YYYY|YY|gg(ggg?)?|GG(GGG?)?|e|E|a|A|hh?|HH?|kk?|mm?|ss?|S{1,9}|x|X|zz?|ZZ?|.)/g;
+
+var localFormattingTokens = /(\[[^\[]*\])|(\\)?(LTS|LT|LL?L?L?|l{1,4})/g;
+
+var formatFunctions = {};
+
+var formatTokenFunctions = {};
+
+// token:    'M'
+// padded:   ['MM', 2]
+// ordinal:  'Mo'
+// callback: function () { this.month() + 1 }
+function addFormatToken (token, padded, ordinal, callback) {
+    var func = callback;
+    if (typeof callback === 'string') {
+        func = function () {
+            return this[callback]();
         };
     }
-
-    function daysInMonth(year, month) {
-        return new Date(Date.UTC(year, month + 1, 0)).getUTCDate();
+    if (token) {
+        formatTokenFunctions[token] = func;
     }
+    if (padded) {
+        formatTokenFunctions[padded[0]] = function () {
+            return zeroFill(func.apply(this, arguments), padded[1], padded[2]);
+        };
+    }
+    if (ordinal) {
+        formatTokenFunctions[ordinal] = function () {
+            return this.localeData().ordinal(func.apply(this, arguments), token);
+        };
+    }
+}
 
-    // FORMATTING
+function removeFormattingTokens(input) {
+    if (input.match(/\[[\s\S]/)) {
+        return input.replace(/^\[|\]$/g, '');
+    }
+    return input.replace(/\\/g, '');
+}
 
-    addFormatToken('M', ['MM', 2], 'Mo', function () {
-        return this.month() + 1;
-    });
+function makeFormatFunction(format) {
+    var array = format.match(formattingTokens), i, length;
 
-    addFormatToken('MMM', 0, 0, function (format) {
-        return this.localeData().monthsShort(this, format);
-    });
-
-    addFormatToken('MMMM', 0, 0, function (format) {
-        return this.localeData().months(this, format);
-    });
-
-    // ALIASES
-
-    addUnitAlias('month', 'M');
-
-    // PRIORITY
-
-    addUnitPriority('month', 8);
-
-    // PARSING
-
-    addRegexToken('M',    match1to2);
-    addRegexToken('MM',   match1to2, match2);
-    addRegexToken('MMM',  function (isStrict, locale) {
-        return locale.monthsShortRegex(isStrict);
-    });
-    addRegexToken('MMMM', function (isStrict, locale) {
-        return locale.monthsRegex(isStrict);
-    });
-
-    addParseToken(['M', 'MM'], function (input, array) {
-        array[MONTH] = toInt(input) - 1;
-    });
-
-    addParseToken(['MMM', 'MMMM'], function (input, array, config, token) {
-        var month = config._locale.monthsParse(input, token, config._strict);
-        // if we didn't find a month name, mark the date as invalid.
-        if (month != null) {
-            array[MONTH] = month;
+    for (i = 0, length = array.length; i < length; i++) {
+        if (formatTokenFunctions[array[i]]) {
+            array[i] = formatTokenFunctions[array[i]];
         } else {
-            getParsingFlags(config).invalidMonth = input;
+            array[i] = removeFormattingTokens(array[i]);
         }
+    }
+
+    return function (mom) {
+        var output = '', i;
+        for (i = 0; i < length; i++) {
+            output += array[i] instanceof Function ? array[i].call(mom, format) : array[i];
+        }
+        return output;
+    };
+}
+
+// format date using native date object
+function formatMoment(m, format) {
+    if (!m.isValid()) {
+        return m.localeData().invalidDate();
+    }
+
+    format = expandFormat(format, m.localeData());
+    formatFunctions[format] = formatFunctions[format] || makeFormatFunction(format);
+
+    return formatFunctions[format](m);
+}
+
+function expandFormat(format, locale) {
+    var i = 5;
+
+    function replaceLongDateFormatTokens(input) {
+        return locale.longDateFormat(input) || input;
+    }
+
+    localFormattingTokens.lastIndex = 0;
+    while (i >= 0 && localFormattingTokens.test(format)) {
+        format = format.replace(localFormattingTokens, replaceLongDateFormatTokens);
+        localFormattingTokens.lastIndex = 0;
+        i -= 1;
+    }
+
+    return format;
+}
+
+var match1         = /\d/;            //       0 - 9
+var match2         = /\d\d/;          //      00 - 99
+var match3         = /\d{3}/;         //     000 - 999
+var match4         = /\d{4}/;         //    0000 - 9999
+var match6         = /[+-]?\d{6}/;    // -999999 - 999999
+var match1to2      = /\d\d?/;         //       0 - 99
+var match3to4      = /\d\d\d\d?/;     //     999 - 9999
+var match5to6      = /\d\d\d\d\d\d?/; //   99999 - 999999
+var match1to3      = /\d{1,3}/;       //       0 - 999
+var match1to4      = /\d{1,4}/;       //       0 - 9999
+var match1to6      = /[+-]?\d{1,6}/;  // -999999 - 999999
+
+var matchUnsigned  = /\d+/;           //       0 - inf
+var matchSigned    = /[+-]?\d+/;      //    -inf - inf
+
+var matchOffset    = /Z|[+-]\d\d:?\d\d/gi; // +00:00 -00:00 +0000 -0000 or Z
+var matchShortOffset = /Z|[+-]\d\d(?::?\d\d)?/gi; // +00 -00 +00:00 -00:00 +0000 -0000 or Z
+
+var matchTimestamp = /[+-]?\d+(\.\d{1,3})?/; // 123456789 123456789.123
+
+// any word (or two) characters or numbers including two/three word month in arabic.
+// includes scottish gaelic two word and hyphenated months
+var matchWord = /[0-9]*['a-z\u00A0-\u05FF\u0700-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+|[\u0600-\u06FF\/]+(\s*?[\u0600-\u06FF]+){1,2}/i;
+
+
+var regexes = {};
+
+function addRegexToken (token, regex, strictRegex) {
+    regexes[token] = isFunction(regex) ? regex : function (isStrict, localeData) {
+        return (isStrict && strictRegex) ? strictRegex : regex;
+    };
+}
+
+function getParseRegexForToken (token, config) {
+    if (!hasOwnProp(regexes, token)) {
+        return new RegExp(unescapeFormat(token));
+    }
+
+    return regexes[token](config._strict, config._locale);
+}
+
+// Code from http://stackoverflow.com/questions/3561493/is-there-a-regexp-escape-function-in-javascript
+function unescapeFormat(s) {
+    return regexEscape(s.replace('\\', '').replace(/\\(\[)|\\(\])|\[([^\]\[]*)\]|\\(.)/g, function (matched, p1, p2, p3, p4) {
+        return p1 || p2 || p3 || p4;
+    }));
+}
+
+function regexEscape(s) {
+    return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+}
+
+var tokens = {};
+
+function addParseToken (token, callback) {
+    var i, func = callback;
+    if (typeof token === 'string') {
+        token = [token];
+    }
+    if (isNumber(callback)) {
+        func = function (input, array) {
+            array[callback] = toInt(input);
+        };
+    }
+    for (i = 0; i < token.length; i++) {
+        tokens[token[i]] = func;
+    }
+}
+
+function addWeekParseToken (token, callback) {
+    addParseToken(token, function (input, array, config, token) {
+        config._w = config._w || {};
+        callback(input, config._w, config, token);
     });
+}
 
-    // LOCALES
-
-    var MONTHS_IN_FORMAT = /D[oD]?(\[[^\[\]]*\]|\s+)+MMMM?/;
-    var defaultLocaleMonths = 'January_February_March_April_May_June_July_August_September_October_November_December'.split('_');
-    function localeMonths (m, format) {
-        return isArray(this._months) ? this._months[m.month()] :
-            this._months[(this._months.isFormat || MONTHS_IN_FORMAT).test(format) ? 'format' : 'standalone'][m.month()];
+function addTimeToArrayFromToken(token, input, config) {
+    if (input != null && hasOwnProp(tokens, token)) {
+        tokens[token](input, config._a, config, token);
     }
+}
 
-    var defaultLocaleMonthsShort = 'Jan_Feb_Mar_Apr_May_Jun_Jul_Aug_Sep_Oct_Nov_Dec'.split('_');
-    function localeMonthsShort (m, format) {
-        return isArray(this._monthsShort) ? this._monthsShort[m.month()] :
-            this._monthsShort[MONTHS_IN_FORMAT.test(format) ? 'format' : 'standalone'][m.month()];
-    }
+var YEAR = 0;
+var MONTH = 1;
+var DATE = 2;
+var HOUR = 3;
+var MINUTE = 4;
+var SECOND = 5;
+var MILLISECOND = 6;
+var WEEK = 7;
+var WEEKDAY = 8;
 
-    function units_month__handleStrictParse(monthName, format, strict) {
-        var i, ii, mom, llc = monthName.toLocaleLowerCase();
-        if (!this._monthsParse) {
-            // this is not used
-            this._monthsParse = [];
-            this._longMonthsParse = [];
-            this._shortMonthsParse = [];
-            for (i = 0; i < 12; ++i) {
-                mom = create_utc__createUTC([2000, i]);
-                this._shortMonthsParse[i] = this.monthsShort(mom, '').toLocaleLowerCase();
-                this._longMonthsParse[i] = this.months(mom, '').toLocaleLowerCase();
+var indexOf;
+
+if (Array.prototype.indexOf) {
+    indexOf = Array.prototype.indexOf;
+} else {
+    indexOf = function (o) {
+        // I know
+        var i;
+        for (i = 0; i < this.length; ++i) {
+            if (this[i] === o) {
+                return i;
             }
         }
+        return -1;
+    };
+}
 
-        if (strict) {
-            if (format === 'MMM') {
-                ii = indexOf.call(this._shortMonthsParse, llc);
-                return ii !== -1 ? ii : null;
-            } else {
-                ii = indexOf.call(this._longMonthsParse, llc);
-                return ii !== -1 ? ii : null;
-            }
+var indexOf$1 = indexOf;
+
+function daysInMonth(year, month) {
+    return new Date(Date.UTC(year, month + 1, 0)).getUTCDate();
+}
+
+// FORMATTING
+
+addFormatToken('M', ['MM', 2], 'Mo', function () {
+    return this.month() + 1;
+});
+
+addFormatToken('MMM', 0, 0, function (format) {
+    return this.localeData().monthsShort(this, format);
+});
+
+addFormatToken('MMMM', 0, 0, function (format) {
+    return this.localeData().months(this, format);
+});
+
+// ALIASES
+
+addUnitAlias('month', 'M');
+
+// PRIORITY
+
+addUnitPriority('month', 8);
+
+// PARSING
+
+addRegexToken('M',    match1to2);
+addRegexToken('MM',   match1to2, match2);
+addRegexToken('MMM',  function (isStrict, locale) {
+    return locale.monthsShortRegex(isStrict);
+});
+addRegexToken('MMMM', function (isStrict, locale) {
+    return locale.monthsRegex(isStrict);
+});
+
+addParseToken(['M', 'MM'], function (input, array) {
+    array[MONTH] = toInt(input) - 1;
+});
+
+addParseToken(['MMM', 'MMMM'], function (input, array, config, token) {
+    var month = config._locale.monthsParse(input, token, config._strict);
+    // if we didn't find a month name, mark the date as invalid.
+    if (month != null) {
+        array[MONTH] = month;
+    } else {
+        getParsingFlags(config).invalidMonth = input;
+    }
+});
+
+// LOCALES
+
+var MONTHS_IN_FORMAT = /D[oD]?(\[[^\[\]]*\]|\s)+MMMM?/;
+var defaultLocaleMonths = 'January_February_March_April_May_June_July_August_September_October_November_December'.split('_');
+function localeMonths (m, format) {
+    if (!m) {
+        return this._months;
+    }
+    return isArray(this._months) ? this._months[m.month()] :
+        this._months[(this._months.isFormat || MONTHS_IN_FORMAT).test(format) ? 'format' : 'standalone'][m.month()];
+}
+
+var defaultLocaleMonthsShort = 'Jan_Feb_Mar_Apr_May_Jun_Jul_Aug_Sep_Oct_Nov_Dec'.split('_');
+function localeMonthsShort (m, format) {
+    if (!m) {
+        return this._monthsShort;
+    }
+    return isArray(this._monthsShort) ? this._monthsShort[m.month()] :
+        this._monthsShort[MONTHS_IN_FORMAT.test(format) ? 'format' : 'standalone'][m.month()];
+}
+
+function handleStrictParse(monthName, format, strict) {
+    var i, ii, mom, llc = monthName.toLocaleLowerCase();
+    if (!this._monthsParse) {
+        // this is not used
+        this._monthsParse = [];
+        this._longMonthsParse = [];
+        this._shortMonthsParse = [];
+        for (i = 0; i < 12; ++i) {
+            mom = createUTC([2000, i]);
+            this._shortMonthsParse[i] = this.monthsShort(mom, '').toLocaleLowerCase();
+            this._longMonthsParse[i] = this.months(mom, '').toLocaleLowerCase();
+        }
+    }
+
+    if (strict) {
+        if (format === 'MMM') {
+            ii = indexOf$1.call(this._shortMonthsParse, llc);
+            return ii !== -1 ? ii : null;
         } else {
-            if (format === 'MMM') {
-                ii = indexOf.call(this._shortMonthsParse, llc);
-                if (ii !== -1) {
-                    return ii;
-                }
-                ii = indexOf.call(this._longMonthsParse, llc);
-                return ii !== -1 ? ii : null;
-            } else {
-                ii = indexOf.call(this._longMonthsParse, llc);
-                if (ii !== -1) {
-                    return ii;
-                }
-                ii = indexOf.call(this._shortMonthsParse, llc);
-                return ii !== -1 ? ii : null;
+            ii = indexOf$1.call(this._longMonthsParse, llc);
+            return ii !== -1 ? ii : null;
+        }
+    } else {
+        if (format === 'MMM') {
+            ii = indexOf$1.call(this._shortMonthsParse, llc);
+            if (ii !== -1) {
+                return ii;
             }
+            ii = indexOf$1.call(this._longMonthsParse, llc);
+            return ii !== -1 ? ii : null;
+        } else {
+            ii = indexOf$1.call(this._longMonthsParse, llc);
+            if (ii !== -1) {
+                return ii;
+            }
+            ii = indexOf$1.call(this._shortMonthsParse, llc);
+            return ii !== -1 ? ii : null;
         }
     }
+}
 
-    function localeMonthsParse (monthName, format, strict) {
-        var i, mom, regex;
+function localeMonthsParse (monthName, format, strict) {
+    var i, mom, regex;
 
-        if (this._monthsParseExact) {
-            return units_month__handleStrictParse.call(this, monthName, format, strict);
-        }
-
-        if (!this._monthsParse) {
-            this._monthsParse = [];
-            this._longMonthsParse = [];
-            this._shortMonthsParse = [];
-        }
-
-        // TODO: add sorting
-        // Sorting makes sure if one month (or abbr) is a prefix of another
-        // see sorting in computeMonthsParse
-        for (i = 0; i < 12; i++) {
-            // make the regex if we don't have it already
-            mom = create_utc__createUTC([2000, i]);
-            if (strict && !this._longMonthsParse[i]) {
-                this._longMonthsParse[i] = new RegExp('^' + this.months(mom, '').replace('.', '') + '$', 'i');
-                this._shortMonthsParse[i] = new RegExp('^' + this.monthsShort(mom, '').replace('.', '') + '$', 'i');
-            }
-            if (!strict && !this._monthsParse[i]) {
-                regex = '^' + this.months(mom, '') + '|^' + this.monthsShort(mom, '');
-                this._monthsParse[i] = new RegExp(regex.replace('.', ''), 'i');
-            }
-            // test the regex
-            if (strict && format === 'MMMM' && this._longMonthsParse[i].test(monthName)) {
-                return i;
-            } else if (strict && format === 'MMM' && this._shortMonthsParse[i].test(monthName)) {
-                return i;
-            } else if (!strict && this._monthsParse[i].test(monthName)) {
-                return i;
-            }
-        }
+    if (this._monthsParseExact) {
+        return handleStrictParse.call(this, monthName, format, strict);
     }
 
-    // MOMENTS
+    if (!this._monthsParse) {
+        this._monthsParse = [];
+        this._longMonthsParse = [];
+        this._shortMonthsParse = [];
+    }
 
-    function setMonth (mom, value) {
-        var dayOfMonth;
-
-        if (!mom.isValid()) {
-            // No op
-            return mom;
+    // TODO: add sorting
+    // Sorting makes sure if one month (or abbr) is a prefix of another
+    // see sorting in computeMonthsParse
+    for (i = 0; i < 12; i++) {
+        // make the regex if we don't have it already
+        mom = createUTC([2000, i]);
+        if (strict && !this._longMonthsParse[i]) {
+            this._longMonthsParse[i] = new RegExp('^' + this.months(mom, '').replace('.', '') + '$', 'i');
+            this._shortMonthsParse[i] = new RegExp('^' + this.monthsShort(mom, '').replace('.', '') + '$', 'i');
         }
-
-        if (typeof value === 'string') {
-            if (/^\d+$/.test(value)) {
-                value = toInt(value);
-            } else {
-                value = mom.localeData().monthsParse(value);
-                // TODO: Another silent failure?
-                if (typeof value !== 'number') {
-                    return mom;
-                }
-            }
+        if (!strict && !this._monthsParse[i]) {
+            regex = '^' + this.months(mom, '') + '|^' + this.monthsShort(mom, '');
+            this._monthsParse[i] = new RegExp(regex.replace('.', ''), 'i');
         }
+        // test the regex
+        if (strict && format === 'MMMM' && this._longMonthsParse[i].test(monthName)) {
+            return i;
+        } else if (strict && format === 'MMM' && this._shortMonthsParse[i].test(monthName)) {
+            return i;
+        } else if (!strict && this._monthsParse[i].test(monthName)) {
+            return i;
+        }
+    }
+}
 
-        dayOfMonth = Math.min(mom.date(), daysInMonth(mom.year(), value));
-        mom._d['set' + (mom._isUTC ? 'UTC' : '') + 'Month'](value, dayOfMonth);
+// MOMENTS
+
+function setMonth (mom, value) {
+    var dayOfMonth;
+
+    if (!mom.isValid()) {
+        // No op
         return mom;
     }
 
-    function getSetMonth (value) {
-        if (value != null) {
-            setMonth(this, value);
-            utils_hooks__hooks.updateOffset(this, true);
-            return this;
+    if (typeof value === 'string') {
+        if (/^\d+$/.test(value)) {
+            value = toInt(value);
         } else {
-            return get_set__get(this, 'Month');
+            value = mom.localeData().monthsParse(value);
+            // TODO: Another silent failure?
+            if (!isNumber(value)) {
+                return mom;
+            }
         }
     }
 
-    function getDaysInMonth () {
-        return daysInMonth(this.year(), this.month());
-    }
+    dayOfMonth = Math.min(mom.date(), daysInMonth(mom.year(), value));
+    mom._d['set' + (mom._isUTC ? 'UTC' : '') + 'Month'](value, dayOfMonth);
+    return mom;
+}
 
-    var defaultMonthsShortRegex = matchWord;
-    function monthsShortRegex (isStrict) {
-        if (this._monthsParseExact) {
-            if (!hasOwnProp(this, '_monthsRegex')) {
-                computeMonthsParse.call(this);
-            }
-            if (isStrict) {
-                return this._monthsShortStrictRegex;
-            } else {
-                return this._monthsShortRegex;
-            }
+function getSetMonth (value) {
+    if (value != null) {
+        setMonth(this, value);
+        hooks.updateOffset(this, true);
+        return this;
+    } else {
+        return get(this, 'Month');
+    }
+}
+
+function getDaysInMonth () {
+    return daysInMonth(this.year(), this.month());
+}
+
+var defaultMonthsShortRegex = matchWord;
+function monthsShortRegex (isStrict) {
+    if (this._monthsParseExact) {
+        if (!hasOwnProp(this, '_monthsRegex')) {
+            computeMonthsParse.call(this);
+        }
+        if (isStrict) {
+            return this._monthsShortStrictRegex;
         } else {
-            if (!hasOwnProp(this, '_monthsShortRegex')) {
-                this._monthsShortRegex = defaultMonthsShortRegex;
-            }
-            return this._monthsShortStrictRegex && isStrict ?
-                this._monthsShortStrictRegex : this._monthsShortRegex;
+            return this._monthsShortRegex;
         }
+    } else {
+        if (!hasOwnProp(this, '_monthsShortRegex')) {
+            this._monthsShortRegex = defaultMonthsShortRegex;
+        }
+        return this._monthsShortStrictRegex && isStrict ?
+            this._monthsShortStrictRegex : this._monthsShortRegex;
     }
+}
 
-    var defaultMonthsRegex = matchWord;
-    function monthsRegex (isStrict) {
-        if (this._monthsParseExact) {
-            if (!hasOwnProp(this, '_monthsRegex')) {
-                computeMonthsParse.call(this);
-            }
-            if (isStrict) {
-                return this._monthsStrictRegex;
-            } else {
-                return this._monthsRegex;
-            }
+var defaultMonthsRegex = matchWord;
+function monthsRegex (isStrict) {
+    if (this._monthsParseExact) {
+        if (!hasOwnProp(this, '_monthsRegex')) {
+            computeMonthsParse.call(this);
+        }
+        if (isStrict) {
+            return this._monthsStrictRegex;
         } else {
-            if (!hasOwnProp(this, '_monthsRegex')) {
-                this._monthsRegex = defaultMonthsRegex;
-            }
-            return this._monthsStrictRegex && isStrict ?
-                this._monthsStrictRegex : this._monthsRegex;
+            return this._monthsRegex;
         }
+    } else {
+        if (!hasOwnProp(this, '_monthsRegex')) {
+            this._monthsRegex = defaultMonthsRegex;
+        }
+        return this._monthsStrictRegex && isStrict ?
+            this._monthsStrictRegex : this._monthsRegex;
+    }
+}
+
+function computeMonthsParse () {
+    function cmpLenRev(a, b) {
+        return b.length - a.length;
     }
 
-    function computeMonthsParse () {
-        function cmpLenRev(a, b) {
-            return b.length - a.length;
-        }
-
-        var shortPieces = [], longPieces = [], mixedPieces = [],
-            i, mom;
-        for (i = 0; i < 12; i++) {
-            // make the regex if we don't have it already
-            mom = create_utc__createUTC([2000, i]);
-            shortPieces.push(this.monthsShort(mom, ''));
-            longPieces.push(this.months(mom, ''));
-            mixedPieces.push(this.months(mom, ''));
-            mixedPieces.push(this.monthsShort(mom, ''));
-        }
-        // Sorting makes sure if one month (or abbr) is a prefix of another it
-        // will match the longer piece.
-        shortPieces.sort(cmpLenRev);
-        longPieces.sort(cmpLenRev);
-        mixedPieces.sort(cmpLenRev);
-        for (i = 0; i < 12; i++) {
-            shortPieces[i] = regexEscape(shortPieces[i]);
-            longPieces[i] = regexEscape(longPieces[i]);
-        }
-        for (i = 0; i < 24; i++) {
-            mixedPieces[i] = regexEscape(mixedPieces[i]);
-        }
-
-        this._monthsRegex = new RegExp('^(' + mixedPieces.join('|') + ')', 'i');
-        this._monthsShortRegex = this._monthsRegex;
-        this._monthsStrictRegex = new RegExp('^(' + longPieces.join('|') + ')', 'i');
-        this._monthsShortStrictRegex = new RegExp('^(' + shortPieces.join('|') + ')', 'i');
+    var shortPieces = [], longPieces = [], mixedPieces = [],
+        i, mom;
+    for (i = 0; i < 12; i++) {
+        // make the regex if we don't have it already
+        mom = createUTC([2000, i]);
+        shortPieces.push(this.monthsShort(mom, ''));
+        longPieces.push(this.months(mom, ''));
+        mixedPieces.push(this.months(mom, ''));
+        mixedPieces.push(this.monthsShort(mom, ''));
+    }
+    // Sorting makes sure if one month (or abbr) is a prefix of another it
+    // will match the longer piece.
+    shortPieces.sort(cmpLenRev);
+    longPieces.sort(cmpLenRev);
+    mixedPieces.sort(cmpLenRev);
+    for (i = 0; i < 12; i++) {
+        shortPieces[i] = regexEscape(shortPieces[i]);
+        longPieces[i] = regexEscape(longPieces[i]);
+    }
+    for (i = 0; i < 24; i++) {
+        mixedPieces[i] = regexEscape(mixedPieces[i]);
     }
 
-    // FORMATTING
+    this._monthsRegex = new RegExp('^(' + mixedPieces.join('|') + ')', 'i');
+    this._monthsShortRegex = this._monthsRegex;
+    this._monthsStrictRegex = new RegExp('^(' + longPieces.join('|') + ')', 'i');
+    this._monthsShortStrictRegex = new RegExp('^(' + shortPieces.join('|') + ')', 'i');
+}
 
-    addFormatToken('Y', 0, 0, function () {
-        var y = this.year();
-        return y <= 9999 ? '' + y : '+' + y;
-    });
+// FORMATTING
 
-    addFormatToken(0, ['YY', 2], 0, function () {
-        return this.year() % 100;
-    });
+addFormatToken('Y', 0, 0, function () {
+    var y = this.year();
+    return y <= 9999 ? '' + y : '+' + y;
+});
 
-    addFormatToken(0, ['YYYY',   4],       0, 'year');
-    addFormatToken(0, ['YYYYY',  5],       0, 'year');
-    addFormatToken(0, ['YYYYYY', 6, true], 0, 'year');
+addFormatToken(0, ['YY', 2], 0, function () {
+    return this.year() % 100;
+});
 
-    // ALIASES
+addFormatToken(0, ['YYYY',   4],       0, 'year');
+addFormatToken(0, ['YYYYY',  5],       0, 'year');
+addFormatToken(0, ['YYYYYY', 6, true], 0, 'year');
 
-    addUnitAlias('year', 'y');
+// ALIASES
 
-    // PRIORITIES
+addUnitAlias('year', 'y');
 
-    addUnitPriority('year', 1);
+// PRIORITIES
 
-    // PARSING
+addUnitPriority('year', 1);
 
-    addRegexToken('Y',      matchSigned);
-    addRegexToken('YY',     match1to2, match2);
-    addRegexToken('YYYY',   match1to4, match4);
-    addRegexToken('YYYYY',  match1to6, match6);
-    addRegexToken('YYYYYY', match1to6, match6);
+// PARSING
 
-    addParseToken(['YYYYY', 'YYYYYY'], YEAR);
-    addParseToken('YYYY', function (input, array) {
-        array[YEAR] = input.length === 2 ? utils_hooks__hooks.parseTwoDigitYear(input) : toInt(input);
-    });
-    addParseToken('YY', function (input, array) {
-        array[YEAR] = utils_hooks__hooks.parseTwoDigitYear(input);
-    });
-    addParseToken('Y', function (input, array) {
-        array[YEAR] = parseInt(input, 10);
-    });
+addRegexToken('Y',      matchSigned);
+addRegexToken('YY',     match1to2, match2);
+addRegexToken('YYYY',   match1to4, match4);
+addRegexToken('YYYYY',  match1to6, match6);
+addRegexToken('YYYYYY', match1to6, match6);
 
-    // HELPERS
+addParseToken(['YYYYY', 'YYYYYY'], YEAR);
+addParseToken('YYYY', function (input, array) {
+    array[YEAR] = input.length === 2 ? hooks.parseTwoDigitYear(input) : toInt(input);
+});
+addParseToken('YY', function (input, array) {
+    array[YEAR] = hooks.parseTwoDigitYear(input);
+});
+addParseToken('Y', function (input, array) {
+    array[YEAR] = parseInt(input, 10);
+});
 
-    function daysInYear(year) {
-        return isLeapYear(year) ? 366 : 365;
+// HELPERS
+
+function daysInYear(year) {
+    return isLeapYear(year) ? 366 : 365;
+}
+
+function isLeapYear(year) {
+    return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
+}
+
+// HOOKS
+
+hooks.parseTwoDigitYear = function (input) {
+    return toInt(input) + (toInt(input) > 68 ? 1900 : 2000);
+};
+
+// MOMENTS
+
+var getSetYear = makeGetSet('FullYear', true);
+
+function getIsLeapYear () {
+    return isLeapYear(this.year());
+}
+
+function createDate (y, m, d, h, M, s, ms) {
+    //can't just apply() to create a date:
+    //http://stackoverflow.com/questions/181348/instantiating-a-javascript-object-by-calling-prototype-constructor-apply
+    var date = new Date(y, m, d, h, M, s, ms);
+
+    //the date constructor remaps years 0-99 to 1900-1999
+    if (y < 100 && y >= 0 && isFinite(date.getFullYear())) {
+        date.setFullYear(y);
+    }
+    return date;
+}
+
+function createUTCDate (y) {
+    var date = new Date(Date.UTC.apply(null, arguments));
+
+    //the Date.UTC function remaps years 0-99 to 1900-1999
+    if (y < 100 && y >= 0 && isFinite(date.getUTCFullYear())) {
+        date.setUTCFullYear(y);
+    }
+    return date;
+}
+
+// start-of-first-week - start-of-year
+function firstWeekOffset(year, dow, doy) {
+    var // first-week day -- which january is always in the first week (4 for iso, 1 for other)
+        fwd = 7 + dow - doy,
+        // first-week day local weekday -- which local weekday is fwd
+        fwdlw = (7 + createUTCDate(year, 0, fwd).getUTCDay() - dow) % 7;
+
+    return -fwdlw + fwd - 1;
+}
+
+//http://en.wikipedia.org/wiki/ISO_week_date#Calculating_a_date_given_the_year.2C_week_number_and_weekday
+function dayOfYearFromWeeks(year, week, weekday, dow, doy) {
+    var localWeekday = (7 + weekday - dow) % 7,
+        weekOffset = firstWeekOffset(year, dow, doy),
+        dayOfYear = 1 + 7 * (week - 1) + localWeekday + weekOffset,
+        resYear, resDayOfYear;
+
+    if (dayOfYear <= 0) {
+        resYear = year - 1;
+        resDayOfYear = daysInYear(resYear) + dayOfYear;
+    } else if (dayOfYear > daysInYear(year)) {
+        resYear = year + 1;
+        resDayOfYear = dayOfYear - daysInYear(year);
+    } else {
+        resYear = year;
+        resDayOfYear = dayOfYear;
     }
 
-    function isLeapYear(year) {
-        return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
-    }
-
-    // HOOKS
-
-    utils_hooks__hooks.parseTwoDigitYear = function (input) {
-        return toInt(input) + (toInt(input) > 68 ? 1900 : 2000);
+    return {
+        year: resYear,
+        dayOfYear: resDayOfYear
     };
+}
 
-    // MOMENTS
+function weekOfYear(mom, dow, doy) {
+    var weekOffset = firstWeekOffset(mom.year(), dow, doy),
+        week = Math.floor((mom.dayOfYear() - weekOffset - 1) / 7) + 1,
+        resWeek, resYear;
 
-    var getSetYear = makeGetSet('FullYear', true);
-
-    function getIsLeapYear () {
-        return isLeapYear(this.year());
+    if (week < 1) {
+        resYear = mom.year() - 1;
+        resWeek = week + weeksInYear(resYear, dow, doy);
+    } else if (week > weeksInYear(mom.year(), dow, doy)) {
+        resWeek = week - weeksInYear(mom.year(), dow, doy);
+        resYear = mom.year() + 1;
+    } else {
+        resYear = mom.year();
+        resWeek = week;
     }
 
-    function createDate (y, m, d, h, M, s, ms) {
-        //can't just apply() to create a date:
-        //http://stackoverflow.com/questions/181348/instantiating-a-javascript-object-by-calling-prototype-constructor-apply
-        var date = new Date(y, m, d, h, M, s, ms);
-
-        //the date constructor remaps years 0-99 to 1900-1999
-        if (y < 100 && y >= 0 && isFinite(date.getFullYear())) {
-            date.setFullYear(y);
-        }
-        return date;
-    }
-
-    function createUTCDate (y) {
-        var date = new Date(Date.UTC.apply(null, arguments));
-
-        //the Date.UTC function remaps years 0-99 to 1900-1999
-        if (y < 100 && y >= 0 && isFinite(date.getUTCFullYear())) {
-            date.setUTCFullYear(y);
-        }
-        return date;
-    }
-
-    // start-of-first-week - start-of-year
-    function firstWeekOffset(year, dow, doy) {
-        var // first-week day -- which january is always in the first week (4 for iso, 1 for other)
-            fwd = 7 + dow - doy,
-            // first-week day local weekday -- which local weekday is fwd
-            fwdlw = (7 + createUTCDate(year, 0, fwd).getUTCDay() - dow) % 7;
-
-        return -fwdlw + fwd - 1;
-    }
-
-    //http://en.wikipedia.org/wiki/ISO_week_date#Calculating_a_date_given_the_year.2C_week_number_and_weekday
-    function dayOfYearFromWeeks(year, week, weekday, dow, doy) {
-        var localWeekday = (7 + weekday - dow) % 7,
-            weekOffset = firstWeekOffset(year, dow, doy),
-            dayOfYear = 1 + 7 * (week - 1) + localWeekday + weekOffset,
-            resYear, resDayOfYear;
-
-        if (dayOfYear <= 0) {
-            resYear = year - 1;
-            resDayOfYear = daysInYear(resYear) + dayOfYear;
-        } else if (dayOfYear > daysInYear(year)) {
-            resYear = year + 1;
-            resDayOfYear = dayOfYear - daysInYear(year);
-        } else {
-            resYear = year;
-            resDayOfYear = dayOfYear;
-        }
-
-        return {
-            year: resYear,
-            dayOfYear: resDayOfYear
-        };
-    }
-
-    function weekOfYear(mom, dow, doy) {
-        var weekOffset = firstWeekOffset(mom.year(), dow, doy),
-            week = Math.floor((mom.dayOfYear() - weekOffset - 1) / 7) + 1,
-            resWeek, resYear;
-
-        if (week < 1) {
-            resYear = mom.year() - 1;
-            resWeek = week + weeksInYear(resYear, dow, doy);
-        } else if (week > weeksInYear(mom.year(), dow, doy)) {
-            resWeek = week - weeksInYear(mom.year(), dow, doy);
-            resYear = mom.year() + 1;
-        } else {
-            resYear = mom.year();
-            resWeek = week;
-        }
-
-        return {
-            week: resWeek,
-            year: resYear
-        };
-    }
-
-    function weeksInYear(year, dow, doy) {
-        var weekOffset = firstWeekOffset(year, dow, doy),
-            weekOffsetNext = firstWeekOffset(year + 1, dow, doy);
-        return (daysInYear(year) - weekOffset + weekOffsetNext) / 7;
-    }
-
-    // FORMATTING
-
-    addFormatToken('w', ['ww', 2], 'wo', 'week');
-    addFormatToken('W', ['WW', 2], 'Wo', 'isoWeek');
-
-    // ALIASES
-
-    addUnitAlias('week', 'w');
-    addUnitAlias('isoWeek', 'W');
-
-    // PRIORITIES
-
-    addUnitPriority('week', 5);
-    addUnitPriority('isoWeek', 5);
-
-    // PARSING
-
-    addRegexToken('w',  match1to2);
-    addRegexToken('ww', match1to2, match2);
-    addRegexToken('W',  match1to2);
-    addRegexToken('WW', match1to2, match2);
-
-    addWeekParseToken(['w', 'ww', 'W', 'WW'], function (input, week, config, token) {
-        week[token.substr(0, 1)] = toInt(input);
-    });
-
-    // HELPERS
-
-    // LOCALES
-
-    function localeWeek (mom) {
-        return weekOfYear(mom, this._week.dow, this._week.doy).week;
-    }
-
-    var defaultLocaleWeek = {
-        dow : 0, // Sunday is the first day of the week.
-        doy : 6  // The week that contains Jan 1st is the first week of the year.
+    return {
+        week: resWeek,
+        year: resYear
     };
+}
 
-    function localeFirstDayOfWeek () {
-        return this._week.dow;
+function weeksInYear(year, dow, doy) {
+    var weekOffset = firstWeekOffset(year, dow, doy),
+        weekOffsetNext = firstWeekOffset(year + 1, dow, doy);
+    return (daysInYear(year) - weekOffset + weekOffsetNext) / 7;
+}
+
+// FORMATTING
+
+addFormatToken('w', ['ww', 2], 'wo', 'week');
+addFormatToken('W', ['WW', 2], 'Wo', 'isoWeek');
+
+// ALIASES
+
+addUnitAlias('week', 'w');
+addUnitAlias('isoWeek', 'W');
+
+// PRIORITIES
+
+addUnitPriority('week', 5);
+addUnitPriority('isoWeek', 5);
+
+// PARSING
+
+addRegexToken('w',  match1to2);
+addRegexToken('ww', match1to2, match2);
+addRegexToken('W',  match1to2);
+addRegexToken('WW', match1to2, match2);
+
+addWeekParseToken(['w', 'ww', 'W', 'WW'], function (input, week, config, token) {
+    week[token.substr(0, 1)] = toInt(input);
+});
+
+// HELPERS
+
+// LOCALES
+
+function localeWeek (mom) {
+    return weekOfYear(mom, this._week.dow, this._week.doy).week;
+}
+
+var defaultLocaleWeek = {
+    dow : 0, // Sunday is the first day of the week.
+    doy : 6  // The week that contains Jan 1st is the first week of the year.
+};
+
+function localeFirstDayOfWeek () {
+    return this._week.dow;
+}
+
+function localeFirstDayOfYear () {
+    return this._week.doy;
+}
+
+// MOMENTS
+
+function getSetWeek (input) {
+    var week = this.localeData().week(this);
+    return input == null ? week : this.add((input - week) * 7, 'd');
+}
+
+function getSetISOWeek (input) {
+    var week = weekOfYear(this, 1, 4).week;
+    return input == null ? week : this.add((input - week) * 7, 'd');
+}
+
+// FORMATTING
+
+addFormatToken('d', 0, 'do', 'day');
+
+addFormatToken('dd', 0, 0, function (format) {
+    return this.localeData().weekdaysMin(this, format);
+});
+
+addFormatToken('ddd', 0, 0, function (format) {
+    return this.localeData().weekdaysShort(this, format);
+});
+
+addFormatToken('dddd', 0, 0, function (format) {
+    return this.localeData().weekdays(this, format);
+});
+
+addFormatToken('e', 0, 0, 'weekday');
+addFormatToken('E', 0, 0, 'isoWeekday');
+
+// ALIASES
+
+addUnitAlias('day', 'd');
+addUnitAlias('weekday', 'e');
+addUnitAlias('isoWeekday', 'E');
+
+// PRIORITY
+addUnitPriority('day', 11);
+addUnitPriority('weekday', 11);
+addUnitPriority('isoWeekday', 11);
+
+// PARSING
+
+addRegexToken('d',    match1to2);
+addRegexToken('e',    match1to2);
+addRegexToken('E',    match1to2);
+addRegexToken('dd',   function (isStrict, locale) {
+    return locale.weekdaysMinRegex(isStrict);
+});
+addRegexToken('ddd',   function (isStrict, locale) {
+    return locale.weekdaysShortRegex(isStrict);
+});
+addRegexToken('dddd',   function (isStrict, locale) {
+    return locale.weekdaysRegex(isStrict);
+});
+
+addWeekParseToken(['dd', 'ddd', 'dddd'], function (input, week, config, token) {
+    var weekday = config._locale.weekdaysParse(input, token, config._strict);
+    // if we didn't get a weekday name, mark the date as invalid
+    if (weekday != null) {
+        week.d = weekday;
+    } else {
+        getParsingFlags(config).invalidWeekday = input;
+    }
+});
+
+addWeekParseToken(['d', 'e', 'E'], function (input, week, config, token) {
+    week[token] = toInt(input);
+});
+
+// HELPERS
+
+function parseWeekday(input, locale) {
+    if (typeof input !== 'string') {
+        return input;
     }
 
-    function localeFirstDayOfYear () {
-        return this._week.doy;
+    if (!isNaN(input)) {
+        return parseInt(input, 10);
     }
 
-    // MOMENTS
-
-    function getSetWeek (input) {
-        var week = this.localeData().week(this);
-        return input == null ? week : this.add((input - week) * 7, 'd');
+    input = locale.weekdaysParse(input);
+    if (typeof input === 'number') {
+        return input;
     }
 
-    function getSetISOWeek (input) {
-        var week = weekOfYear(this, 1, 4).week;
-        return input == null ? week : this.add((input - week) * 7, 'd');
+    return null;
+}
+
+function parseIsoWeekday(input, locale) {
+    if (typeof input === 'string') {
+        return locale.weekdaysParse(input) % 7 || 7;
+    }
+    return isNaN(input) ? null : input;
+}
+
+// LOCALES
+
+var defaultLocaleWeekdays = 'Sunday_Monday_Tuesday_Wednesday_Thursday_Friday_Saturday'.split('_');
+function localeWeekdays (m, format) {
+    if (!m) {
+        return this._weekdays;
+    }
+    return isArray(this._weekdays) ? this._weekdays[m.day()] :
+        this._weekdays[this._weekdays.isFormat.test(format) ? 'format' : 'standalone'][m.day()];
+}
+
+var defaultLocaleWeekdaysShort = 'Sun_Mon_Tue_Wed_Thu_Fri_Sat'.split('_');
+function localeWeekdaysShort (m) {
+    return (m) ? this._weekdaysShort[m.day()] : this._weekdaysShort;
+}
+
+var defaultLocaleWeekdaysMin = 'Su_Mo_Tu_We_Th_Fr_Sa'.split('_');
+function localeWeekdaysMin (m) {
+    return (m) ? this._weekdaysMin[m.day()] : this._weekdaysMin;
+}
+
+function handleStrictParse$1(weekdayName, format, strict) {
+    var i, ii, mom, llc = weekdayName.toLocaleLowerCase();
+    if (!this._weekdaysParse) {
+        this._weekdaysParse = [];
+        this._shortWeekdaysParse = [];
+        this._minWeekdaysParse = [];
+
+        for (i = 0; i < 7; ++i) {
+            mom = createUTC([2000, 1]).day(i);
+            this._minWeekdaysParse[i] = this.weekdaysMin(mom, '').toLocaleLowerCase();
+            this._shortWeekdaysParse[i] = this.weekdaysShort(mom, '').toLocaleLowerCase();
+            this._weekdaysParse[i] = this.weekdays(mom, '').toLocaleLowerCase();
+        }
     }
 
-    // FORMATTING
-
-    addFormatToken('d', 0, 'do', 'day');
-
-    addFormatToken('dd', 0, 0, function (format) {
-        return this.localeData().weekdaysMin(this, format);
-    });
-
-    addFormatToken('ddd', 0, 0, function (format) {
-        return this.localeData().weekdaysShort(this, format);
-    });
-
-    addFormatToken('dddd', 0, 0, function (format) {
-        return this.localeData().weekdays(this, format);
-    });
-
-    addFormatToken('e', 0, 0, 'weekday');
-    addFormatToken('E', 0, 0, 'isoWeekday');
-
-    // ALIASES
-
-    addUnitAlias('day', 'd');
-    addUnitAlias('weekday', 'e');
-    addUnitAlias('isoWeekday', 'E');
-
-    // PRIORITY
-    addUnitPriority('day', 11);
-    addUnitPriority('weekday', 11);
-    addUnitPriority('isoWeekday', 11);
-
-    // PARSING
-
-    addRegexToken('d',    match1to2);
-    addRegexToken('e',    match1to2);
-    addRegexToken('E',    match1to2);
-    addRegexToken('dd',   function (isStrict, locale) {
-        return locale.weekdaysMinRegex(isStrict);
-    });
-    addRegexToken('ddd',   function (isStrict, locale) {
-        return locale.weekdaysShortRegex(isStrict);
-    });
-    addRegexToken('dddd',   function (isStrict, locale) {
-        return locale.weekdaysRegex(isStrict);
-    });
-
-    addWeekParseToken(['dd', 'ddd', 'dddd'], function (input, week, config, token) {
-        var weekday = config._locale.weekdaysParse(input, token, config._strict);
-        // if we didn't get a weekday name, mark the date as invalid
-        if (weekday != null) {
-            week.d = weekday;
+    if (strict) {
+        if (format === 'dddd') {
+            ii = indexOf$1.call(this._weekdaysParse, llc);
+            return ii !== -1 ? ii : null;
+        } else if (format === 'ddd') {
+            ii = indexOf$1.call(this._shortWeekdaysParse, llc);
+            return ii !== -1 ? ii : null;
         } else {
-            getParsingFlags(config).invalidWeekday = input;
+            ii = indexOf$1.call(this._minWeekdaysParse, llc);
+            return ii !== -1 ? ii : null;
         }
-    });
-
-    addWeekParseToken(['d', 'e', 'E'], function (input, week, config, token) {
-        week[token] = toInt(input);
-    });
-
-    // HELPERS
-
-    function parseWeekday(input, locale) {
-        if (typeof input !== 'string') {
-            return input;
-        }
-
-        if (!isNaN(input)) {
-            return parseInt(input, 10);
-        }
-
-        input = locale.weekdaysParse(input);
-        if (typeof input === 'number') {
-            return input;
-        }
-
-        return null;
-    }
-
-    function parseIsoWeekday(input, locale) {
-        if (typeof input === 'string') {
-            return locale.weekdaysParse(input) % 7 || 7;
-        }
-        return isNaN(input) ? null : input;
-    }
-
-    // LOCALES
-
-    var defaultLocaleWeekdays = 'Sunday_Monday_Tuesday_Wednesday_Thursday_Friday_Saturday'.split('_');
-    function localeWeekdays (m, format) {
-        return isArray(this._weekdays) ? this._weekdays[m.day()] :
-            this._weekdays[this._weekdays.isFormat.test(format) ? 'format' : 'standalone'][m.day()];
-    }
-
-    var defaultLocaleWeekdaysShort = 'Sun_Mon_Tue_Wed_Thu_Fri_Sat'.split('_');
-    function localeWeekdaysShort (m) {
-        return this._weekdaysShort[m.day()];
-    }
-
-    var defaultLocaleWeekdaysMin = 'Su_Mo_Tu_We_Th_Fr_Sa'.split('_');
-    function localeWeekdaysMin (m) {
-        return this._weekdaysMin[m.day()];
-    }
-
-    function day_of_week__handleStrictParse(weekdayName, format, strict) {
-        var i, ii, mom, llc = weekdayName.toLocaleLowerCase();
-        if (!this._weekdaysParse) {
-            this._weekdaysParse = [];
-            this._shortWeekdaysParse = [];
-            this._minWeekdaysParse = [];
-
-            for (i = 0; i < 7; ++i) {
-                mom = create_utc__createUTC([2000, 1]).day(i);
-                this._minWeekdaysParse[i] = this.weekdaysMin(mom, '').toLocaleLowerCase();
-                this._shortWeekdaysParse[i] = this.weekdaysShort(mom, '').toLocaleLowerCase();
-                this._weekdaysParse[i] = this.weekdays(mom, '').toLocaleLowerCase();
+    } else {
+        if (format === 'dddd') {
+            ii = indexOf$1.call(this._weekdaysParse, llc);
+            if (ii !== -1) {
+                return ii;
             }
-        }
-
-        if (strict) {
-            if (format === 'dddd') {
-                ii = indexOf.call(this._weekdaysParse, llc);
-                return ii !== -1 ? ii : null;
-            } else if (format === 'ddd') {
-                ii = indexOf.call(this._shortWeekdaysParse, llc);
-                return ii !== -1 ? ii : null;
-            } else {
-                ii = indexOf.call(this._minWeekdaysParse, llc);
-                return ii !== -1 ? ii : null;
+            ii = indexOf$1.call(this._shortWeekdaysParse, llc);
+            if (ii !== -1) {
+                return ii;
             }
+            ii = indexOf$1.call(this._minWeekdaysParse, llc);
+            return ii !== -1 ? ii : null;
+        } else if (format === 'ddd') {
+            ii = indexOf$1.call(this._shortWeekdaysParse, llc);
+            if (ii !== -1) {
+                return ii;
+            }
+            ii = indexOf$1.call(this._weekdaysParse, llc);
+            if (ii !== -1) {
+                return ii;
+            }
+            ii = indexOf$1.call(this._minWeekdaysParse, llc);
+            return ii !== -1 ? ii : null;
         } else {
-            if (format === 'dddd') {
-                ii = indexOf.call(this._weekdaysParse, llc);
-                if (ii !== -1) {
-                    return ii;
-                }
-                ii = indexOf.call(this._shortWeekdaysParse, llc);
-                if (ii !== -1) {
-                    return ii;
-                }
-                ii = indexOf.call(this._minWeekdaysParse, llc);
-                return ii !== -1 ? ii : null;
-            } else if (format === 'ddd') {
-                ii = indexOf.call(this._shortWeekdaysParse, llc);
-                if (ii !== -1) {
-                    return ii;
-                }
-                ii = indexOf.call(this._weekdaysParse, llc);
-                if (ii !== -1) {
-                    return ii;
-                }
-                ii = indexOf.call(this._minWeekdaysParse, llc);
-                return ii !== -1 ? ii : null;
-            } else {
-                ii = indexOf.call(this._minWeekdaysParse, llc);
-                if (ii !== -1) {
-                    return ii;
-                }
-                ii = indexOf.call(this._weekdaysParse, llc);
-                if (ii !== -1) {
-                    return ii;
-                }
-                ii = indexOf.call(this._shortWeekdaysParse, llc);
-                return ii !== -1 ? ii : null;
+            ii = indexOf$1.call(this._minWeekdaysParse, llc);
+            if (ii !== -1) {
+                return ii;
             }
+            ii = indexOf$1.call(this._weekdaysParse, llc);
+            if (ii !== -1) {
+                return ii;
+            }
+            ii = indexOf$1.call(this._shortWeekdaysParse, llc);
+            return ii !== -1 ? ii : null;
         }
     }
+}
 
-    function localeWeekdaysParse (weekdayName, format, strict) {
-        var i, mom, regex;
+function localeWeekdaysParse (weekdayName, format, strict) {
+    var i, mom, regex;
 
-        if (this._weekdaysParseExact) {
-            return day_of_week__handleStrictParse.call(this, weekdayName, format, strict);
-        }
-
-        if (!this._weekdaysParse) {
-            this._weekdaysParse = [];
-            this._minWeekdaysParse = [];
-            this._shortWeekdaysParse = [];
-            this._fullWeekdaysParse = [];
-        }
-
-        for (i = 0; i < 7; i++) {
-            // make the regex if we don't have it already
-
-            mom = create_utc__createUTC([2000, 1]).day(i);
-            if (strict && !this._fullWeekdaysParse[i]) {
-                this._fullWeekdaysParse[i] = new RegExp('^' + this.weekdays(mom, '').replace('.', '\.?') + '$', 'i');
-                this._shortWeekdaysParse[i] = new RegExp('^' + this.weekdaysShort(mom, '').replace('.', '\.?') + '$', 'i');
-                this._minWeekdaysParse[i] = new RegExp('^' + this.weekdaysMin(mom, '').replace('.', '\.?') + '$', 'i');
-            }
-            if (!this._weekdaysParse[i]) {
-                regex = '^' + this.weekdays(mom, '') + '|^' + this.weekdaysShort(mom, '') + '|^' + this.weekdaysMin(mom, '');
-                this._weekdaysParse[i] = new RegExp(regex.replace('.', ''), 'i');
-            }
-            // test the regex
-            if (strict && format === 'dddd' && this._fullWeekdaysParse[i].test(weekdayName)) {
-                return i;
-            } else if (strict && format === 'ddd' && this._shortWeekdaysParse[i].test(weekdayName)) {
-                return i;
-            } else if (strict && format === 'dd' && this._minWeekdaysParse[i].test(weekdayName)) {
-                return i;
-            } else if (!strict && this._weekdaysParse[i].test(weekdayName)) {
-                return i;
-            }
-        }
+    if (this._weekdaysParseExact) {
+        return handleStrictParse$1.call(this, weekdayName, format, strict);
     }
 
-    // MOMENTS
+    if (!this._weekdaysParse) {
+        this._weekdaysParse = [];
+        this._minWeekdaysParse = [];
+        this._shortWeekdaysParse = [];
+        this._fullWeekdaysParse = [];
+    }
 
-    function getSetDayOfWeek (input) {
-        if (!this.isValid()) {
-            return input != null ? this : NaN;
+    for (i = 0; i < 7; i++) {
+        // make the regex if we don't have it already
+
+        mom = createUTC([2000, 1]).day(i);
+        if (strict && !this._fullWeekdaysParse[i]) {
+            this._fullWeekdaysParse[i] = new RegExp('^' + this.weekdays(mom, '').replace('.', '\.?') + '$', 'i');
+            this._shortWeekdaysParse[i] = new RegExp('^' + this.weekdaysShort(mom, '').replace('.', '\.?') + '$', 'i');
+            this._minWeekdaysParse[i] = new RegExp('^' + this.weekdaysMin(mom, '').replace('.', '\.?') + '$', 'i');
         }
-        var day = this._isUTC ? this._d.getUTCDay() : this._d.getDay();
-        if (input != null) {
-            input = parseWeekday(input, this.localeData());
-            return this.add(input - day, 'd');
+        if (!this._weekdaysParse[i]) {
+            regex = '^' + this.weekdays(mom, '') + '|^' + this.weekdaysShort(mom, '') + '|^' + this.weekdaysMin(mom, '');
+            this._weekdaysParse[i] = new RegExp(regex.replace('.', ''), 'i');
+        }
+        // test the regex
+        if (strict && format === 'dddd' && this._fullWeekdaysParse[i].test(weekdayName)) {
+            return i;
+        } else if (strict && format === 'ddd' && this._shortWeekdaysParse[i].test(weekdayName)) {
+            return i;
+        } else if (strict && format === 'dd' && this._minWeekdaysParse[i].test(weekdayName)) {
+            return i;
+        } else if (!strict && this._weekdaysParse[i].test(weekdayName)) {
+            return i;
+        }
+    }
+}
+
+// MOMENTS
+
+function getSetDayOfWeek (input) {
+    if (!this.isValid()) {
+        return input != null ? this : NaN;
+    }
+    var day = this._isUTC ? this._d.getUTCDay() : this._d.getDay();
+    if (input != null) {
+        input = parseWeekday(input, this.localeData());
+        return this.add(input - day, 'd');
+    } else {
+        return day;
+    }
+}
+
+function getSetLocaleDayOfWeek (input) {
+    if (!this.isValid()) {
+        return input != null ? this : NaN;
+    }
+    var weekday = (this.day() + 7 - this.localeData()._week.dow) % 7;
+    return input == null ? weekday : this.add(input - weekday, 'd');
+}
+
+function getSetISODayOfWeek (input) {
+    if (!this.isValid()) {
+        return input != null ? this : NaN;
+    }
+
+    // behaves the same as moment#day except
+    // as a getter, returns 7 instead of 0 (1-7 range instead of 0-6)
+    // as a setter, sunday should belong to the previous week.
+
+    if (input != null) {
+        var weekday = parseIsoWeekday(input, this.localeData());
+        return this.day(this.day() % 7 ? weekday : weekday - 7);
+    } else {
+        return this.day() || 7;
+    }
+}
+
+var defaultWeekdaysRegex = matchWord;
+function weekdaysRegex (isStrict) {
+    if (this._weekdaysParseExact) {
+        if (!hasOwnProp(this, '_weekdaysRegex')) {
+            computeWeekdaysParse.call(this);
+        }
+        if (isStrict) {
+            return this._weekdaysStrictRegex;
         } else {
-            return day;
+            return this._weekdaysRegex;
         }
+    } else {
+        if (!hasOwnProp(this, '_weekdaysRegex')) {
+            this._weekdaysRegex = defaultWeekdaysRegex;
+        }
+        return this._weekdaysStrictRegex && isStrict ?
+            this._weekdaysStrictRegex : this._weekdaysRegex;
     }
+}
 
-    function getSetLocaleDayOfWeek (input) {
-        if (!this.isValid()) {
-            return input != null ? this : NaN;
+var defaultWeekdaysShortRegex = matchWord;
+function weekdaysShortRegex (isStrict) {
+    if (this._weekdaysParseExact) {
+        if (!hasOwnProp(this, '_weekdaysRegex')) {
+            computeWeekdaysParse.call(this);
         }
-        var weekday = (this.day() + 7 - this.localeData()._week.dow) % 7;
-        return input == null ? weekday : this.add(input - weekday, 'd');
-    }
-
-    function getSetISODayOfWeek (input) {
-        if (!this.isValid()) {
-            return input != null ? this : NaN;
-        }
-
-        // behaves the same as moment#day except
-        // as a getter, returns 7 instead of 0 (1-7 range instead of 0-6)
-        // as a setter, sunday should belong to the previous week.
-
-        if (input != null) {
-            var weekday = parseIsoWeekday(input, this.localeData());
-            return this.day(this.day() % 7 ? weekday : weekday - 7);
+        if (isStrict) {
+            return this._weekdaysShortStrictRegex;
         } else {
-            return this.day() || 7;
+            return this._weekdaysShortRegex;
         }
+    } else {
+        if (!hasOwnProp(this, '_weekdaysShortRegex')) {
+            this._weekdaysShortRegex = defaultWeekdaysShortRegex;
+        }
+        return this._weekdaysShortStrictRegex && isStrict ?
+            this._weekdaysShortStrictRegex : this._weekdaysShortRegex;
     }
+}
 
-    var defaultWeekdaysRegex = matchWord;
-    function weekdaysRegex (isStrict) {
-        if (this._weekdaysParseExact) {
-            if (!hasOwnProp(this, '_weekdaysRegex')) {
-                computeWeekdaysParse.call(this);
-            }
-            if (isStrict) {
-                return this._weekdaysStrictRegex;
-            } else {
-                return this._weekdaysRegex;
-            }
+var defaultWeekdaysMinRegex = matchWord;
+function weekdaysMinRegex (isStrict) {
+    if (this._weekdaysParseExact) {
+        if (!hasOwnProp(this, '_weekdaysRegex')) {
+            computeWeekdaysParse.call(this);
+        }
+        if (isStrict) {
+            return this._weekdaysMinStrictRegex;
         } else {
-            if (!hasOwnProp(this, '_weekdaysRegex')) {
-                this._weekdaysRegex = defaultWeekdaysRegex;
-            }
-            return this._weekdaysStrictRegex && isStrict ?
-                this._weekdaysStrictRegex : this._weekdaysRegex;
+            return this._weekdaysMinRegex;
         }
+    } else {
+        if (!hasOwnProp(this, '_weekdaysMinRegex')) {
+            this._weekdaysMinRegex = defaultWeekdaysMinRegex;
+        }
+        return this._weekdaysMinStrictRegex && isStrict ?
+            this._weekdaysMinStrictRegex : this._weekdaysMinRegex;
+    }
+}
+
+
+function computeWeekdaysParse () {
+    function cmpLenRev(a, b) {
+        return b.length - a.length;
     }
 
-    var defaultWeekdaysShortRegex = matchWord;
-    function weekdaysShortRegex (isStrict) {
-        if (this._weekdaysParseExact) {
-            if (!hasOwnProp(this, '_weekdaysRegex')) {
-                computeWeekdaysParse.call(this);
-            }
-            if (isStrict) {
-                return this._weekdaysShortStrictRegex;
-            } else {
-                return this._weekdaysShortRegex;
-            }
-        } else {
-            if (!hasOwnProp(this, '_weekdaysShortRegex')) {
-                this._weekdaysShortRegex = defaultWeekdaysShortRegex;
-            }
-            return this._weekdaysShortStrictRegex && isStrict ?
-                this._weekdaysShortStrictRegex : this._weekdaysShortRegex;
-        }
+    var minPieces = [], shortPieces = [], longPieces = [], mixedPieces = [],
+        i, mom, minp, shortp, longp;
+    for (i = 0; i < 7; i++) {
+        // make the regex if we don't have it already
+        mom = createUTC([2000, 1]).day(i);
+        minp = this.weekdaysMin(mom, '');
+        shortp = this.weekdaysShort(mom, '');
+        longp = this.weekdays(mom, '');
+        minPieces.push(minp);
+        shortPieces.push(shortp);
+        longPieces.push(longp);
+        mixedPieces.push(minp);
+        mixedPieces.push(shortp);
+        mixedPieces.push(longp);
+    }
+    // Sorting makes sure if one weekday (or abbr) is a prefix of another it
+    // will match the longer piece.
+    minPieces.sort(cmpLenRev);
+    shortPieces.sort(cmpLenRev);
+    longPieces.sort(cmpLenRev);
+    mixedPieces.sort(cmpLenRev);
+    for (i = 0; i < 7; i++) {
+        shortPieces[i] = regexEscape(shortPieces[i]);
+        longPieces[i] = regexEscape(longPieces[i]);
+        mixedPieces[i] = regexEscape(mixedPieces[i]);
     }
 
-    var defaultWeekdaysMinRegex = matchWord;
-    function weekdaysMinRegex (isStrict) {
-        if (this._weekdaysParseExact) {
-            if (!hasOwnProp(this, '_weekdaysRegex')) {
-                computeWeekdaysParse.call(this);
-            }
-            if (isStrict) {
-                return this._weekdaysMinStrictRegex;
-            } else {
-                return this._weekdaysMinRegex;
-            }
-        } else {
-            if (!hasOwnProp(this, '_weekdaysMinRegex')) {
-                this._weekdaysMinRegex = defaultWeekdaysMinRegex;
-            }
-            return this._weekdaysMinStrictRegex && isStrict ?
-                this._weekdaysMinStrictRegex : this._weekdaysMinRegex;
-        }
-    }
+    this._weekdaysRegex = new RegExp('^(' + mixedPieces.join('|') + ')', 'i');
+    this._weekdaysShortRegex = this._weekdaysRegex;
+    this._weekdaysMinRegex = this._weekdaysRegex;
 
+    this._weekdaysStrictRegex = new RegExp('^(' + longPieces.join('|') + ')', 'i');
+    this._weekdaysShortStrictRegex = new RegExp('^(' + shortPieces.join('|') + ')', 'i');
+    this._weekdaysMinStrictRegex = new RegExp('^(' + minPieces.join('|') + ')', 'i');
+}
 
-    function computeWeekdaysParse () {
-        function cmpLenRev(a, b) {
-            return b.length - a.length;
-        }
+// FORMATTING
 
-        var minPieces = [], shortPieces = [], longPieces = [], mixedPieces = [],
-            i, mom, minp, shortp, longp;
-        for (i = 0; i < 7; i++) {
-            // make the regex if we don't have it already
-            mom = create_utc__createUTC([2000, 1]).day(i);
-            minp = this.weekdaysMin(mom, '');
-            shortp = this.weekdaysShort(mom, '');
-            longp = this.weekdays(mom, '');
-            minPieces.push(minp);
-            shortPieces.push(shortp);
-            longPieces.push(longp);
-            mixedPieces.push(minp);
-            mixedPieces.push(shortp);
-            mixedPieces.push(longp);
-        }
-        // Sorting makes sure if one weekday (or abbr) is a prefix of another it
-        // will match the longer piece.
-        minPieces.sort(cmpLenRev);
-        shortPieces.sort(cmpLenRev);
-        longPieces.sort(cmpLenRev);
-        mixedPieces.sort(cmpLenRev);
-        for (i = 0; i < 7; i++) {
-            shortPieces[i] = regexEscape(shortPieces[i]);
-            longPieces[i] = regexEscape(longPieces[i]);
-            mixedPieces[i] = regexEscape(mixedPieces[i]);
-        }
+function hFormat() {
+    return this.hours() % 12 || 12;
+}
 
-        this._weekdaysRegex = new RegExp('^(' + mixedPieces.join('|') + ')', 'i');
-        this._weekdaysShortRegex = this._weekdaysRegex;
-        this._weekdaysMinRegex = this._weekdaysRegex;
+function kFormat() {
+    return this.hours() || 24;
+}
 
-        this._weekdaysStrictRegex = new RegExp('^(' + longPieces.join('|') + ')', 'i');
-        this._weekdaysShortStrictRegex = new RegExp('^(' + shortPieces.join('|') + ')', 'i');
-        this._weekdaysMinStrictRegex = new RegExp('^(' + minPieces.join('|') + ')', 'i');
-    }
+addFormatToken('H', ['HH', 2], 0, 'hour');
+addFormatToken('h', ['hh', 2], 0, hFormat);
+addFormatToken('k', ['kk', 2], 0, kFormat);
 
-    // FORMATTING
+addFormatToken('hmm', 0, 0, function () {
+    return '' + hFormat.apply(this) + zeroFill(this.minutes(), 2);
+});
 
-    function hFormat() {
-        return this.hours() % 12 || 12;
-    }
+addFormatToken('hmmss', 0, 0, function () {
+    return '' + hFormat.apply(this) + zeroFill(this.minutes(), 2) +
+        zeroFill(this.seconds(), 2);
+});
 
-    function kFormat() {
-        return this.hours() || 24;
-    }
+addFormatToken('Hmm', 0, 0, function () {
+    return '' + this.hours() + zeroFill(this.minutes(), 2);
+});
 
-    addFormatToken('H', ['HH', 2], 0, 'hour');
-    addFormatToken('h', ['hh', 2], 0, hFormat);
-    addFormatToken('k', ['kk', 2], 0, kFormat);
+addFormatToken('Hmmss', 0, 0, function () {
+    return '' + this.hours() + zeroFill(this.minutes(), 2) +
+        zeroFill(this.seconds(), 2);
+});
 
-    addFormatToken('hmm', 0, 0, function () {
-        return '' + hFormat.apply(this) + zeroFill(this.minutes(), 2);
+function meridiem (token, lowercase) {
+    addFormatToken(token, 0, 0, function () {
+        return this.localeData().meridiem(this.hours(), this.minutes(), lowercase);
     });
+}
 
-    addFormatToken('hmmss', 0, 0, function () {
-        return '' + hFormat.apply(this) + zeroFill(this.minutes(), 2) +
-            zeroFill(this.seconds(), 2);
-    });
+meridiem('a', true);
+meridiem('A', false);
 
-    addFormatToken('Hmm', 0, 0, function () {
-        return '' + this.hours() + zeroFill(this.minutes(), 2);
-    });
+// ALIASES
 
-    addFormatToken('Hmmss', 0, 0, function () {
-        return '' + this.hours() + zeroFill(this.minutes(), 2) +
-            zeroFill(this.seconds(), 2);
-    });
+addUnitAlias('hour', 'h');
 
-    function meridiem (token, lowercase) {
-        addFormatToken(token, 0, 0, function () {
-            return this.localeData().meridiem(this.hours(), this.minutes(), lowercase);
-        });
+// PRIORITY
+addUnitPriority('hour', 13);
+
+// PARSING
+
+function matchMeridiem (isStrict, locale) {
+    return locale._meridiemParse;
+}
+
+addRegexToken('a',  matchMeridiem);
+addRegexToken('A',  matchMeridiem);
+addRegexToken('H',  match1to2);
+addRegexToken('h',  match1to2);
+addRegexToken('HH', match1to2, match2);
+addRegexToken('hh', match1to2, match2);
+
+addRegexToken('hmm', match3to4);
+addRegexToken('hmmss', match5to6);
+addRegexToken('Hmm', match3to4);
+addRegexToken('Hmmss', match5to6);
+
+addParseToken(['H', 'HH'], HOUR);
+addParseToken(['a', 'A'], function (input, array, config) {
+    config._isPm = config._locale.isPM(input);
+    config._meridiem = input;
+});
+addParseToken(['h', 'hh'], function (input, array, config) {
+    array[HOUR] = toInt(input);
+    getParsingFlags(config).bigHour = true;
+});
+addParseToken('hmm', function (input, array, config) {
+    var pos = input.length - 2;
+    array[HOUR] = toInt(input.substr(0, pos));
+    array[MINUTE] = toInt(input.substr(pos));
+    getParsingFlags(config).bigHour = true;
+});
+addParseToken('hmmss', function (input, array, config) {
+    var pos1 = input.length - 4;
+    var pos2 = input.length - 2;
+    array[HOUR] = toInt(input.substr(0, pos1));
+    array[MINUTE] = toInt(input.substr(pos1, 2));
+    array[SECOND] = toInt(input.substr(pos2));
+    getParsingFlags(config).bigHour = true;
+});
+addParseToken('Hmm', function (input, array, config) {
+    var pos = input.length - 2;
+    array[HOUR] = toInt(input.substr(0, pos));
+    array[MINUTE] = toInt(input.substr(pos));
+});
+addParseToken('Hmmss', function (input, array, config) {
+    var pos1 = input.length - 4;
+    var pos2 = input.length - 2;
+    array[HOUR] = toInt(input.substr(0, pos1));
+    array[MINUTE] = toInt(input.substr(pos1, 2));
+    array[SECOND] = toInt(input.substr(pos2));
+});
+
+// LOCALES
+
+function localeIsPM (input) {
+    // IE8 Quirks Mode & IE7 Standards Mode do not allow accessing strings like arrays
+    // Using charAt should be more compatible.
+    return ((input + '').toLowerCase().charAt(0) === 'p');
+}
+
+var defaultLocaleMeridiemParse = /[ap]\.?m?\.?/i;
+function localeMeridiem (hours, minutes, isLower) {
+    if (hours > 11) {
+        return isLower ? 'pm' : 'PM';
+    } else {
+        return isLower ? 'am' : 'AM';
     }
-
-    meridiem('a', true);
-    meridiem('A', false);
-
-    // ALIASES
-
-    addUnitAlias('hour', 'h');
-
-    // PRIORITY
-    addUnitPriority('hour', 13);
-
-    // PARSING
-
-    function matchMeridiem (isStrict, locale) {
-        return locale._meridiemParse;
-    }
-
-    addRegexToken('a',  matchMeridiem);
-    addRegexToken('A',  matchMeridiem);
-    addRegexToken('H',  match1to2);
-    addRegexToken('h',  match1to2);
-    addRegexToken('HH', match1to2, match2);
-    addRegexToken('hh', match1to2, match2);
-
-    addRegexToken('hmm', match3to4);
-    addRegexToken('hmmss', match5to6);
-    addRegexToken('Hmm', match3to4);
-    addRegexToken('Hmmss', match5to6);
-
-    addParseToken(['H', 'HH'], HOUR);
-    addParseToken(['a', 'A'], function (input, array, config) {
-        config._isPm = config._locale.isPM(input);
-        config._meridiem = input;
-    });
-    addParseToken(['h', 'hh'], function (input, array, config) {
-        array[HOUR] = toInt(input);
-        getParsingFlags(config).bigHour = true;
-    });
-    addParseToken('hmm', function (input, array, config) {
-        var pos = input.length - 2;
-        array[HOUR] = toInt(input.substr(0, pos));
-        array[MINUTE] = toInt(input.substr(pos));
-        getParsingFlags(config).bigHour = true;
-    });
-    addParseToken('hmmss', function (input, array, config) {
-        var pos1 = input.length - 4;
-        var pos2 = input.length - 2;
-        array[HOUR] = toInt(input.substr(0, pos1));
-        array[MINUTE] = toInt(input.substr(pos1, 2));
-        array[SECOND] = toInt(input.substr(pos2));
-        getParsingFlags(config).bigHour = true;
-    });
-    addParseToken('Hmm', function (input, array, config) {
-        var pos = input.length - 2;
-        array[HOUR] = toInt(input.substr(0, pos));
-        array[MINUTE] = toInt(input.substr(pos));
-    });
-    addParseToken('Hmmss', function (input, array, config) {
-        var pos1 = input.length - 4;
-        var pos2 = input.length - 2;
-        array[HOUR] = toInt(input.substr(0, pos1));
-        array[MINUTE] = toInt(input.substr(pos1, 2));
-        array[SECOND] = toInt(input.substr(pos2));
-    });
-
-    // LOCALES
-
-    function localeIsPM (input) {
-        // IE8 Quirks Mode & IE7 Standards Mode do not allow accessing strings like arrays
-        // Using charAt should be more compatible.
-        return ((input + '').toLowerCase().charAt(0) === 'p');
-    }
-
-    var defaultLocaleMeridiemParse = /[ap]\.?m?\.?/i;
-    function localeMeridiem (hours, minutes, isLower) {
-        if (hours > 11) {
-            return isLower ? 'pm' : 'PM';
-        } else {
-            return isLower ? 'am' : 'AM';
-        }
-    }
+}
 
 
-    // MOMENTS
+// MOMENTS
 
-    // Setting the hour should keep the time, because the user explicitly
-    // specified which hour he wants. So trying to maintain the same hour (in
-    // a new timezone) makes sense. Adding/subtracting hours does not follow
-    // this rule.
-    var getSetHour = makeGetSet('Hours', true);
+// Setting the hour should keep the time, because the user explicitly
+// specified which hour he wants. So trying to maintain the same hour (in
+// a new timezone) makes sense. Adding/subtracting hours does not follow
+// this rule.
+var getSetHour = makeGetSet('Hours', true);
 
-    var baseConfig = {
-        calendar: defaultCalendar,
-        longDateFormat: defaultLongDateFormat,
-        invalidDate: defaultInvalidDate,
-        ordinal: defaultOrdinal,
-        ordinalParse: defaultOrdinalParse,
-        relativeTime: defaultRelativeTime,
+// months
+// week
+// weekdays
+// meridiem
+var baseConfig = {
+    calendar: defaultCalendar,
+    longDateFormat: defaultLongDateFormat,
+    invalidDate: defaultInvalidDate,
+    ordinal: defaultOrdinal,
+    ordinalParse: defaultOrdinalParse,
+    relativeTime: defaultRelativeTime,
 
-        months: defaultLocaleMonths,
-        monthsShort: defaultLocaleMonthsShort,
+    months: defaultLocaleMonths,
+    monthsShort: defaultLocaleMonthsShort,
 
-        week: defaultLocaleWeek,
+    week: defaultLocaleWeek,
 
-        weekdays: defaultLocaleWeekdays,
-        weekdaysMin: defaultLocaleWeekdaysMin,
-        weekdaysShort: defaultLocaleWeekdaysShort,
+    weekdays: defaultLocaleWeekdays,
+    weekdaysMin: defaultLocaleWeekdaysMin,
+    weekdaysShort: defaultLocaleWeekdaysShort,
 
-        meridiemParse: defaultLocaleMeridiemParse
-    };
+    meridiemParse: defaultLocaleMeridiemParse
+};
 
-    // internal storage for locale config files
-    var locales = {};
-    var globalLocale;
+// internal storage for locale config files
+var locales = {};
+var localeFamilies = {};
+var globalLocale;
 
-    function normalizeLocale(key) {
-        return key ? key.toLowerCase().replace('_', '-') : key;
-    }
+function normalizeLocale(key) {
+    return key ? key.toLowerCase().replace('_', '-') : key;
+}
 
-    // pick the locale from the array
-    // try ['en-au', 'en-gb'] as 'en-au', 'en-gb', 'en', as in move through the list trying each
-    // substring from most specific to least, but move to the next array item if it's a more specific variant than the current root
-    function chooseLocale(names) {
-        var i = 0, j, next, locale, split;
+// pick the locale from the array
+// try ['en-au', 'en-gb'] as 'en-au', 'en-gb', 'en', as in move through the list trying each
+// substring from most specific to least, but move to the next array item if it's a more specific variant than the current root
+function chooseLocale(names) {
+    var i = 0, j, next, locale, split;
 
-        while (i < names.length) {
-            split = normalizeLocale(names[i]).split('-');
-            j = split.length;
-            next = normalizeLocale(names[i + 1]);
-            next = next ? next.split('-') : null;
-            while (j > 0) {
-                locale = loadLocale(split.slice(0, j).join('-'));
-                if (locale) {
-                    return locale;
-                }
-                if (next && next.length >= j && compareArrays(split, next, true) >= j - 1) {
-                    //the next array item is better than a shallower substring of this one
-                    break;
-                }
-                j--;
-            }
-            i++;
-        }
-        return null;
-    }
-
-    function loadLocale(name) {
-        var oldLocale = null;
-        // TODO: Find a better way to register and load all the locales in Node
-        if (!locales[name] && (typeof module !== 'undefined') &&
-                module && module.exports) {
-            try {
-                oldLocale = globalLocale._abbr;
-                require('./locale/' + name);
-                // because defineLocale currently also sets the global locale, we
-                // want to undo that for lazy loaded locales
-                locale_locales__getSetGlobalLocale(oldLocale);
-            } catch (e) { }
-        }
-        return locales[name];
-    }
-
-    // This function will load locale and then set the global locale.  If
-    // no arguments are passed in, it will simply return the current global
-    // locale key.
-    function locale_locales__getSetGlobalLocale (key, values) {
-        var data;
-        if (key) {
-            if (isUndefined(values)) {
-                data = locale_locales__getLocale(key);
-            }
-            else {
-                data = defineLocale(key, values);
-            }
-
-            if (data) {
-                // moment.duration._locale = moment._locale = data;
-                globalLocale = data;
-            }
-        }
-
-        return globalLocale._abbr;
-    }
-
-    function defineLocale (name, config) {
-        if (config !== null) {
-            var parentConfig = baseConfig;
-            config.abbr = name;
-            if (locales[name] != null) {
-                deprecateSimple('defineLocaleOverride',
-                        'use moment.updateLocale(localeName, config) to change ' +
-                        'an existing locale. moment.defineLocale(localeName, ' +
-                        'config) should only be used for creating a new locale ' +
-                        'See http://momentjs.com/guides/#/warnings/define-locale/ for more info.');
-                parentConfig = locales[name]._config;
-            } else if (config.parentLocale != null) {
-                if (locales[config.parentLocale] != null) {
-                    parentConfig = locales[config.parentLocale]._config;
-                } else {
-                    // treat as if there is no base config
-                    deprecateSimple('parentLocaleUndefined',
-                            'specified parentLocale is not defined yet. See http://momentjs.com/guides/#/warnings/parent-locale/');
-                }
-            }
-            locales[name] = new Locale(mergeConfigs(parentConfig, config));
-
-            // backwards compat for now: also set the locale
-            locale_locales__getSetGlobalLocale(name);
-
-            return locales[name];
-        } else {
-            // useful for testing
-            delete locales[name];
-            return null;
-        }
-    }
-
-    function updateLocale(name, config) {
-        if (config != null) {
-            var locale, parentConfig = baseConfig;
-            // MERGE
-            if (locales[name] != null) {
-                parentConfig = locales[name]._config;
-            }
-            config = mergeConfigs(parentConfig, config);
-            locale = new Locale(config);
-            locale.parentLocale = locales[name];
-            locales[name] = locale;
-
-            // backwards compat for now: also set the locale
-            locale_locales__getSetGlobalLocale(name);
-        } else {
-            // pass null for config to unupdate, useful for tests
-            if (locales[name] != null) {
-                if (locales[name].parentLocale != null) {
-                    locales[name] = locales[name].parentLocale;
-                } else if (locales[name] != null) {
-                    delete locales[name];
-                }
-            }
-        }
-        return locales[name];
-    }
-
-    // returns locale data
-    function locale_locales__getLocale (key) {
-        var locale;
-
-        if (key && key._locale && key._locale._abbr) {
-            key = key._locale._abbr;
-        }
-
-        if (!key) {
-            return globalLocale;
-        }
-
-        if (!isArray(key)) {
-            //short-circuit everything else
-            locale = loadLocale(key);
+    while (i < names.length) {
+        split = normalizeLocale(names[i]).split('-');
+        j = split.length;
+        next = normalizeLocale(names[i + 1]);
+        next = next ? next.split('-') : null;
+        while (j > 0) {
+            locale = loadLocale(split.slice(0, j).join('-'));
             if (locale) {
                 return locale;
             }
-            key = [key];
+            if (next && next.length >= j && compareArrays(split, next, true) >= j - 1) {
+                //the next array item is better than a shallower substring of this one
+                break;
+            }
+            j--;
+        }
+        i++;
+    }
+    return null;
+}
+
+function loadLocale(name) {
+    var oldLocale = null;
+    // TODO: Find a better way to register and load all the locales in Node
+    if (!locales[name] && (typeof module !== 'undefined') &&
+            module && module.exports) {
+        try {
+            oldLocale = globalLocale._abbr;
+            require('./locale/' + name);
+            // because defineLocale currently also sets the global locale, we
+            // want to undo that for lazy loaded locales
+            getSetGlobalLocale(oldLocale);
+        } catch (e) { }
+    }
+    return locales[name];
+}
+
+// This function will load locale and then set the global locale.  If
+// no arguments are passed in, it will simply return the current global
+// locale key.
+function getSetGlobalLocale (key, values) {
+    var data;
+    if (key) {
+        if (isUndefined(values)) {
+            data = getLocale(key);
+        }
+        else {
+            data = defineLocale(key, values);
         }
 
-        return chooseLocale(key);
+        if (data) {
+            // moment.duration._locale = moment._locale = data;
+            globalLocale = data;
+        }
     }
 
-    function locale_locales__listLocales() {
-        return keys(locales);
-    }
+    return globalLocale._abbr;
+}
 
-    function checkOverflow (m) {
-        var overflow;
-        var a = m._a;
-
-        if (a && getParsingFlags(m).overflow === -2) {
-            overflow =
-                a[MONTH]       < 0 || a[MONTH]       > 11  ? MONTH :
-                a[DATE]        < 1 || a[DATE]        > daysInMonth(a[YEAR], a[MONTH]) ? DATE :
-                a[HOUR]        < 0 || a[HOUR]        > 24 || (a[HOUR] === 24 && (a[MINUTE] !== 0 || a[SECOND] !== 0 || a[MILLISECOND] !== 0)) ? HOUR :
-                a[MINUTE]      < 0 || a[MINUTE]      > 59  ? MINUTE :
-                a[SECOND]      < 0 || a[SECOND]      > 59  ? SECOND :
-                a[MILLISECOND] < 0 || a[MILLISECOND] > 999 ? MILLISECOND :
-                -1;
-
-            if (getParsingFlags(m)._overflowDayOfYear && (overflow < YEAR || overflow > DATE)) {
-                overflow = DATE;
+function defineLocale (name, config) {
+    if (config !== null) {
+        var parentConfig = baseConfig;
+        config.abbr = name;
+        if (locales[name] != null) {
+            deprecateSimple('defineLocaleOverride',
+                    'use moment.updateLocale(localeName, config) to change ' +
+                    'an existing locale. moment.defineLocale(localeName, ' +
+                    'config) should only be used for creating a new locale ' +
+                    'See http://momentjs.com/guides/#/warnings/define-locale/ for more info.');
+            parentConfig = locales[name]._config;
+        } else if (config.parentLocale != null) {
+            if (locales[config.parentLocale] != null) {
+                parentConfig = locales[config.parentLocale]._config;
+            } else {
+                if (!localeFamilies[config.parentLocale]) {
+                    localeFamilies[config.parentLocale] = [];
+                }
+                localeFamilies[config.parentLocale].push({
+                    name: name,
+                    config: config
+                });
+                return null;
             }
-            if (getParsingFlags(m)._overflowWeeks && overflow === -1) {
-                overflow = WEEK;
-            }
-            if (getParsingFlags(m)._overflowWeekday && overflow === -1) {
-                overflow = WEEKDAY;
-            }
+        }
+        locales[name] = new Locale(mergeConfigs(parentConfig, config));
 
-            getParsingFlags(m).overflow = overflow;
+        if (localeFamilies[name]) {
+            localeFamilies[name].forEach(function (x) {
+                defineLocale(x.name, x.config);
+            });
         }
 
-        return m;
+        // backwards compat for now: also set the locale
+        // make sure we set the locale AFTER all child locales have been
+        // created, so we won't end up with the child locale set.
+        getSetGlobalLocale(name);
+
+
+        return locales[name];
+    } else {
+        // useful for testing
+        delete locales[name];
+        return null;
+    }
+}
+
+function updateLocale(name, config) {
+    if (config != null) {
+        var locale, parentConfig = baseConfig;
+        // MERGE
+        if (locales[name] != null) {
+            parentConfig = locales[name]._config;
+        }
+        config = mergeConfigs(parentConfig, config);
+        locale = new Locale(config);
+        locale.parentLocale = locales[name];
+        locales[name] = locale;
+
+        // backwards compat for now: also set the locale
+        getSetGlobalLocale(name);
+    } else {
+        // pass null for config to unupdate, useful for tests
+        if (locales[name] != null) {
+            if (locales[name].parentLocale != null) {
+                locales[name] = locales[name].parentLocale;
+            } else if (locales[name] != null) {
+                delete locales[name];
+            }
+        }
+    }
+    return locales[name];
+}
+
+// returns locale data
+function getLocale (key) {
+    var locale;
+
+    if (key && key._locale && key._locale._abbr) {
+        key = key._locale._abbr;
     }
 
-    // iso 8601 regex
-    // 0000-00-00 0000-W00 or 0000-W00-0 + T + 00 or 00:00 or 00:00:00 or 00:00:00.000 + +00:00 or +0000 or +00)
-    var extendedIsoRegex = /^\s*((?:[+-]\d{6}|\d{4})-(?:\d\d-\d\d|W\d\d-\d|W\d\d|\d\d\d|\d\d))(?:(T| )(\d\d(?::\d\d(?::\d\d(?:[.,]\d+)?)?)?)([\+\-]\d\d(?::?\d\d)?|\s*Z)?)?/;
-    var basicIsoRegex = /^\s*((?:[+-]\d{6}|\d{4})(?:\d\d\d\d|W\d\d\d|W\d\d|\d\d\d|\d\d))(?:(T| )(\d\d(?:\d\d(?:\d\d(?:[.,]\d+)?)?)?)([\+\-]\d\d(?::?\d\d)?|\s*Z)?)?/;
+    if (!key) {
+        return globalLocale;
+    }
 
-    var tzRegex = /Z|[+-]\d\d(?::?\d\d)?/;
+    if (!isArray(key)) {
+        //short-circuit everything else
+        locale = loadLocale(key);
+        if (locale) {
+            return locale;
+        }
+        key = [key];
+    }
 
-    var isoDates = [
-        ['YYYYYY-MM-DD', /[+-]\d{6}-\d\d-\d\d/],
-        ['YYYY-MM-DD', /\d{4}-\d\d-\d\d/],
-        ['GGGG-[W]WW-E', /\d{4}-W\d\d-\d/],
-        ['GGGG-[W]WW', /\d{4}-W\d\d/, false],
-        ['YYYY-DDD', /\d{4}-\d{3}/],
-        ['YYYY-MM', /\d{4}-\d\d/, false],
-        ['YYYYYYMMDD', /[+-]\d{10}/],
-        ['YYYYMMDD', /\d{8}/],
-        // YYYYMM is NOT allowed by the standard
-        ['GGGG[W]WWE', /\d{4}W\d{3}/],
-        ['GGGG[W]WW', /\d{4}W\d{2}/, false],
-        ['YYYYDDD', /\d{7}/]
-    ];
+    return chooseLocale(key);
+}
 
-    // iso time formats and regexes
-    var isoTimes = [
-        ['HH:mm:ss.SSSS', /\d\d:\d\d:\d\d\.\d+/],
-        ['HH:mm:ss,SSSS', /\d\d:\d\d:\d\d,\d+/],
-        ['HH:mm:ss', /\d\d:\d\d:\d\d/],
-        ['HH:mm', /\d\d:\d\d/],
-        ['HHmmss.SSSS', /\d\d\d\d\d\d\.\d+/],
-        ['HHmmss,SSSS', /\d\d\d\d\d\d,\d+/],
-        ['HHmmss', /\d\d\d\d\d\d/],
-        ['HHmm', /\d\d\d\d/],
-        ['HH', /\d\d/]
-    ];
+function listLocales() {
+    return keys$1(locales);
+}
 
-    var aspNetJsonRegex = /^\/?Date\((\-?\d+)/i;
+function checkOverflow (m) {
+    var overflow;
+    var a = m._a;
 
-    // date from iso format
-    function configFromISO(config) {
-        var i, l,
-            string = config._i,
-            match = extendedIsoRegex.exec(string) || basicIsoRegex.exec(string),
-            allowTime, dateFormat, timeFormat, tzFormat;
+    if (a && getParsingFlags(m).overflow === -2) {
+        overflow =
+            a[MONTH]       < 0 || a[MONTH]       > 11  ? MONTH :
+            a[DATE]        < 1 || a[DATE]        > daysInMonth(a[YEAR], a[MONTH]) ? DATE :
+            a[HOUR]        < 0 || a[HOUR]        > 24 || (a[HOUR] === 24 && (a[MINUTE] !== 0 || a[SECOND] !== 0 || a[MILLISECOND] !== 0)) ? HOUR :
+            a[MINUTE]      < 0 || a[MINUTE]      > 59  ? MINUTE :
+            a[SECOND]      < 0 || a[SECOND]      > 59  ? SECOND :
+            a[MILLISECOND] < 0 || a[MILLISECOND] > 999 ? MILLISECOND :
+            -1;
 
-        if (match) {
-            getParsingFlags(config).iso = true;
+        if (getParsingFlags(m)._overflowDayOfYear && (overflow < YEAR || overflow > DATE)) {
+            overflow = DATE;
+        }
+        if (getParsingFlags(m)._overflowWeeks && overflow === -1) {
+            overflow = WEEK;
+        }
+        if (getParsingFlags(m)._overflowWeekday && overflow === -1) {
+            overflow = WEEKDAY;
+        }
 
-            for (i = 0, l = isoDates.length; i < l; i++) {
-                if (isoDates[i][1].exec(match[1])) {
-                    dateFormat = isoDates[i][0];
-                    allowTime = isoDates[i][2] !== false;
+        getParsingFlags(m).overflow = overflow;
+    }
+
+    return m;
+}
+
+// iso 8601 regex
+// 0000-00-00 0000-W00 or 0000-W00-0 + T + 00 or 00:00 or 00:00:00 or 00:00:00.000 + +00:00 or +0000 or +00)
+var extendedIsoRegex = /^\s*((?:[+-]\d{6}|\d{4})-(?:\d\d-\d\d|W\d\d-\d|W\d\d|\d\d\d|\d\d))(?:(T| )(\d\d(?::\d\d(?::\d\d(?:[.,]\d+)?)?)?)([\+\-]\d\d(?::?\d\d)?|\s*Z)?)?$/;
+var basicIsoRegex = /^\s*((?:[+-]\d{6}|\d{4})(?:\d\d\d\d|W\d\d\d|W\d\d|\d\d\d|\d\d))(?:(T| )(\d\d(?:\d\d(?:\d\d(?:[.,]\d+)?)?)?)([\+\-]\d\d(?::?\d\d)?|\s*Z)?)?$/;
+
+var tzRegex = /Z|[+-]\d\d(?::?\d\d)?/;
+
+var isoDates = [
+    ['YYYYYY-MM-DD', /[+-]\d{6}-\d\d-\d\d/],
+    ['YYYY-MM-DD', /\d{4}-\d\d-\d\d/],
+    ['GGGG-[W]WW-E', /\d{4}-W\d\d-\d/],
+    ['GGGG-[W]WW', /\d{4}-W\d\d/, false],
+    ['YYYY-DDD', /\d{4}-\d{3}/],
+    ['YYYY-MM', /\d{4}-\d\d/, false],
+    ['YYYYYYMMDD', /[+-]\d{10}/],
+    ['YYYYMMDD', /\d{8}/],
+    // YYYYMM is NOT allowed by the standard
+    ['GGGG[W]WWE', /\d{4}W\d{3}/],
+    ['GGGG[W]WW', /\d{4}W\d{2}/, false],
+    ['YYYYDDD', /\d{7}/]
+];
+
+// iso time formats and regexes
+var isoTimes = [
+    ['HH:mm:ss.SSSS', /\d\d:\d\d:\d\d\.\d+/],
+    ['HH:mm:ss,SSSS', /\d\d:\d\d:\d\d,\d+/],
+    ['HH:mm:ss', /\d\d:\d\d:\d\d/],
+    ['HH:mm', /\d\d:\d\d/],
+    ['HHmmss.SSSS', /\d\d\d\d\d\d\.\d+/],
+    ['HHmmss,SSSS', /\d\d\d\d\d\d,\d+/],
+    ['HHmmss', /\d\d\d\d\d\d/],
+    ['HHmm', /\d\d\d\d/],
+    ['HH', /\d\d/]
+];
+
+var aspNetJsonRegex = /^\/?Date\((\-?\d+)/i;
+
+// date from iso format
+function configFromISO(config) {
+    var i, l,
+        string = config._i,
+        match = extendedIsoRegex.exec(string) || basicIsoRegex.exec(string),
+        allowTime, dateFormat, timeFormat, tzFormat;
+
+    if (match) {
+        getParsingFlags(config).iso = true;
+
+        for (i = 0, l = isoDates.length; i < l; i++) {
+            if (isoDates[i][1].exec(match[1])) {
+                dateFormat = isoDates[i][0];
+                allowTime = isoDates[i][2] !== false;
+                break;
+            }
+        }
+        if (dateFormat == null) {
+            config._isValid = false;
+            return;
+        }
+        if (match[3]) {
+            for (i = 0, l = isoTimes.length; i < l; i++) {
+                if (isoTimes[i][1].exec(match[3])) {
+                    // match[2] should be 'T' or space
+                    timeFormat = (match[2] || ' ') + isoTimes[i][0];
                     break;
                 }
             }
-            if (dateFormat == null) {
+            if (timeFormat == null) {
                 config._isValid = false;
                 return;
             }
-            if (match[3]) {
-                for (i = 0, l = isoTimes.length; i < l; i++) {
-                    if (isoTimes[i][1].exec(match[3])) {
-                        // match[2] should be 'T' or space
-                        timeFormat = (match[2] || ' ') + isoTimes[i][0];
-                        break;
-                    }
-                }
-                if (timeFormat == null) {
-                    config._isValid = false;
-                    return;
-                }
-            }
-            if (!allowTime && timeFormat != null) {
-                config._isValid = false;
-                return;
-            }
-            if (match[4]) {
-                if (tzRegex.exec(match[4])) {
-                    tzFormat = 'Z';
-                } else {
-                    config._isValid = false;
-                    return;
-                }
-            }
-            config._f = dateFormat + (timeFormat || '') + (tzFormat || '');
-            configFromStringAndFormat(config);
-        } else {
+        }
+        if (!allowTime && timeFormat != null) {
             config._isValid = false;
-        }
-    }
-
-    // date from iso format or fallback
-    function configFromString(config) {
-        var matched = aspNetJsonRegex.exec(config._i);
-
-        if (matched !== null) {
-            config._d = new Date(+matched[1]);
             return;
         }
-
-        configFromISO(config);
-        if (config._isValid === false) {
-            delete config._isValid;
-            utils_hooks__hooks.createFromInputFallback(config);
-        }
-    }
-
-    utils_hooks__hooks.createFromInputFallback = deprecate(
-        'moment construction falls back to js Date. This is ' +
-        'discouraged and will be removed in upcoming major ' +
-        'release. Please refer to ' +
-        'http://momentjs.com/guides/#/warnings/js-date/ for more info.',
-        function (config) {
-            config._d = new Date(config._i + (config._useUTC ? ' UTC' : ''));
-        }
-    );
-
-    // Pick the first defined of two or three arguments.
-    function defaults(a, b, c) {
-        if (a != null) {
-            return a;
-        }
-        if (b != null) {
-            return b;
-        }
-        return c;
-    }
-
-    function currentDateArray(config) {
-        // hooks is actually the exported moment object
-        var nowValue = new Date(utils_hooks__hooks.now());
-        if (config._useUTC) {
-            return [nowValue.getUTCFullYear(), nowValue.getUTCMonth(), nowValue.getUTCDate()];
-        }
-        return [nowValue.getFullYear(), nowValue.getMonth(), nowValue.getDate()];
-    }
-
-    // convert an array to a date.
-    // the array should mirror the parameters below
-    // note: all values past the year are optional and will default to the lowest possible value.
-    // [year, month, day , hour, minute, second, millisecond]
-    function configFromArray (config) {
-        var i, date, input = [], currentDate, yearToUse;
-
-        if (config._d) {
-            return;
-        }
-
-        currentDate = currentDateArray(config);
-
-        //compute day of the year from weeks and weekdays
-        if (config._w && config._a[DATE] == null && config._a[MONTH] == null) {
-            dayOfYearFromWeekInfo(config);
-        }
-
-        //if the day of the year is set, figure out what it is
-        if (config._dayOfYear) {
-            yearToUse = defaults(config._a[YEAR], currentDate[YEAR]);
-
-            if (config._dayOfYear > daysInYear(yearToUse)) {
-                getParsingFlags(config)._overflowDayOfYear = true;
+        if (match[4]) {
+            if (tzRegex.exec(match[4])) {
+                tzFormat = 'Z';
+            } else {
+                config._isValid = false;
+                return;
             }
-
-            date = createUTCDate(yearToUse, 0, config._dayOfYear);
-            config._a[MONTH] = date.getUTCMonth();
-            config._a[DATE] = date.getUTCDate();
         }
+        config._f = dateFormat + (timeFormat || '') + (tzFormat || '');
+        configFromStringAndFormat(config);
+    } else {
+        config._isValid = false;
+    }
+}
 
-        // Default to current date.
-        // * if no year, month, day of month are given, default to today
-        // * if day of month is given, default month and year
-        // * if month is given, default only year
-        // * if year is given, don't default anything
-        for (i = 0; i < 3 && config._a[i] == null; ++i) {
-            config._a[i] = input[i] = currentDate[i];
-        }
+// date from iso format or fallback
+function configFromString(config) {
+    var matched = aspNetJsonRegex.exec(config._i);
 
-        // Zero out whatever was not defaulted, including time
-        for (; i < 7; i++) {
-            config._a[i] = input[i] = (config._a[i] == null) ? (i === 2 ? 1 : 0) : config._a[i];
-        }
-
-        // Check for 24:00:00.000
-        if (config._a[HOUR] === 24 &&
-                config._a[MINUTE] === 0 &&
-                config._a[SECOND] === 0 &&
-                config._a[MILLISECOND] === 0) {
-            config._nextDay = true;
-            config._a[HOUR] = 0;
-        }
-
-        config._d = (config._useUTC ? createUTCDate : createDate).apply(null, input);
-        // Apply timezone offset from input. The actual utcOffset can be changed
-        // with parseZone.
-        if (config._tzm != null) {
-            config._d.setUTCMinutes(config._d.getUTCMinutes() - config._tzm);
-        }
-
-        if (config._nextDay) {
-            config._a[HOUR] = 24;
-        }
+    if (matched !== null) {
+        config._d = new Date(+matched[1]);
+        return;
     }
 
-    function dayOfYearFromWeekInfo(config) {
-        var w, weekYear, week, weekday, dow, doy, temp, weekdayOverflow;
+    configFromISO(config);
+    if (config._isValid === false) {
+        delete config._isValid;
+        hooks.createFromInputFallback(config);
+    }
+}
 
-        w = config._w;
-        if (w.GG != null || w.W != null || w.E != null) {
-            dow = 1;
-            doy = 4;
+hooks.createFromInputFallback = deprecate(
+    'value provided is not in a recognized ISO format. moment construction falls back to js Date(), ' +
+    'which is not reliable across all browsers and versions. Non ISO date formats are ' +
+    'discouraged and will be removed in an upcoming major release. Please refer to ' +
+    'http://momentjs.com/guides/#/warnings/js-date/ for more info.',
+    function (config) {
+        config._d = new Date(config._i + (config._useUTC ? ' UTC' : ''));
+    }
+);
 
-            // TODO: We need to take the current isoWeekYear, but that depends on
-            // how we interpret now (local, utc, fixed offset). So create
-            // a now version of current config (take local/utc/offset flags, and
-            // create now).
-            weekYear = defaults(w.GG, config._a[YEAR], weekOfYear(local__createLocal(), 1, 4).year);
-            week = defaults(w.W, 1);
-            weekday = defaults(w.E, 1);
-            if (weekday < 1 || weekday > 7) {
+// Pick the first defined of two or three arguments.
+function defaults(a, b, c) {
+    if (a != null) {
+        return a;
+    }
+    if (b != null) {
+        return b;
+    }
+    return c;
+}
+
+function currentDateArray(config) {
+    // hooks is actually the exported moment object
+    var nowValue = new Date(hooks.now());
+    if (config._useUTC) {
+        return [nowValue.getUTCFullYear(), nowValue.getUTCMonth(), nowValue.getUTCDate()];
+    }
+    return [nowValue.getFullYear(), nowValue.getMonth(), nowValue.getDate()];
+}
+
+// convert an array to a date.
+// the array should mirror the parameters below
+// note: all values past the year are optional and will default to the lowest possible value.
+// [year, month, day , hour, minute, second, millisecond]
+function configFromArray (config) {
+    var i, date, input = [], currentDate, yearToUse;
+
+    if (config._d) {
+        return;
+    }
+
+    currentDate = currentDateArray(config);
+
+    //compute day of the year from weeks and weekdays
+    if (config._w && config._a[DATE] == null && config._a[MONTH] == null) {
+        dayOfYearFromWeekInfo(config);
+    }
+
+    //if the day of the year is set, figure out what it is
+    if (config._dayOfYear) {
+        yearToUse = defaults(config._a[YEAR], currentDate[YEAR]);
+
+        if (config._dayOfYear > daysInYear(yearToUse)) {
+            getParsingFlags(config)._overflowDayOfYear = true;
+        }
+
+        date = createUTCDate(yearToUse, 0, config._dayOfYear);
+        config._a[MONTH] = date.getUTCMonth();
+        config._a[DATE] = date.getUTCDate();
+    }
+
+    // Default to current date.
+    // * if no year, month, day of month are given, default to today
+    // * if day of month is given, default month and year
+    // * if month is given, default only year
+    // * if year is given, don't default anything
+    for (i = 0; i < 3 && config._a[i] == null; ++i) {
+        config._a[i] = input[i] = currentDate[i];
+    }
+
+    // Zero out whatever was not defaulted, including time
+    for (; i < 7; i++) {
+        config._a[i] = input[i] = (config._a[i] == null) ? (i === 2 ? 1 : 0) : config._a[i];
+    }
+
+    // Check for 24:00:00.000
+    if (config._a[HOUR] === 24 &&
+            config._a[MINUTE] === 0 &&
+            config._a[SECOND] === 0 &&
+            config._a[MILLISECOND] === 0) {
+        config._nextDay = true;
+        config._a[HOUR] = 0;
+    }
+
+    config._d = (config._useUTC ? createUTCDate : createDate).apply(null, input);
+    // Apply timezone offset from input. The actual utcOffset can be changed
+    // with parseZone.
+    if (config._tzm != null) {
+        config._d.setUTCMinutes(config._d.getUTCMinutes() - config._tzm);
+    }
+
+    if (config._nextDay) {
+        config._a[HOUR] = 24;
+    }
+}
+
+function dayOfYearFromWeekInfo(config) {
+    var w, weekYear, week, weekday, dow, doy, temp, weekdayOverflow;
+
+    w = config._w;
+    if (w.GG != null || w.W != null || w.E != null) {
+        dow = 1;
+        doy = 4;
+
+        // TODO: We need to take the current isoWeekYear, but that depends on
+        // how we interpret now (local, utc, fixed offset). So create
+        // a now version of current config (take local/utc/offset flags, and
+        // create now).
+        weekYear = defaults(w.GG, config._a[YEAR], weekOfYear(createLocal(), 1, 4).year);
+        week = defaults(w.W, 1);
+        weekday = defaults(w.E, 1);
+        if (weekday < 1 || weekday > 7) {
+            weekdayOverflow = true;
+        }
+    } else {
+        dow = config._locale._week.dow;
+        doy = config._locale._week.doy;
+
+        var curWeek = weekOfYear(createLocal(), dow, doy);
+
+        weekYear = defaults(w.gg, config._a[YEAR], curWeek.year);
+
+        // Default to current week.
+        week = defaults(w.w, curWeek.week);
+
+        if (w.d != null) {
+            // weekday -- low day numbers are considered next week
+            weekday = w.d;
+            if (weekday < 0 || weekday > 6) {
+                weekdayOverflow = true;
+            }
+        } else if (w.e != null) {
+            // local weekday -- counting starts from begining of week
+            weekday = w.e + dow;
+            if (w.e < 0 || w.e > 6) {
                 weekdayOverflow = true;
             }
         } else {
-            dow = config._locale._week.dow;
-            doy = config._locale._week.doy;
-
-            weekYear = defaults(w.gg, config._a[YEAR], weekOfYear(local__createLocal(), dow, doy).year);
-            week = defaults(w.w, 1);
-
-            if (w.d != null) {
-                // weekday -- low day numbers are considered next week
-                weekday = w.d;
-                if (weekday < 0 || weekday > 6) {
-                    weekdayOverflow = true;
-                }
-            } else if (w.e != null) {
-                // local weekday -- counting starts from begining of week
-                weekday = w.e + dow;
-                if (w.e < 0 || w.e > 6) {
-                    weekdayOverflow = true;
-                }
-            } else {
-                // default to begining of week
-                weekday = dow;
-            }
-        }
-        if (week < 1 || week > weeksInYear(weekYear, dow, doy)) {
-            getParsingFlags(config)._overflowWeeks = true;
-        } else if (weekdayOverflow != null) {
-            getParsingFlags(config)._overflowWeekday = true;
-        } else {
-            temp = dayOfYearFromWeeks(weekYear, week, weekday, dow, doy);
-            config._a[YEAR] = temp.year;
-            config._dayOfYear = temp.dayOfYear;
+            // default to begining of week
+            weekday = dow;
         }
     }
+    if (week < 1 || week > weeksInYear(weekYear, dow, doy)) {
+        getParsingFlags(config)._overflowWeeks = true;
+    } else if (weekdayOverflow != null) {
+        getParsingFlags(config)._overflowWeekday = true;
+    } else {
+        temp = dayOfYearFromWeeks(weekYear, week, weekday, dow, doy);
+        config._a[YEAR] = temp.year;
+        config._dayOfYear = temp.dayOfYear;
+    }
+}
 
-    // constant that refers to the ISO standard
-    utils_hooks__hooks.ISO_8601 = function () {};
+// constant that refers to the ISO standard
+hooks.ISO_8601 = function () {};
 
-    // date from string and format string
-    function configFromStringAndFormat(config) {
-        // TODO: Move this to another part of the creation flow to prevent circular deps
-        if (config._f === utils_hooks__hooks.ISO_8601) {
-            configFromISO(config);
-            return;
+// date from string and format string
+function configFromStringAndFormat(config) {
+    // TODO: Move this to another part of the creation flow to prevent circular deps
+    if (config._f === hooks.ISO_8601) {
+        configFromISO(config);
+        return;
+    }
+
+    config._a = [];
+    getParsingFlags(config).empty = true;
+
+    // This array is used to make a Date, either with `new Date` or `Date.UTC`
+    var string = '' + config._i,
+        i, parsedInput, tokens, token, skipped,
+        stringLength = string.length,
+        totalParsedInputLength = 0;
+
+    tokens = expandFormat(config._f, config._locale).match(formattingTokens) || [];
+
+    for (i = 0; i < tokens.length; i++) {
+        token = tokens[i];
+        parsedInput = (string.match(getParseRegexForToken(token, config)) || [])[0];
+        // console.log('token', token, 'parsedInput', parsedInput,
+        //         'regex', getParseRegexForToken(token, config));
+        if (parsedInput) {
+            skipped = string.substr(0, string.indexOf(parsedInput));
+            if (skipped.length > 0) {
+                getParsingFlags(config).unusedInput.push(skipped);
+            }
+            string = string.slice(string.indexOf(parsedInput) + parsedInput.length);
+            totalParsedInputLength += parsedInput.length;
         }
-
-        config._a = [];
-        getParsingFlags(config).empty = true;
-
-        // This array is used to make a Date, either with `new Date` or `Date.UTC`
-        var string = '' + config._i,
-            i, parsedInput, tokens, token, skipped,
-            stringLength = string.length,
-            totalParsedInputLength = 0;
-
-        tokens = expandFormat(config._f, config._locale).match(formattingTokens) || [];
-
-        for (i = 0; i < tokens.length; i++) {
-            token = tokens[i];
-            parsedInput = (string.match(getParseRegexForToken(token, config)) || [])[0];
-            // console.log('token', token, 'parsedInput', parsedInput,
-            //         'regex', getParseRegexForToken(token, config));
+        // don't parse if it's not a known token
+        if (formatTokenFunctions[token]) {
             if (parsedInput) {
-                skipped = string.substr(0, string.indexOf(parsedInput));
-                if (skipped.length > 0) {
-                    getParsingFlags(config).unusedInput.push(skipped);
-                }
-                string = string.slice(string.indexOf(parsedInput) + parsedInput.length);
-                totalParsedInputLength += parsedInput.length;
+                getParsingFlags(config).empty = false;
             }
-            // don't parse if it's not a known token
-            if (formatTokenFunctions[token]) {
-                if (parsedInput) {
-                    getParsingFlags(config).empty = false;
-                }
-                else {
-                    getParsingFlags(config).unusedTokens.push(token);
-                }
-                addTimeToArrayFromToken(token, parsedInput, config);
-            }
-            else if (config._strict && !parsedInput) {
+            else {
                 getParsingFlags(config).unusedTokens.push(token);
             }
+            addTimeToArrayFromToken(token, parsedInput, config);
         }
-
-        // add remaining unparsed input length to the string
-        getParsingFlags(config).charsLeftOver = stringLength - totalParsedInputLength;
-        if (string.length > 0) {
-            getParsingFlags(config).unusedInput.push(string);
-        }
-
-        // clear _12h flag if hour is <= 12
-        if (config._a[HOUR] <= 12 &&
-            getParsingFlags(config).bigHour === true &&
-            config._a[HOUR] > 0) {
-            getParsingFlags(config).bigHour = undefined;
-        }
-
-        getParsingFlags(config).parsedDateParts = config._a.slice(0);
-        getParsingFlags(config).meridiem = config._meridiem;
-        // handle meridiem
-        config._a[HOUR] = meridiemFixWrap(config._locale, config._a[HOUR], config._meridiem);
-
-        configFromArray(config);
-        checkOverflow(config);
-    }
-
-
-    function meridiemFixWrap (locale, hour, meridiem) {
-        var isPm;
-
-        if (meridiem == null) {
-            // nothing to do
-            return hour;
-        }
-        if (locale.meridiemHour != null) {
-            return locale.meridiemHour(hour, meridiem);
-        } else if (locale.isPM != null) {
-            // Fallback
-            isPm = locale.isPM(meridiem);
-            if (isPm && hour < 12) {
-                hour += 12;
-            }
-            if (!isPm && hour === 12) {
-                hour = 0;
-            }
-            return hour;
-        } else {
-            // this is not supposed to happen
-            return hour;
+        else if (config._strict && !parsedInput) {
+            getParsingFlags(config).unusedTokens.push(token);
         }
     }
 
-    // date from string and array of format strings
-    function configFromStringAndArray(config) {
-        var tempConfig,
-            bestMoment,
-
-            scoreToBeat,
-            i,
-            currentScore;
-
-        if (config._f.length === 0) {
-            getParsingFlags(config).invalidFormat = true;
-            config._d = new Date(NaN);
-            return;
-        }
-
-        for (i = 0; i < config._f.length; i++) {
-            currentScore = 0;
-            tempConfig = copyConfig({}, config);
-            if (config._useUTC != null) {
-                tempConfig._useUTC = config._useUTC;
-            }
-            tempConfig._f = config._f[i];
-            configFromStringAndFormat(tempConfig);
-
-            if (!valid__isValid(tempConfig)) {
-                continue;
-            }
-
-            // if there is any input that was not parsed add a penalty for that format
-            currentScore += getParsingFlags(tempConfig).charsLeftOver;
-
-            //or tokens
-            currentScore += getParsingFlags(tempConfig).unusedTokens.length * 10;
-
-            getParsingFlags(tempConfig).score = currentScore;
-
-            if (scoreToBeat == null || currentScore < scoreToBeat) {
-                scoreToBeat = currentScore;
-                bestMoment = tempConfig;
-            }
-        }
-
-        extend(config, bestMoment || tempConfig);
+    // add remaining unparsed input length to the string
+    getParsingFlags(config).charsLeftOver = stringLength - totalParsedInputLength;
+    if (string.length > 0) {
+        getParsingFlags(config).unusedInput.push(string);
     }
 
-    function configFromObject(config) {
-        if (config._d) {
-            return;
-        }
-
-        var i = normalizeObjectUnits(config._i);
-        config._a = map([i.year, i.month, i.day || i.date, i.hour, i.minute, i.second, i.millisecond], function (obj) {
-            return obj && parseInt(obj, 10);
-        });
-
-        configFromArray(config);
+    // clear _12h flag if hour is <= 12
+    if (config._a[HOUR] <= 12 &&
+        getParsingFlags(config).bigHour === true &&
+        config._a[HOUR] > 0) {
+        getParsingFlags(config).bigHour = undefined;
     }
 
-    function createFromConfig (config) {
-        var res = new Moment(checkOverflow(prepareConfig(config)));
-        if (res._nextDay) {
-            // Adding is smart enough around DST
-            res.add(1, 'd');
-            res._nextDay = undefined;
-        }
+    getParsingFlags(config).parsedDateParts = config._a.slice(0);
+    getParsingFlags(config).meridiem = config._meridiem;
+    // handle meridiem
+    config._a[HOUR] = meridiemFixWrap(config._locale, config._a[HOUR], config._meridiem);
 
-        return res;
+    configFromArray(config);
+    checkOverflow(config);
+}
+
+
+function meridiemFixWrap (locale, hour, meridiem) {
+    var isPm;
+
+    if (meridiem == null) {
+        // nothing to do
+        return hour;
+    }
+    if (locale.meridiemHour != null) {
+        return locale.meridiemHour(hour, meridiem);
+    } else if (locale.isPM != null) {
+        // Fallback
+        isPm = locale.isPM(meridiem);
+        if (isPm && hour < 12) {
+            hour += 12;
+        }
+        if (!isPm && hour === 12) {
+            hour = 0;
+        }
+        return hour;
+    } else {
+        // this is not supposed to happen
+        return hour;
+    }
+}
+
+// date from string and array of format strings
+function configFromStringAndArray(config) {
+    var tempConfig,
+        bestMoment,
+
+        scoreToBeat,
+        i,
+        currentScore;
+
+    if (config._f.length === 0) {
+        getParsingFlags(config).invalidFormat = true;
+        config._d = new Date(NaN);
+        return;
     }
 
-    function prepareConfig (config) {
-        var input = config._i,
-            format = config._f;
+    for (i = 0; i < config._f.length; i++) {
+        currentScore = 0;
+        tempConfig = copyConfig({}, config);
+        if (config._useUTC != null) {
+            tempConfig._useUTC = config._useUTC;
+        }
+        tempConfig._f = config._f[i];
+        configFromStringAndFormat(tempConfig);
 
-        config._locale = config._locale || locale_locales__getLocale(config._l);
-
-        if (input === null || (format === undefined && input === '')) {
-            return valid__createInvalid({nullInput: true});
+        if (!isValid(tempConfig)) {
+            continue;
         }
 
-        if (typeof input === 'string') {
-            config._i = input = config._locale.preparse(input);
-        }
+        // if there is any input that was not parsed add a penalty for that format
+        currentScore += getParsingFlags(tempConfig).charsLeftOver;
 
-        if (isMoment(input)) {
-            return new Moment(checkOverflow(input));
-        } else if (isArray(format)) {
-            configFromStringAndArray(config);
-        } else if (isDate(input)) {
-            config._d = input;
-        } else if (format) {
-            configFromStringAndFormat(config);
-        }  else {
-            configFromInput(config);
-        }
+        //or tokens
+        currentScore += getParsingFlags(tempConfig).unusedTokens.length * 10;
 
-        if (!valid__isValid(config)) {
-            config._d = null;
-        }
+        getParsingFlags(tempConfig).score = currentScore;
 
-        return config;
-    }
-
-    function configFromInput(config) {
-        var input = config._i;
-        if (input === undefined) {
-            config._d = new Date(utils_hooks__hooks.now());
-        } else if (isDate(input)) {
-            config._d = new Date(input.valueOf());
-        } else if (typeof input === 'string') {
-            configFromString(config);
-        } else if (isArray(input)) {
-            config._a = map(input.slice(0), function (obj) {
-                return parseInt(obj, 10);
-            });
-            configFromArray(config);
-        } else if (typeof(input) === 'object') {
-            configFromObject(config);
-        } else if (typeof(input) === 'number') {
-            // from milliseconds
-            config._d = new Date(input);
-        } else {
-            utils_hooks__hooks.createFromInputFallback(config);
+        if (scoreToBeat == null || currentScore < scoreToBeat) {
+            scoreToBeat = currentScore;
+            bestMoment = tempConfig;
         }
     }
 
-    function createLocalOrUTC (input, format, locale, strict, isUTC) {
-        var c = {};
+    extend(config, bestMoment || tempConfig);
+}
 
-        if (typeof(locale) === 'boolean') {
-            strict = locale;
-            locale = undefined;
-        }
-
-        if ((isObject(input) && isObjectEmpty(input)) ||
-                (isArray(input) && input.length === 0)) {
-            input = undefined;
-        }
-        // object construction must be done this way.
-        // https://github.com/moment/moment/issues/1423
-        c._isAMomentObject = true;
-        c._useUTC = c._isUTC = isUTC;
-        c._l = locale;
-        c._i = input;
-        c._f = format;
-        c._strict = strict;
-
-        return createFromConfig(c);
+function configFromObject(config) {
+    if (config._d) {
+        return;
     }
 
-    function local__createLocal (input, format, locale, strict) {
-        return createLocalOrUTC(input, format, locale, strict, false);
-    }
-
-    var prototypeMin = deprecate(
-        'moment().min is deprecated, use moment.max instead. http://momentjs.com/guides/#/warnings/min-max/',
-        function () {
-            var other = local__createLocal.apply(null, arguments);
-            if (this.isValid() && other.isValid()) {
-                return other < this ? this : other;
-            } else {
-                return valid__createInvalid();
-            }
-        }
-    );
-
-    var prototypeMax = deprecate(
-        'moment().max is deprecated, use moment.min instead. http://momentjs.com/guides/#/warnings/min-max/',
-        function () {
-            var other = local__createLocal.apply(null, arguments);
-            if (this.isValid() && other.isValid()) {
-                return other > this ? this : other;
-            } else {
-                return valid__createInvalid();
-            }
-        }
-    );
-
-    // Pick a moment m from moments so that m[fn](other) is true for all
-    // other. This relies on the function fn to be transitive.
-    //
-    // moments should either be an array of moment objects or an array, whose
-    // first element is an array of moment objects.
-    function pickBy(fn, moments) {
-        var res, i;
-        if (moments.length === 1 && isArray(moments[0])) {
-            moments = moments[0];
-        }
-        if (!moments.length) {
-            return local__createLocal();
-        }
-        res = moments[0];
-        for (i = 1; i < moments.length; ++i) {
-            if (!moments[i].isValid() || moments[i][fn](res)) {
-                res = moments[i];
-            }
-        }
-        return res;
-    }
-
-    // TODO: Use [].sort instead?
-    function min () {
-        var args = [].slice.call(arguments, 0);
-
-        return pickBy('isBefore', args);
-    }
-
-    function max () {
-        var args = [].slice.call(arguments, 0);
-
-        return pickBy('isAfter', args);
-    }
-
-    var now = function () {
-        return Date.now ? Date.now() : +(new Date());
-    };
-
-    function Duration (duration) {
-        var normalizedInput = normalizeObjectUnits(duration),
-            years = normalizedInput.year || 0,
-            quarters = normalizedInput.quarter || 0,
-            months = normalizedInput.month || 0,
-            weeks = normalizedInput.week || 0,
-            days = normalizedInput.day || 0,
-            hours = normalizedInput.hour || 0,
-            minutes = normalizedInput.minute || 0,
-            seconds = normalizedInput.second || 0,
-            milliseconds = normalizedInput.millisecond || 0;
-
-        // representation for dateAddRemove
-        this._milliseconds = +milliseconds +
-            seconds * 1e3 + // 1000
-            minutes * 6e4 + // 1000 * 60
-            hours * 1000 * 60 * 60; //using 1000 * 60 * 60 instead of 36e5 to avoid floating point rounding errors https://github.com/moment/moment/issues/2978
-        // Because of dateAddRemove treats 24 hours as different from a
-        // day when working around DST, we need to store them separately
-        this._days = +days +
-            weeks * 7;
-        // It is impossible translate months into days without knowing
-        // which months you are are talking about, so we have to store
-        // it separately.
-        this._months = +months +
-            quarters * 3 +
-            years * 12;
-
-        this._data = {};
-
-        this._locale = locale_locales__getLocale();
-
-        this._bubble();
-    }
-
-    function isDuration (obj) {
-        return obj instanceof Duration;
-    }
-
-    // FORMATTING
-
-    function offset (token, separator) {
-        addFormatToken(token, 0, 0, function () {
-            var offset = this.utcOffset();
-            var sign = '+';
-            if (offset < 0) {
-                offset = -offset;
-                sign = '-';
-            }
-            return sign + zeroFill(~~(offset / 60), 2) + separator + zeroFill(~~(offset) % 60, 2);
-        });
-    }
-
-    offset('Z', ':');
-    offset('ZZ', '');
-
-    // PARSING
-
-    addRegexToken('Z',  matchShortOffset);
-    addRegexToken('ZZ', matchShortOffset);
-    addParseToken(['Z', 'ZZ'], function (input, array, config) {
-        config._useUTC = true;
-        config._tzm = offsetFromString(matchShortOffset, input);
+    var i = normalizeObjectUnits(config._i);
+    config._a = map([i.year, i.month, i.day || i.date, i.hour, i.minute, i.second, i.millisecond], function (obj) {
+        return obj && parseInt(obj, 10);
     });
 
-    // HELPERS
+    configFromArray(config);
+}
 
-    // timezone chunker
-    // '+10:00' > ['10',  '00']
-    // '-1530'  > ['-15', '30']
-    var chunkOffset = /([\+\-]|\d\d)/gi;
-
-    function offsetFromString(matcher, string) {
-        var matches = ((string || '').match(matcher) || []);
-        var chunk   = matches[matches.length - 1] || [];
-        var parts   = (chunk + '').match(chunkOffset) || ['-', 0, 0];
-        var minutes = +(parts[1] * 60) + toInt(parts[2]);
-
-        return parts[0] === '+' ? minutes : -minutes;
+function createFromConfig (config) {
+    var res = new Moment(checkOverflow(prepareConfig(config)));
+    if (res._nextDay) {
+        // Adding is smart enough around DST
+        res.add(1, 'd');
+        res._nextDay = undefined;
     }
 
-    // Return a moment from input, that is local/utc/zone equivalent to model.
-    function cloneWithOffset(input, model) {
-        var res, diff;
-        if (model._isUTC) {
-            res = model.clone();
-            diff = (isMoment(input) || isDate(input) ? input.valueOf() : local__createLocal(input).valueOf()) - res.valueOf();
-            // Use low-level api, because this fn is low-level api.
-            res._d.setTime(res._d.valueOf() + diff);
-            utils_hooks__hooks.updateOffset(res, false);
-            return res;
+    return res;
+}
+
+function prepareConfig (config) {
+    var input = config._i,
+        format = config._f;
+
+    config._locale = config._locale || getLocale(config._l);
+
+    if (input === null || (format === undefined && input === '')) {
+        return createInvalid({nullInput: true});
+    }
+
+    if (typeof input === 'string') {
+        config._i = input = config._locale.preparse(input);
+    }
+
+    if (isMoment(input)) {
+        return new Moment(checkOverflow(input));
+    } else if (isDate(input)) {
+        config._d = input;
+    } else if (isArray(format)) {
+        configFromStringAndArray(config);
+    } else if (format) {
+        configFromStringAndFormat(config);
+    }  else {
+        configFromInput(config);
+    }
+
+    if (!isValid(config)) {
+        config._d = null;
+    }
+
+    return config;
+}
+
+function configFromInput(config) {
+    var input = config._i;
+    if (input === undefined) {
+        config._d = new Date(hooks.now());
+    } else if (isDate(input)) {
+        config._d = new Date(input.valueOf());
+    } else if (typeof input === 'string') {
+        configFromString(config);
+    } else if (isArray(input)) {
+        config._a = map(input.slice(0), function (obj) {
+            return parseInt(obj, 10);
+        });
+        configFromArray(config);
+    } else if (typeof(input) === 'object') {
+        configFromObject(config);
+    } else if (isNumber(input)) {
+        // from milliseconds
+        config._d = new Date(input);
+    } else {
+        hooks.createFromInputFallback(config);
+    }
+}
+
+function createLocalOrUTC (input, format, locale, strict, isUTC) {
+    var c = {};
+
+    if (locale === true || locale === false) {
+        strict = locale;
+        locale = undefined;
+    }
+
+    if ((isObject(input) && isObjectEmpty(input)) ||
+            (isArray(input) && input.length === 0)) {
+        input = undefined;
+    }
+    // object construction must be done this way.
+    // https://github.com/moment/moment/issues/1423
+    c._isAMomentObject = true;
+    c._useUTC = c._isUTC = isUTC;
+    c._l = locale;
+    c._i = input;
+    c._f = format;
+    c._strict = strict;
+
+    return createFromConfig(c);
+}
+
+function createLocal (input, format, locale, strict) {
+    return createLocalOrUTC(input, format, locale, strict, false);
+}
+
+var prototypeMin = deprecate(
+    'moment().min is deprecated, use moment.max instead. http://momentjs.com/guides/#/warnings/min-max/',
+    function () {
+        var other = createLocal.apply(null, arguments);
+        if (this.isValid() && other.isValid()) {
+            return other < this ? this : other;
         } else {
-            return local__createLocal(input).local();
+            return createInvalid();
         }
     }
+);
 
-    function getDateOffset (m) {
-        // On Firefox.24 Date#getTimezoneOffset returns a floating point.
-        // https://github.com/moment/moment/pull/1871
-        return -Math.round(m._d.getTimezoneOffset() / 15) * 15;
-    }
-
-    // HOOKS
-
-    // This function will be called whenever a moment is mutated.
-    // It is intended to keep the offset in sync with the timezone.
-    utils_hooks__hooks.updateOffset = function () {};
-
-    // MOMENTS
-
-    // keepLocalTime = true means only change the timezone, without
-    // affecting the local hour. So 5:31:26 +0300 --[utcOffset(2, true)]-->
-    // 5:31:26 +0200 It is possible that 5:31:26 doesn't exist with offset
-    // +0200, so we adjust the time as needed, to be valid.
-    //
-    // Keeping the time actually adds/subtracts (one hour)
-    // from the actual represented time. That is why we call updateOffset
-    // a second time. In case it wants us to change the offset again
-    // _changeInProgress == true case, then we have to adjust, because
-    // there is no such time in the given timezone.
-    function getSetOffset (input, keepLocalTime) {
-        var offset = this._offset || 0,
-            localAdjust;
-        if (!this.isValid()) {
-            return input != null ? this : NaN;
-        }
-        if (input != null) {
-            if (typeof input === 'string') {
-                input = offsetFromString(matchShortOffset, input);
-            } else if (Math.abs(input) < 16) {
-                input = input * 60;
-            }
-            if (!this._isUTC && keepLocalTime) {
-                localAdjust = getDateOffset(this);
-            }
-            this._offset = input;
-            this._isUTC = true;
-            if (localAdjust != null) {
-                this.add(localAdjust, 'm');
-            }
-            if (offset !== input) {
-                if (!keepLocalTime || this._changeInProgress) {
-                    add_subtract__addSubtract(this, create__createDuration(input - offset, 'm'), 1, false);
-                } else if (!this._changeInProgress) {
-                    this._changeInProgress = true;
-                    utils_hooks__hooks.updateOffset(this, true);
-                    this._changeInProgress = null;
-                }
-            }
-            return this;
+var prototypeMax = deprecate(
+    'moment().max is deprecated, use moment.min instead. http://momentjs.com/guides/#/warnings/min-max/',
+    function () {
+        var other = createLocal.apply(null, arguments);
+        if (this.isValid() && other.isValid()) {
+            return other > this ? this : other;
         } else {
-            return this._isUTC ? offset : getDateOffset(this);
+            return createInvalid();
         }
     }
+);
 
-    function getSetZone (input, keepLocalTime) {
-        if (input != null) {
-            if (typeof input !== 'string') {
-                input = -input;
+// Pick a moment m from moments so that m[fn](other) is true for all
+// other. This relies on the function fn to be transitive.
+//
+// moments should either be an array of moment objects or an array, whose
+// first element is an array of moment objects.
+function pickBy(fn, moments) {
+    var res, i;
+    if (moments.length === 1 && isArray(moments[0])) {
+        moments = moments[0];
+    }
+    if (!moments.length) {
+        return createLocal();
+    }
+    res = moments[0];
+    for (i = 1; i < moments.length; ++i) {
+        if (!moments[i].isValid() || moments[i][fn](res)) {
+            res = moments[i];
+        }
+    }
+    return res;
+}
+
+// TODO: Use [].sort instead?
+function min () {
+    var args = [].slice.call(arguments, 0);
+
+    return pickBy('isBefore', args);
+}
+
+function max () {
+    var args = [].slice.call(arguments, 0);
+
+    return pickBy('isAfter', args);
+}
+
+var now = function () {
+    return Date.now ? Date.now() : +(new Date());
+};
+
+function Duration (duration) {
+    var normalizedInput = normalizeObjectUnits(duration),
+        years = normalizedInput.year || 0,
+        quarters = normalizedInput.quarter || 0,
+        months = normalizedInput.month || 0,
+        weeks = normalizedInput.week || 0,
+        days = normalizedInput.day || 0,
+        hours = normalizedInput.hour || 0,
+        minutes = normalizedInput.minute || 0,
+        seconds = normalizedInput.second || 0,
+        milliseconds = normalizedInput.millisecond || 0;
+
+    // representation for dateAddRemove
+    this._milliseconds = +milliseconds +
+        seconds * 1e3 + // 1000
+        minutes * 6e4 + // 1000 * 60
+        hours * 1000 * 60 * 60; //using 1000 * 60 * 60 instead of 36e5 to avoid floating point rounding errors https://github.com/moment/moment/issues/2978
+    // Because of dateAddRemove treats 24 hours as different from a
+    // day when working around DST, we need to store them separately
+    this._days = +days +
+        weeks * 7;
+    // It is impossible translate months into days without knowing
+    // which months you are are talking about, so we have to store
+    // it separately.
+    this._months = +months +
+        quarters * 3 +
+        years * 12;
+
+    this._data = {};
+
+    this._locale = getLocale();
+
+    this._bubble();
+}
+
+function isDuration (obj) {
+    return obj instanceof Duration;
+}
+
+function absRound (number) {
+    if (number < 0) {
+        return Math.round(-1 * number) * -1;
+    } else {
+        return Math.round(number);
+    }
+}
+
+// FORMATTING
+
+function offset (token, separator) {
+    addFormatToken(token, 0, 0, function () {
+        var offset = this.utcOffset();
+        var sign = '+';
+        if (offset < 0) {
+            offset = -offset;
+            sign = '-';
+        }
+        return sign + zeroFill(~~(offset / 60), 2) + separator + zeroFill(~~(offset) % 60, 2);
+    });
+}
+
+offset('Z', ':');
+offset('ZZ', '');
+
+// PARSING
+
+addRegexToken('Z',  matchShortOffset);
+addRegexToken('ZZ', matchShortOffset);
+addParseToken(['Z', 'ZZ'], function (input, array, config) {
+    config._useUTC = true;
+    config._tzm = offsetFromString(matchShortOffset, input);
+});
+
+// HELPERS
+
+// timezone chunker
+// '+10:00' > ['10',  '00']
+// '-1530'  > ['-15', '30']
+var chunkOffset = /([\+\-]|\d\d)/gi;
+
+function offsetFromString(matcher, string) {
+    var matches = (string || '').match(matcher);
+
+    if (matches === null) {
+        return null;
+    }
+
+    var chunk   = matches[matches.length - 1] || [];
+    var parts   = (chunk + '').match(chunkOffset) || ['-', 0, 0];
+    var minutes = +(parts[1] * 60) + toInt(parts[2]);
+
+    return minutes === 0 ?
+      0 :
+      parts[0] === '+' ? minutes : -minutes;
+}
+
+// Return a moment from input, that is local/utc/zone equivalent to model.
+function cloneWithOffset(input, model) {
+    var res, diff;
+    if (model._isUTC) {
+        res = model.clone();
+        diff = (isMoment(input) || isDate(input) ? input.valueOf() : createLocal(input).valueOf()) - res.valueOf();
+        // Use low-level api, because this fn is low-level api.
+        res._d.setTime(res._d.valueOf() + diff);
+        hooks.updateOffset(res, false);
+        return res;
+    } else {
+        return createLocal(input).local();
+    }
+}
+
+function getDateOffset (m) {
+    // On Firefox.24 Date#getTimezoneOffset returns a floating point.
+    // https://github.com/moment/moment/pull/1871
+    return -Math.round(m._d.getTimezoneOffset() / 15) * 15;
+}
+
+// HOOKS
+
+// This function will be called whenever a moment is mutated.
+// It is intended to keep the offset in sync with the timezone.
+hooks.updateOffset = function () {};
+
+// MOMENTS
+
+// keepLocalTime = true means only change the timezone, without
+// affecting the local hour. So 5:31:26 +0300 --[utcOffset(2, true)]-->
+// 5:31:26 +0200 It is possible that 5:31:26 doesn't exist with offset
+// +0200, so we adjust the time as needed, to be valid.
+//
+// Keeping the time actually adds/subtracts (one hour)
+// from the actual represented time. That is why we call updateOffset
+// a second time. In case it wants us to change the offset again
+// _changeInProgress == true case, then we have to adjust, because
+// there is no such time in the given timezone.
+function getSetOffset (input, keepLocalTime) {
+    var offset = this._offset || 0,
+        localAdjust;
+    if (!this.isValid()) {
+        return input != null ? this : NaN;
+    }
+    if (input != null) {
+        if (typeof input === 'string') {
+            input = offsetFromString(matchShortOffset, input);
+            if (input === null) {
+                return this;
             }
-
-            this.utcOffset(input, keepLocalTime);
-
-            return this;
-        } else {
-            return -this.utcOffset();
+        } else if (Math.abs(input) < 16) {
+            input = input * 60;
         }
-    }
-
-    function setOffsetToUTC (keepLocalTime) {
-        return this.utcOffset(0, keepLocalTime);
-    }
-
-    function setOffsetToLocal (keepLocalTime) {
-        if (this._isUTC) {
-            this.utcOffset(0, keepLocalTime);
-            this._isUTC = false;
-
-            if (keepLocalTime) {
-                this.subtract(getDateOffset(this), 'm');
+        if (!this._isUTC && keepLocalTime) {
+            localAdjust = getDateOffset(this);
+        }
+        this._offset = input;
+        this._isUTC = true;
+        if (localAdjust != null) {
+            this.add(localAdjust, 'm');
+        }
+        if (offset !== input) {
+            if (!keepLocalTime || this._changeInProgress) {
+                addSubtract(this, createDuration(input - offset, 'm'), 1, false);
+            } else if (!this._changeInProgress) {
+                this._changeInProgress = true;
+                hooks.updateOffset(this, true);
+                this._changeInProgress = null;
             }
         }
         return this;
+    } else {
+        return this._isUTC ? offset : getDateOffset(this);
     }
+}
 
-    function setOffsetToParsedOffset () {
-        if (this._tzm) {
-            this.utcOffset(this._tzm);
-        } else if (typeof this._i === 'string') {
-            this.utcOffset(offsetFromString(matchOffset, this._i));
+function getSetZone (input, keepLocalTime) {
+    if (input != null) {
+        if (typeof input !== 'string') {
+            input = -input;
         }
+
+        this.utcOffset(input, keepLocalTime);
+
         return this;
+    } else {
+        return -this.utcOffset();
     }
+}
 
-    function hasAlignedHourOffset (input) {
-        if (!this.isValid()) {
-            return false;
+function setOffsetToUTC (keepLocalTime) {
+    return this.utcOffset(0, keepLocalTime);
+}
+
+function setOffsetToLocal (keepLocalTime) {
+    if (this._isUTC) {
+        this.utcOffset(0, keepLocalTime);
+        this._isUTC = false;
+
+        if (keepLocalTime) {
+            this.subtract(getDateOffset(this), 'm');
         }
-        input = input ? local__createLocal(input).utcOffset() : 0;
-
-        return (this.utcOffset() - input) % 60 === 0;
     }
+    return this;
+}
 
-    function isDaylightSavingTime () {
-        return (
-            this.utcOffset() > this.clone().month(0).utcOffset() ||
-            this.utcOffset() > this.clone().month(5).utcOffset()
-        );
+function setOffsetToParsedOffset () {
+    if (this._tzm != null) {
+        this.utcOffset(this._tzm);
+    } else if (typeof this._i === 'string') {
+        var tZone = offsetFromString(matchOffset, this._i);
+        if (tZone != null) {
+            this.utcOffset(tZone);
+        }
+        else {
+            this.utcOffset(0, true);
+        }
     }
+    return this;
+}
 
-    function isDaylightSavingTimeShifted () {
-        if (!isUndefined(this._isDSTShifted)) {
-            return this._isDSTShifted;
-        }
+function hasAlignedHourOffset (input) {
+    if (!this.isValid()) {
+        return false;
+    }
+    input = input ? createLocal(input).utcOffset() : 0;
 
-        var c = {};
+    return (this.utcOffset() - input) % 60 === 0;
+}
 
-        copyConfig(c, this);
-        c = prepareConfig(c);
+function isDaylightSavingTime () {
+    return (
+        this.utcOffset() > this.clone().month(0).utcOffset() ||
+        this.utcOffset() > this.clone().month(5).utcOffset()
+    );
+}
 
-        if (c._a) {
-            var other = c._isUTC ? create_utc__createUTC(c._a) : local__createLocal(c._a);
-            this._isDSTShifted = this.isValid() &&
-                compareArrays(c._a, other.toArray()) > 0;
-        } else {
-            this._isDSTShifted = false;
-        }
-
+function isDaylightSavingTimeShifted () {
+    if (!isUndefined(this._isDSTShifted)) {
         return this._isDSTShifted;
     }
 
-    function isLocal () {
-        return this.isValid() ? !this._isUTC : false;
+    var c = {};
+
+    copyConfig(c, this);
+    c = prepareConfig(c);
+
+    if (c._a) {
+        var other = c._isUTC ? createUTC(c._a) : createLocal(c._a);
+        this._isDSTShifted = this.isValid() &&
+            compareArrays(c._a, other.toArray()) > 0;
+    } else {
+        this._isDSTShifted = false;
     }
 
-    function isUtcOffset () {
-        return this.isValid() ? this._isUTC : false;
-    }
+    return this._isDSTShifted;
+}
 
-    function isUtc () {
-        return this.isValid() ? this._isUTC && this._offset === 0 : false;
-    }
+function isLocal () {
+    return this.isValid() ? !this._isUTC : false;
+}
 
-    // ASP.NET json date format regex
-    var aspNetRegex = /^(\-)?(?:(\d*)[. ])?(\d+)\:(\d+)(?:\:(\d+)\.?(\d{3})?\d*)?$/;
+function isUtcOffset () {
+    return this.isValid() ? this._isUTC : false;
+}
 
-    // from http://docs.closure-library.googlecode.com/git/closure_goog_date_date.js.source.html
-    // somewhat more in line with 4.4.3.2 2004 spec, but allows decimal anywhere
-    // and further modified to allow for strings containing both week and day
-    var isoRegex = /^(-)?P(?:(-?[0-9,.]*)Y)?(?:(-?[0-9,.]*)M)?(?:(-?[0-9,.]*)W)?(?:(-?[0-9,.]*)D)?(?:T(?:(-?[0-9,.]*)H)?(?:(-?[0-9,.]*)M)?(?:(-?[0-9,.]*)S)?)?$/;
+function isUtc () {
+    return this.isValid() ? this._isUTC && this._offset === 0 : false;
+}
 
-    function create__createDuration (input, key) {
-        var duration = input,
-            // matching against regexp is expensive, do it on demand
-            match = null,
-            sign,
-            ret,
-            diffRes;
+// ASP.NET json date format regex
+var aspNetRegex = /^(\-)?(?:(\d*)[. ])?(\d+)\:(\d+)(?:\:(\d+)(\.\d*)?)?$/;
 
-        if (isDuration(input)) {
-            duration = {
-                ms : input._milliseconds,
-                d  : input._days,
-                M  : input._months
-            };
-        } else if (typeof input === 'number') {
-            duration = {};
-            if (key) {
-                duration[key] = input;
-            } else {
-                duration.milliseconds = input;
-            }
-        } else if (!!(match = aspNetRegex.exec(input))) {
-            sign = (match[1] === '-') ? -1 : 1;
-            duration = {
-                y  : 0,
-                d  : toInt(match[DATE])        * sign,
-                h  : toInt(match[HOUR])        * sign,
-                m  : toInt(match[MINUTE])      * sign,
-                s  : toInt(match[SECOND])      * sign,
-                ms : toInt(match[MILLISECOND]) * sign
-            };
-        } else if (!!(match = isoRegex.exec(input))) {
-            sign = (match[1] === '-') ? -1 : 1;
-            duration = {
-                y : parseIso(match[2], sign),
-                M : parseIso(match[3], sign),
-                w : parseIso(match[4], sign),
-                d : parseIso(match[5], sign),
-                h : parseIso(match[6], sign),
-                m : parseIso(match[7], sign),
-                s : parseIso(match[8], sign)
-            };
-        } else if (duration == null) {// checks for null or undefined
-            duration = {};
-        } else if (typeof duration === 'object' && ('from' in duration || 'to' in duration)) {
-            diffRes = momentsDifference(local__createLocal(duration.from), local__createLocal(duration.to));
+// from http://docs.closure-library.googlecode.com/git/closure_goog_date_date.js.source.html
+// somewhat more in line with 4.4.3.2 2004 spec, but allows decimal anywhere
+// and further modified to allow for strings containing both week and day
+var isoRegex = /^(-)?P(?:(-?[0-9,.]*)Y)?(?:(-?[0-9,.]*)M)?(?:(-?[0-9,.]*)W)?(?:(-?[0-9,.]*)D)?(?:T(?:(-?[0-9,.]*)H)?(?:(-?[0-9,.]*)M)?(?:(-?[0-9,.]*)S)?)?$/;
 
-            duration = {};
-            duration.ms = diffRes.milliseconds;
-            duration.M = diffRes.months;
-        }
+function createDuration (input, key) {
+    var duration = input,
+        // matching against regexp is expensive, do it on demand
+        match = null,
+        sign,
+        ret,
+        diffRes;
 
-        ret = new Duration(duration);
-
-        if (isDuration(input) && hasOwnProp(input, '_locale')) {
-            ret._locale = input._locale;
-        }
-
-        return ret;
-    }
-
-    create__createDuration.fn = Duration.prototype;
-
-    function parseIso (inp, sign) {
-        // We'd normally use ~~inp for this, but unfortunately it also
-        // converts floats to ints.
-        // inp may be undefined, so careful calling replace on it.
-        var res = inp && parseFloat(inp.replace(',', '.'));
-        // apply sign while we're at it
-        return (isNaN(res) ? 0 : res) * sign;
-    }
-
-    function positiveMomentsDifference(base, other) {
-        var res = {milliseconds: 0, months: 0};
-
-        res.months = other.month() - base.month() +
-            (other.year() - base.year()) * 12;
-        if (base.clone().add(res.months, 'M').isAfter(other)) {
-            --res.months;
-        }
-
-        res.milliseconds = +other - +(base.clone().add(res.months, 'M'));
-
-        return res;
-    }
-
-    function momentsDifference(base, other) {
-        var res;
-        if (!(base.isValid() && other.isValid())) {
-            return {milliseconds: 0, months: 0};
-        }
-
-        other = cloneWithOffset(other, base);
-        if (base.isBefore(other)) {
-            res = positiveMomentsDifference(base, other);
-        } else {
-            res = positiveMomentsDifference(other, base);
-            res.milliseconds = -res.milliseconds;
-            res.months = -res.months;
-        }
-
-        return res;
-    }
-
-    function absRound (number) {
-        if (number < 0) {
-            return Math.round(-1 * number) * -1;
-        } else {
-            return Math.round(number);
-        }
-    }
-
-    // TODO: remove 'name' arg after deprecation is removed
-    function createAdder(direction, name) {
-        return function (val, period) {
-            var dur, tmp;
-            //invert the arguments, but complain about it
-            if (period !== null && !isNaN(+period)) {
-                deprecateSimple(name, 'moment().' + name  + '(period, number) is deprecated. Please use moment().' + name + '(number, period). ' +
-                'See http://momentjs.com/guides/#/warnings/add-inverted-param/ for more info.');
-                tmp = val; val = period; period = tmp;
-            }
-
-            val = typeof val === 'string' ? +val : val;
-            dur = create__createDuration(val, period);
-            add_subtract__addSubtract(this, dur, direction);
-            return this;
+    if (isDuration(input)) {
+        duration = {
+            ms : input._milliseconds,
+            d  : input._days,
+            M  : input._months
         };
-    }
-
-    function add_subtract__addSubtract (mom, duration, isAdding, updateOffset) {
-        var milliseconds = duration._milliseconds,
-            days = absRound(duration._days),
-            months = absRound(duration._months);
-
-        if (!mom.isValid()) {
-            // No op
-            return;
-        }
-
-        updateOffset = updateOffset == null ? true : updateOffset;
-
-        if (milliseconds) {
-            mom._d.setTime(mom._d.valueOf() + milliseconds * isAdding);
-        }
-        if (days) {
-            get_set__set(mom, 'Date', get_set__get(mom, 'Date') + days * isAdding);
-        }
-        if (months) {
-            setMonth(mom, get_set__get(mom, 'Month') + months * isAdding);
-        }
-        if (updateOffset) {
-            utils_hooks__hooks.updateOffset(mom, days || months);
-        }
-    }
-
-    var add_subtract__add      = createAdder(1, 'add');
-    var add_subtract__subtract = createAdder(-1, 'subtract');
-
-    function getCalendarFormat(myMoment, now) {
-        var diff = myMoment.diff(now, 'days', true);
-        return diff < -6 ? 'sameElse' :
-                diff < -1 ? 'lastWeek' :
-                diff < 0 ? 'lastDay' :
-                diff < 1 ? 'sameDay' :
-                diff < 2 ? 'nextDay' :
-                diff < 7 ? 'nextWeek' : 'sameElse';
-    }
-
-    function moment_calendar__calendar (time, formats) {
-        // We want to compare the start of today, vs this.
-        // Getting start-of-today depends on whether we're local/utc/offset or not.
-        var now = time || local__createLocal(),
-            sod = cloneWithOffset(now, this).startOf('day'),
-            format = utils_hooks__hooks.calendarFormat(this, sod) || 'sameElse';
-
-        var output = formats && (isFunction(formats[format]) ? formats[format].call(this, now) : formats[format]);
-
-        return this.format(output || this.localeData().calendar(format, this, local__createLocal(now)));
-    }
-
-    function clone () {
-        return new Moment(this);
-    }
-
-    function isAfter (input, units) {
-        var localInput = isMoment(input) ? input : local__createLocal(input);
-        if (!(this.isValid() && localInput.isValid())) {
-            return false;
-        }
-        units = normalizeUnits(!isUndefined(units) ? units : 'millisecond');
-        if (units === 'millisecond') {
-            return this.valueOf() > localInput.valueOf();
+    } else if (isNumber(input)) {
+        duration = {};
+        if (key) {
+            duration[key] = input;
         } else {
-            return localInput.valueOf() < this.clone().startOf(units).valueOf();
+            duration.milliseconds = input;
         }
+    } else if (!!(match = aspNetRegex.exec(input))) {
+        sign = (match[1] === '-') ? -1 : 1;
+        duration = {
+            y  : 0,
+            d  : toInt(match[DATE])                         * sign,
+            h  : toInt(match[HOUR])                         * sign,
+            m  : toInt(match[MINUTE])                       * sign,
+            s  : toInt(match[SECOND])                       * sign,
+            ms : toInt(absRound(match[MILLISECOND] * 1000)) * sign // the millisecond decimal point is included in the match
+        };
+    } else if (!!(match = isoRegex.exec(input))) {
+        sign = (match[1] === '-') ? -1 : 1;
+        duration = {
+            y : parseIso(match[2], sign),
+            M : parseIso(match[3], sign),
+            w : parseIso(match[4], sign),
+            d : parseIso(match[5], sign),
+            h : parseIso(match[6], sign),
+            m : parseIso(match[7], sign),
+            s : parseIso(match[8], sign)
+        };
+    } else if (duration == null) {// checks for null or undefined
+        duration = {};
+    } else if (typeof duration === 'object' && ('from' in duration || 'to' in duration)) {
+        diffRes = momentsDifference(createLocal(duration.from), createLocal(duration.to));
+
+        duration = {};
+        duration.ms = diffRes.milliseconds;
+        duration.M = diffRes.months;
     }
 
-    function isBefore (input, units) {
-        var localInput = isMoment(input) ? input : local__createLocal(input);
-        if (!(this.isValid() && localInput.isValid())) {
-            return false;
-        }
-        units = normalizeUnits(!isUndefined(units) ? units : 'millisecond');
-        if (units === 'millisecond') {
-            return this.valueOf() < localInput.valueOf();
-        } else {
-            return this.clone().endOf(units).valueOf() < localInput.valueOf();
-        }
+    ret = new Duration(duration);
+
+    if (isDuration(input) && hasOwnProp(input, '_locale')) {
+        ret._locale = input._locale;
     }
 
-    function isBetween (from, to, units, inclusivity) {
-        inclusivity = inclusivity || '()';
-        return (inclusivity[0] === '(' ? this.isAfter(from, units) : !this.isBefore(from, units)) &&
-            (inclusivity[1] === ')' ? this.isBefore(to, units) : !this.isAfter(to, units));
+    return ret;
+}
+
+createDuration.fn = Duration.prototype;
+
+function parseIso (inp, sign) {
+    // We'd normally use ~~inp for this, but unfortunately it also
+    // converts floats to ints.
+    // inp may be undefined, so careful calling replace on it.
+    var res = inp && parseFloat(inp.replace(',', '.'));
+    // apply sign while we're at it
+    return (isNaN(res) ? 0 : res) * sign;
+}
+
+function positiveMomentsDifference(base, other) {
+    var res = {milliseconds: 0, months: 0};
+
+    res.months = other.month() - base.month() +
+        (other.year() - base.year()) * 12;
+    if (base.clone().add(res.months, 'M').isAfter(other)) {
+        --res.months;
     }
 
-    function isSame (input, units) {
-        var localInput = isMoment(input) ? input : local__createLocal(input),
-            inputMs;
-        if (!(this.isValid() && localInput.isValid())) {
-            return false;
-        }
-        units = normalizeUnits(units || 'millisecond');
-        if (units === 'millisecond') {
-            return this.valueOf() === localInput.valueOf();
-        } else {
-            inputMs = localInput.valueOf();
-            return this.clone().startOf(units).valueOf() <= inputMs && inputMs <= this.clone().endOf(units).valueOf();
-        }
+    res.milliseconds = +other - +(base.clone().add(res.months, 'M'));
+
+    return res;
+}
+
+function momentsDifference(base, other) {
+    var res;
+    if (!(base.isValid() && other.isValid())) {
+        return {milliseconds: 0, months: 0};
     }
 
-    function isSameOrAfter (input, units) {
-        return this.isSame(input, units) || this.isAfter(input,units);
+    other = cloneWithOffset(other, base);
+    if (base.isBefore(other)) {
+        res = positiveMomentsDifference(base, other);
+    } else {
+        res = positiveMomentsDifference(other, base);
+        res.milliseconds = -res.milliseconds;
+        res.months = -res.months;
     }
 
-    function isSameOrBefore (input, units) {
-        return this.isSame(input, units) || this.isBefore(input,units);
+    return res;
+}
+
+// TODO: remove 'name' arg after deprecation is removed
+function createAdder(direction, name) {
+    return function (val, period) {
+        var dur, tmp;
+        //invert the arguments, but complain about it
+        if (period !== null && !isNaN(+period)) {
+            deprecateSimple(name, 'moment().' + name  + '(period, number) is deprecated. Please use moment().' + name + '(number, period). ' +
+            'See http://momentjs.com/guides/#/warnings/add-inverted-param/ for more info.');
+            tmp = val; val = period; period = tmp;
+        }
+
+        val = typeof val === 'string' ? +val : val;
+        dur = createDuration(val, period);
+        addSubtract(this, dur, direction);
+        return this;
+    };
+}
+
+function addSubtract (mom, duration, isAdding, updateOffset) {
+    var milliseconds = duration._milliseconds,
+        days = absRound(duration._days),
+        months = absRound(duration._months);
+
+    if (!mom.isValid()) {
+        // No op
+        return;
     }
 
-    function diff (input, units, asFloat) {
-        var that,
-            zoneDelta,
-            delta, output;
+    updateOffset = updateOffset == null ? true : updateOffset;
 
-        if (!this.isValid()) {
-            return NaN;
-        }
+    if (milliseconds) {
+        mom._d.setTime(mom._d.valueOf() + milliseconds * isAdding);
+    }
+    if (days) {
+        set$1(mom, 'Date', get(mom, 'Date') + days * isAdding);
+    }
+    if (months) {
+        setMonth(mom, get(mom, 'Month') + months * isAdding);
+    }
+    if (updateOffset) {
+        hooks.updateOffset(mom, days || months);
+    }
+}
 
-        that = cloneWithOffset(input, this);
+var add      = createAdder(1, 'add');
+var subtract = createAdder(-1, 'subtract');
 
-        if (!that.isValid()) {
-            return NaN;
-        }
+function getCalendarFormat(myMoment, now) {
+    var diff = myMoment.diff(now, 'days', true);
+    return diff < -6 ? 'sameElse' :
+            diff < -1 ? 'lastWeek' :
+            diff < 0 ? 'lastDay' :
+            diff < 1 ? 'sameDay' :
+            diff < 2 ? 'nextDay' :
+            diff < 7 ? 'nextWeek' : 'sameElse';
+}
 
-        zoneDelta = (that.utcOffset() - this.utcOffset()) * 6e4;
+function calendar$1 (time, formats) {
+    // We want to compare the start of today, vs this.
+    // Getting start-of-today depends on whether we're local/utc/offset or not.
+    var now = time || createLocal(),
+        sod = cloneWithOffset(now, this).startOf('day'),
+        format = hooks.calendarFormat(this, sod) || 'sameElse';
 
-        units = normalizeUnits(units);
+    var output = formats && (isFunction(formats[format]) ? formats[format].call(this, now) : formats[format]);
 
-        if (units === 'year' || units === 'month' || units === 'quarter') {
-            output = monthDiff(this, that);
-            if (units === 'quarter') {
-                output = output / 3;
-            } else if (units === 'year') {
-                output = output / 12;
-            }
-        } else {
-            delta = this - that;
-            output = units === 'second' ? delta / 1e3 : // 1000
-                units === 'minute' ? delta / 6e4 : // 1000 * 60
-                units === 'hour' ? delta / 36e5 : // 1000 * 60 * 60
-                units === 'day' ? (delta - zoneDelta) / 864e5 : // 1000 * 60 * 60 * 24, negate dst
-                units === 'week' ? (delta - zoneDelta) / 6048e5 : // 1000 * 60 * 60 * 24 * 7, negate dst
-                delta;
-        }
-        return asFloat ? output : absFloor(output);
+    return this.format(output || this.localeData().calendar(format, this, createLocal(now)));
+}
+
+function clone () {
+    return new Moment(this);
+}
+
+function isAfter (input, units) {
+    var localInput = isMoment(input) ? input : createLocal(input);
+    if (!(this.isValid() && localInput.isValid())) {
+        return false;
+    }
+    units = normalizeUnits(!isUndefined(units) ? units : 'millisecond');
+    if (units === 'millisecond') {
+        return this.valueOf() > localInput.valueOf();
+    } else {
+        return localInput.valueOf() < this.clone().startOf(units).valueOf();
+    }
+}
+
+function isBefore (input, units) {
+    var localInput = isMoment(input) ? input : createLocal(input);
+    if (!(this.isValid() && localInput.isValid())) {
+        return false;
+    }
+    units = normalizeUnits(!isUndefined(units) ? units : 'millisecond');
+    if (units === 'millisecond') {
+        return this.valueOf() < localInput.valueOf();
+    } else {
+        return this.clone().endOf(units).valueOf() < localInput.valueOf();
+    }
+}
+
+function isBetween (from, to, units, inclusivity) {
+    inclusivity = inclusivity || '()';
+    return (inclusivity[0] === '(' ? this.isAfter(from, units) : !this.isBefore(from, units)) &&
+        (inclusivity[1] === ')' ? this.isBefore(to, units) : !this.isAfter(to, units));
+}
+
+function isSame (input, units) {
+    var localInput = isMoment(input) ? input : createLocal(input),
+        inputMs;
+    if (!(this.isValid() && localInput.isValid())) {
+        return false;
+    }
+    units = normalizeUnits(units || 'millisecond');
+    if (units === 'millisecond') {
+        return this.valueOf() === localInput.valueOf();
+    } else {
+        inputMs = localInput.valueOf();
+        return this.clone().startOf(units).valueOf() <= inputMs && inputMs <= this.clone().endOf(units).valueOf();
+    }
+}
+
+function isSameOrAfter (input, units) {
+    return this.isSame(input, units) || this.isAfter(input,units);
+}
+
+function isSameOrBefore (input, units) {
+    return this.isSame(input, units) || this.isBefore(input,units);
+}
+
+function diff (input, units, asFloat) {
+    var that,
+        zoneDelta,
+        delta, output;
+
+    if (!this.isValid()) {
+        return NaN;
     }
 
-    function monthDiff (a, b) {
-        // difference in months
-        var wholeMonthDiff = ((b.year() - a.year()) * 12) + (b.month() - a.month()),
-            // b is in (anchor - 1 month, anchor + 1 month)
-            anchor = a.clone().add(wholeMonthDiff, 'months'),
-            anchor2, adjust;
+    that = cloneWithOffset(input, this);
 
-        if (b - anchor < 0) {
-            anchor2 = a.clone().add(wholeMonthDiff - 1, 'months');
-            // linear across the month
-            adjust = (b - anchor) / (anchor - anchor2);
-        } else {
-            anchor2 = a.clone().add(wholeMonthDiff + 1, 'months');
-            // linear across the month
-            adjust = (b - anchor) / (anchor2 - anchor);
-        }
-
-        //check for negative zero, return zero if negative zero
-        return -(wholeMonthDiff + adjust) || 0;
+    if (!that.isValid()) {
+        return NaN;
     }
 
-    utils_hooks__hooks.defaultFormat = 'YYYY-MM-DDTHH:mm:ssZ';
-    utils_hooks__hooks.defaultFormatUtc = 'YYYY-MM-DDTHH:mm:ss[Z]';
+    zoneDelta = (that.utcOffset() - this.utcOffset()) * 6e4;
 
-    function toString () {
-        return this.clone().locale('en').format('ddd MMM DD YYYY HH:mm:ss [GMT]ZZ');
-    }
+    units = normalizeUnits(units);
 
-    function moment_format__toISOString () {
-        var m = this.clone().utc();
-        if (0 < m.year() && m.year() <= 9999) {
-            if (isFunction(Date.prototype.toISOString)) {
-                // native implementation is ~50x faster, use it when we can
-                return this.toDate().toISOString();
-            } else {
-                return formatMoment(m, 'YYYY-MM-DD[T]HH:mm:ss.SSS[Z]');
-            }
-        } else {
-            return formatMoment(m, 'YYYYYY-MM-DD[T]HH:mm:ss.SSS[Z]');
-        }
-    }
-
-    function format (inputString) {
-        if (!inputString) {
-            inputString = this.isUtc() ? utils_hooks__hooks.defaultFormatUtc : utils_hooks__hooks.defaultFormat;
-        }
-        var output = formatMoment(this, inputString);
-        return this.localeData().postformat(output);
-    }
-
-    function from (time, withoutSuffix) {
-        if (this.isValid() &&
-                ((isMoment(time) && time.isValid()) ||
-                 local__createLocal(time).isValid())) {
-            return create__createDuration({to: this, from: time}).locale(this.locale()).humanize(!withoutSuffix);
-        } else {
-            return this.localeData().invalidDate();
-        }
-    }
-
-    function fromNow (withoutSuffix) {
-        return this.from(local__createLocal(), withoutSuffix);
-    }
-
-    function to (time, withoutSuffix) {
-        if (this.isValid() &&
-                ((isMoment(time) && time.isValid()) ||
-                 local__createLocal(time).isValid())) {
-            return create__createDuration({from: this, to: time}).locale(this.locale()).humanize(!withoutSuffix);
-        } else {
-            return this.localeData().invalidDate();
-        }
-    }
-
-    function toNow (withoutSuffix) {
-        return this.to(local__createLocal(), withoutSuffix);
-    }
-
-    // If passed a locale key, it will set the locale for this
-    // instance.  Otherwise, it will return the locale configuration
-    // variables for this instance.
-    function locale (key) {
-        var newLocaleData;
-
-        if (key === undefined) {
-            return this._locale._abbr;
-        } else {
-            newLocaleData = locale_locales__getLocale(key);
-            if (newLocaleData != null) {
-                this._locale = newLocaleData;
-            }
-            return this;
-        }
-    }
-
-    var lang = deprecate(
-        'moment().lang() is deprecated. Instead, use moment().localeData() to get the language configuration. Use moment().locale() to change languages.',
-        function (key) {
-            if (key === undefined) {
-                return this.localeData();
-            } else {
-                return this.locale(key);
-            }
-        }
-    );
-
-    function localeData () {
-        return this._locale;
-    }
-
-    function startOf (units) {
-        units = normalizeUnits(units);
-        // the following switch intentionally omits break keywords
-        // to utilize falling through the cases.
-        switch (units) {
-            case 'year':
-                this.month(0);
-                /* falls through */
-            case 'quarter':
-            case 'month':
-                this.date(1);
-                /* falls through */
-            case 'week':
-            case 'isoWeek':
-            case 'day':
-            case 'date':
-                this.hours(0);
-                /* falls through */
-            case 'hour':
-                this.minutes(0);
-                /* falls through */
-            case 'minute':
-                this.seconds(0);
-                /* falls through */
-            case 'second':
-                this.milliseconds(0);
-        }
-
-        // weeks are a special case
-        if (units === 'week') {
-            this.weekday(0);
-        }
-        if (units === 'isoWeek') {
-            this.isoWeekday(1);
-        }
-
-        // quarters are also special
+    if (units === 'year' || units === 'month' || units === 'quarter') {
+        output = monthDiff(this, that);
         if (units === 'quarter') {
-            this.month(Math.floor(this.month() / 3) * 3);
+            output = output / 3;
+        } else if (units === 'year') {
+            output = output / 12;
         }
+    } else {
+        delta = this - that;
+        output = units === 'second' ? delta / 1e3 : // 1000
+            units === 'minute' ? delta / 6e4 : // 1000 * 60
+            units === 'hour' ? delta / 36e5 : // 1000 * 60 * 60
+            units === 'day' ? (delta - zoneDelta) / 864e5 : // 1000 * 60 * 60 * 24, negate dst
+            units === 'week' ? (delta - zoneDelta) / 6048e5 : // 1000 * 60 * 60 * 24 * 7, negate dst
+            delta;
+    }
+    return asFloat ? output : absFloor(output);
+}
 
-        return this;
+function monthDiff (a, b) {
+    // difference in months
+    var wholeMonthDiff = ((b.year() - a.year()) * 12) + (b.month() - a.month()),
+        // b is in (anchor - 1 month, anchor + 1 month)
+        anchor = a.clone().add(wholeMonthDiff, 'months'),
+        anchor2, adjust;
+
+    if (b - anchor < 0) {
+        anchor2 = a.clone().add(wholeMonthDiff - 1, 'months');
+        // linear across the month
+        adjust = (b - anchor) / (anchor - anchor2);
+    } else {
+        anchor2 = a.clone().add(wholeMonthDiff + 1, 'months');
+        // linear across the month
+        adjust = (b - anchor) / (anchor2 - anchor);
     }
 
-    function endOf (units) {
-        units = normalizeUnits(units);
-        if (units === undefined || units === 'millisecond') {
-            return this;
-        }
+    //check for negative zero, return zero if negative zero
+    return -(wholeMonthDiff + adjust) || 0;
+}
 
-        // 'date' is an alias for 'day', so it should be considered as such.
-        if (units === 'date') {
-            units = 'day';
-        }
+hooks.defaultFormat = 'YYYY-MM-DDTHH:mm:ssZ';
+hooks.defaultFormatUtc = 'YYYY-MM-DDTHH:mm:ss[Z]';
 
-        return this.startOf(units).add(1, (units === 'isoWeek' ? 'week' : units)).subtract(1, 'ms');
-    }
+function toString () {
+    return this.clone().locale('en').format('ddd MMM DD YYYY HH:mm:ss [GMT]ZZ');
+}
 
-    function to_type__valueOf () {
-        return this._d.valueOf() - ((this._offset || 0) * 60000);
-    }
-
-    function unix () {
-        return Math.floor(this.valueOf() / 1000);
-    }
-
-    function toDate () {
-        return new Date(this.valueOf());
-    }
-
-    function toArray () {
-        var m = this;
-        return [m.year(), m.month(), m.date(), m.hour(), m.minute(), m.second(), m.millisecond()];
-    }
-
-    function toObject () {
-        var m = this;
-        return {
-            years: m.year(),
-            months: m.month(),
-            date: m.date(),
-            hours: m.hours(),
-            minutes: m.minutes(),
-            seconds: m.seconds(),
-            milliseconds: m.milliseconds()
-        };
-    }
-
-    function toJSON () {
-        // new Date(NaN).toJSON() === null
-        return this.isValid() ? this.toISOString() : null;
-    }
-
-    function moment_valid__isValid () {
-        return valid__isValid(this);
-    }
-
-    function parsingFlags () {
-        return extend({}, getParsingFlags(this));
-    }
-
-    function invalidAt () {
-        return getParsingFlags(this).overflow;
-    }
-
-    function creationData() {
-        return {
-            input: this._i,
-            format: this._f,
-            locale: this._locale,
-            isUTC: this._isUTC,
-            strict: this._strict
-        };
-    }
-
-    // FORMATTING
-
-    addFormatToken(0, ['gg', 2], 0, function () {
-        return this.weekYear() % 100;
-    });
-
-    addFormatToken(0, ['GG', 2], 0, function () {
-        return this.isoWeekYear() % 100;
-    });
-
-    function addWeekYearFormatToken (token, getter) {
-        addFormatToken(0, [token, token.length], 0, getter);
-    }
-
-    addWeekYearFormatToken('gggg',     'weekYear');
-    addWeekYearFormatToken('ggggg',    'weekYear');
-    addWeekYearFormatToken('GGGG',  'isoWeekYear');
-    addWeekYearFormatToken('GGGGG', 'isoWeekYear');
-
-    // ALIASES
-
-    addUnitAlias('weekYear', 'gg');
-    addUnitAlias('isoWeekYear', 'GG');
-
-    // PRIORITY
-
-    addUnitPriority('weekYear', 1);
-    addUnitPriority('isoWeekYear', 1);
-
-
-    // PARSING
-
-    addRegexToken('G',      matchSigned);
-    addRegexToken('g',      matchSigned);
-    addRegexToken('GG',     match1to2, match2);
-    addRegexToken('gg',     match1to2, match2);
-    addRegexToken('GGGG',   match1to4, match4);
-    addRegexToken('gggg',   match1to4, match4);
-    addRegexToken('GGGGG',  match1to6, match6);
-    addRegexToken('ggggg',  match1to6, match6);
-
-    addWeekParseToken(['gggg', 'ggggg', 'GGGG', 'GGGGG'], function (input, week, config, token) {
-        week[token.substr(0, 2)] = toInt(input);
-    });
-
-    addWeekParseToken(['gg', 'GG'], function (input, week, config, token) {
-        week[token] = utils_hooks__hooks.parseTwoDigitYear(input);
-    });
-
-    // MOMENTS
-
-    function getSetWeekYear (input) {
-        return getSetWeekYearHelper.call(this,
-                input,
-                this.week(),
-                this.weekday(),
-                this.localeData()._week.dow,
-                this.localeData()._week.doy);
-    }
-
-    function getSetISOWeekYear (input) {
-        return getSetWeekYearHelper.call(this,
-                input, this.isoWeek(), this.isoWeekday(), 1, 4);
-    }
-
-    function getISOWeeksInYear () {
-        return weeksInYear(this.year(), 1, 4);
-    }
-
-    function getWeeksInYear () {
-        var weekInfo = this.localeData()._week;
-        return weeksInYear(this.year(), weekInfo.dow, weekInfo.doy);
-    }
-
-    function getSetWeekYearHelper(input, week, weekday, dow, doy) {
-        var weeksTarget;
-        if (input == null) {
-            return weekOfYear(this, dow, doy).year;
+function toISOString () {
+    var m = this.clone().utc();
+    if (0 < m.year() && m.year() <= 9999) {
+        if (isFunction(Date.prototype.toISOString)) {
+            // native implementation is ~50x faster, use it when we can
+            return this.toDate().toISOString();
         } else {
-            weeksTarget = weeksInYear(input, dow, doy);
-            if (week > weeksTarget) {
-                week = weeksTarget;
-            }
-            return setWeekAll.call(this, input, week, weekday, dow, doy);
+            return formatMoment(m, 'YYYY-MM-DD[T]HH:mm:ss.SSS[Z]');
+        }
+    } else {
+        return formatMoment(m, 'YYYYYY-MM-DD[T]HH:mm:ss.SSS[Z]');
+    }
+}
+
+/**
+ * Return a human readable representation of a moment that can
+ * also be evaluated to get a new moment which is the same
+ *
+ * @link https://nodejs.org/dist/latest/docs/api/util.html#util_custom_inspect_function_on_objects
+ */
+function inspect () {
+    if (!this.isValid()) {
+        return 'moment.invalid(/* ' + this._i + ' */)';
+    }
+    var func = 'moment';
+    var zone = '';
+    if (!this.isLocal()) {
+        func = this.utcOffset() === 0 ? 'moment.utc' : 'moment.parseZone';
+        zone = 'Z';
+    }
+    var prefix = '[' + func + '("]';
+    var year = (0 < this.year() && this.year() <= 9999) ? 'YYYY' : 'YYYYYY';
+    var datetime = '-MM-DD[T]HH:mm:ss.SSS';
+    var suffix = zone + '[")]';
+
+    return this.format(prefix + year + datetime + suffix);
+}
+
+function format (inputString) {
+    if (!inputString) {
+        inputString = this.isUtc() ? hooks.defaultFormatUtc : hooks.defaultFormat;
+    }
+    var output = formatMoment(this, inputString);
+    return this.localeData().postformat(output);
+}
+
+function from (time, withoutSuffix) {
+    if (this.isValid() &&
+            ((isMoment(time) && time.isValid()) ||
+             createLocal(time).isValid())) {
+        return createDuration({to: this, from: time}).locale(this.locale()).humanize(!withoutSuffix);
+    } else {
+        return this.localeData().invalidDate();
+    }
+}
+
+function fromNow (withoutSuffix) {
+    return this.from(createLocal(), withoutSuffix);
+}
+
+function to (time, withoutSuffix) {
+    if (this.isValid() &&
+            ((isMoment(time) && time.isValid()) ||
+             createLocal(time).isValid())) {
+        return createDuration({from: this, to: time}).locale(this.locale()).humanize(!withoutSuffix);
+    } else {
+        return this.localeData().invalidDate();
+    }
+}
+
+function toNow (withoutSuffix) {
+    return this.to(createLocal(), withoutSuffix);
+}
+
+// If passed a locale key, it will set the locale for this
+// instance.  Otherwise, it will return the locale configuration
+// variables for this instance.
+function locale (key) {
+    var newLocaleData;
+
+    if (key === undefined) {
+        return this._locale._abbr;
+    } else {
+        newLocaleData = getLocale(key);
+        if (newLocaleData != null) {
+            this._locale = newLocaleData;
+        }
+        return this;
+    }
+}
+
+var lang = deprecate(
+    'moment().lang() is deprecated. Instead, use moment().localeData() to get the language configuration. Use moment().locale() to change languages.',
+    function (key) {
+        if (key === undefined) {
+            return this.localeData();
+        } else {
+            return this.locale(key);
         }
     }
+);
 
-    function setWeekAll(weekYear, week, weekday, dow, doy) {
-        var dayOfYearData = dayOfYearFromWeeks(weekYear, week, weekday, dow, doy),
-            date = createUTCDate(dayOfYearData.year, 0, dayOfYearData.dayOfYear);
+function localeData () {
+    return this._locale;
+}
 
-        this.year(date.getUTCFullYear());
-        this.month(date.getUTCMonth());
-        this.date(date.getUTCDate());
+function startOf (units) {
+    units = normalizeUnits(units);
+    // the following switch intentionally omits break keywords
+    // to utilize falling through the cases.
+    switch (units) {
+        case 'year':
+            this.month(0);
+            /* falls through */
+        case 'quarter':
+        case 'month':
+            this.date(1);
+            /* falls through */
+        case 'week':
+        case 'isoWeek':
+        case 'day':
+        case 'date':
+            this.hours(0);
+            /* falls through */
+        case 'hour':
+            this.minutes(0);
+            /* falls through */
+        case 'minute':
+            this.seconds(0);
+            /* falls through */
+        case 'second':
+            this.milliseconds(0);
+    }
+
+    // weeks are a special case
+    if (units === 'week') {
+        this.weekday(0);
+    }
+    if (units === 'isoWeek') {
+        this.isoWeekday(1);
+    }
+
+    // quarters are also special
+    if (units === 'quarter') {
+        this.month(Math.floor(this.month() / 3) * 3);
+    }
+
+    return this;
+}
+
+function endOf (units) {
+    units = normalizeUnits(units);
+    if (units === undefined || units === 'millisecond') {
         return this;
     }
 
-    // FORMATTING
-
-    addFormatToken('Q', 0, 'Qo', 'quarter');
-
-    // ALIASES
-
-    addUnitAlias('quarter', 'Q');
-
-    // PRIORITY
-
-    addUnitPriority('quarter', 7);
-
-    // PARSING
-
-    addRegexToken('Q', match1);
-    addParseToken('Q', function (input, array) {
-        array[MONTH] = (toInt(input) - 1) * 3;
-    });
-
-    // MOMENTS
-
-    function getSetQuarter (input) {
-        return input == null ? Math.ceil((this.month() + 1) / 3) : this.month((input - 1) * 3 + this.month() % 3);
+    // 'date' is an alias for 'day', so it should be considered as such.
+    if (units === 'date') {
+        units = 'day';
     }
 
-    // FORMATTING
+    return this.startOf(units).add(1, (units === 'isoWeek' ? 'week' : units)).subtract(1, 'ms');
+}
 
-    addFormatToken('D', ['DD', 2], 'Do', 'date');
+function valueOf () {
+    return this._d.valueOf() - ((this._offset || 0) * 60000);
+}
 
-    // ALIASES
+function unix () {
+    return Math.floor(this.valueOf() / 1000);
+}
 
-    addUnitAlias('date', 'D');
+function toDate () {
+    return new Date(this.valueOf());
+}
 
-    // PRIOROITY
-    addUnitPriority('date', 9);
+function toArray () {
+    var m = this;
+    return [m.year(), m.month(), m.date(), m.hour(), m.minute(), m.second(), m.millisecond()];
+}
 
-    // PARSING
+function toObject () {
+    var m = this;
+    return {
+        years: m.year(),
+        months: m.month(),
+        date: m.date(),
+        hours: m.hours(),
+        minutes: m.minutes(),
+        seconds: m.seconds(),
+        milliseconds: m.milliseconds()
+    };
+}
 
-    addRegexToken('D',  match1to2);
-    addRegexToken('DD', match1to2, match2);
-    addRegexToken('Do', function (isStrict, locale) {
-        return isStrict ? locale._ordinalParse : locale._ordinalParseLenient;
-    });
+function toJSON () {
+    // new Date(NaN).toJSON() === null
+    return this.isValid() ? this.toISOString() : null;
+}
 
-    addParseToken(['D', 'DD'], DATE);
-    addParseToken('Do', function (input, array) {
-        array[DATE] = toInt(input.match(match1to2)[0], 10);
-    });
+function isValid$1 () {
+    return isValid(this);
+}
 
-    // MOMENTS
+function parsingFlags () {
+    return extend({}, getParsingFlags(this));
+}
 
-    var getSetDayOfMonth = makeGetSet('Date', true);
+function invalidAt () {
+    return getParsingFlags(this).overflow;
+}
 
-    // FORMATTING
+function creationData() {
+    return {
+        input: this._i,
+        format: this._f,
+        locale: this._locale,
+        isUTC: this._isUTC,
+        strict: this._strict
+    };
+}
 
-    addFormatToken('DDD', ['DDDD', 3], 'DDDo', 'dayOfYear');
+// FORMATTING
 
-    // ALIASES
+addFormatToken(0, ['gg', 2], 0, function () {
+    return this.weekYear() % 100;
+});
 
-    addUnitAlias('dayOfYear', 'DDD');
+addFormatToken(0, ['GG', 2], 0, function () {
+    return this.isoWeekYear() % 100;
+});
 
-    // PRIORITY
-    addUnitPriority('dayOfYear', 4);
+function addWeekYearFormatToken (token, getter) {
+    addFormatToken(0, [token, token.length], 0, getter);
+}
 
-    // PARSING
+addWeekYearFormatToken('gggg',     'weekYear');
+addWeekYearFormatToken('ggggg',    'weekYear');
+addWeekYearFormatToken('GGGG',  'isoWeekYear');
+addWeekYearFormatToken('GGGGG', 'isoWeekYear');
 
-    addRegexToken('DDD',  match1to3);
-    addRegexToken('DDDD', match3);
-    addParseToken(['DDD', 'DDDD'], function (input, array, config) {
-        config._dayOfYear = toInt(input);
-    });
+// ALIASES
 
-    // HELPERS
+addUnitAlias('weekYear', 'gg');
+addUnitAlias('isoWeekYear', 'GG');
 
-    // MOMENTS
+// PRIORITY
 
-    function getSetDayOfYear (input) {
-        var dayOfYear = Math.round((this.clone().startOf('day') - this.clone().startOf('year')) / 864e5) + 1;
-        return input == null ? dayOfYear : this.add((input - dayOfYear), 'd');
+addUnitPriority('weekYear', 1);
+addUnitPriority('isoWeekYear', 1);
+
+
+// PARSING
+
+addRegexToken('G',      matchSigned);
+addRegexToken('g',      matchSigned);
+addRegexToken('GG',     match1to2, match2);
+addRegexToken('gg',     match1to2, match2);
+addRegexToken('GGGG',   match1to4, match4);
+addRegexToken('gggg',   match1to4, match4);
+addRegexToken('GGGGG',  match1to6, match6);
+addRegexToken('ggggg',  match1to6, match6);
+
+addWeekParseToken(['gggg', 'ggggg', 'GGGG', 'GGGGG'], function (input, week, config, token) {
+    week[token.substr(0, 2)] = toInt(input);
+});
+
+addWeekParseToken(['gg', 'GG'], function (input, week, config, token) {
+    week[token] = hooks.parseTwoDigitYear(input);
+});
+
+// MOMENTS
+
+function getSetWeekYear (input) {
+    return getSetWeekYearHelper.call(this,
+            input,
+            this.week(),
+            this.weekday(),
+            this.localeData()._week.dow,
+            this.localeData()._week.doy);
+}
+
+function getSetISOWeekYear (input) {
+    return getSetWeekYearHelper.call(this,
+            input, this.isoWeek(), this.isoWeekday(), 1, 4);
+}
+
+function getISOWeeksInYear () {
+    return weeksInYear(this.year(), 1, 4);
+}
+
+function getWeeksInYear () {
+    var weekInfo = this.localeData()._week;
+    return weeksInYear(this.year(), weekInfo.dow, weekInfo.doy);
+}
+
+function getSetWeekYearHelper(input, week, weekday, dow, doy) {
+    var weeksTarget;
+    if (input == null) {
+        return weekOfYear(this, dow, doy).year;
+    } else {
+        weeksTarget = weeksInYear(input, dow, doy);
+        if (week > weeksTarget) {
+            week = weeksTarget;
+        }
+        return setWeekAll.call(this, input, week, weekday, dow, doy);
+    }
+}
+
+function setWeekAll(weekYear, week, weekday, dow, doy) {
+    var dayOfYearData = dayOfYearFromWeeks(weekYear, week, weekday, dow, doy),
+        date = createUTCDate(dayOfYearData.year, 0, dayOfYearData.dayOfYear);
+
+    this.year(date.getUTCFullYear());
+    this.month(date.getUTCMonth());
+    this.date(date.getUTCDate());
+    return this;
+}
+
+// FORMATTING
+
+addFormatToken('Q', 0, 'Qo', 'quarter');
+
+// ALIASES
+
+addUnitAlias('quarter', 'Q');
+
+// PRIORITY
+
+addUnitPriority('quarter', 7);
+
+// PARSING
+
+addRegexToken('Q', match1);
+addParseToken('Q', function (input, array) {
+    array[MONTH] = (toInt(input) - 1) * 3;
+});
+
+// MOMENTS
+
+function getSetQuarter (input) {
+    return input == null ? Math.ceil((this.month() + 1) / 3) : this.month((input - 1) * 3 + this.month() % 3);
+}
+
+// FORMATTING
+
+addFormatToken('D', ['DD', 2], 'Do', 'date');
+
+// ALIASES
+
+addUnitAlias('date', 'D');
+
+// PRIOROITY
+addUnitPriority('date', 9);
+
+// PARSING
+
+addRegexToken('D',  match1to2);
+addRegexToken('DD', match1to2, match2);
+addRegexToken('Do', function (isStrict, locale) {
+    return isStrict ? locale._ordinalParse : locale._ordinalParseLenient;
+});
+
+addParseToken(['D', 'DD'], DATE);
+addParseToken('Do', function (input, array) {
+    array[DATE] = toInt(input.match(match1to2)[0], 10);
+});
+
+// MOMENTS
+
+var getSetDayOfMonth = makeGetSet('Date', true);
+
+// FORMATTING
+
+addFormatToken('DDD', ['DDDD', 3], 'DDDo', 'dayOfYear');
+
+// ALIASES
+
+addUnitAlias('dayOfYear', 'DDD');
+
+// PRIORITY
+addUnitPriority('dayOfYear', 4);
+
+// PARSING
+
+addRegexToken('DDD',  match1to3);
+addRegexToken('DDDD', match3);
+addParseToken(['DDD', 'DDDD'], function (input, array, config) {
+    config._dayOfYear = toInt(input);
+});
+
+// HELPERS
+
+// MOMENTS
+
+function getSetDayOfYear (input) {
+    var dayOfYear = Math.round((this.clone().startOf('day') - this.clone().startOf('year')) / 864e5) + 1;
+    return input == null ? dayOfYear : this.add((input - dayOfYear), 'd');
+}
+
+// FORMATTING
+
+addFormatToken('m', ['mm', 2], 0, 'minute');
+
+// ALIASES
+
+addUnitAlias('minute', 'm');
+
+// PRIORITY
+
+addUnitPriority('minute', 14);
+
+// PARSING
+
+addRegexToken('m',  match1to2);
+addRegexToken('mm', match1to2, match2);
+addParseToken(['m', 'mm'], MINUTE);
+
+// MOMENTS
+
+var getSetMinute = makeGetSet('Minutes', false);
+
+// FORMATTING
+
+addFormatToken('s', ['ss', 2], 0, 'second');
+
+// ALIASES
+
+addUnitAlias('second', 's');
+
+// PRIORITY
+
+addUnitPriority('second', 15);
+
+// PARSING
+
+addRegexToken('s',  match1to2);
+addRegexToken('ss', match1to2, match2);
+addParseToken(['s', 'ss'], SECOND);
+
+// MOMENTS
+
+var getSetSecond = makeGetSet('Seconds', false);
+
+// FORMATTING
+
+addFormatToken('S', 0, 0, function () {
+    return ~~(this.millisecond() / 100);
+});
+
+addFormatToken(0, ['SS', 2], 0, function () {
+    return ~~(this.millisecond() / 10);
+});
+
+addFormatToken(0, ['SSS', 3], 0, 'millisecond');
+addFormatToken(0, ['SSSS', 4], 0, function () {
+    return this.millisecond() * 10;
+});
+addFormatToken(0, ['SSSSS', 5], 0, function () {
+    return this.millisecond() * 100;
+});
+addFormatToken(0, ['SSSSSS', 6], 0, function () {
+    return this.millisecond() * 1000;
+});
+addFormatToken(0, ['SSSSSSS', 7], 0, function () {
+    return this.millisecond() * 10000;
+});
+addFormatToken(0, ['SSSSSSSS', 8], 0, function () {
+    return this.millisecond() * 100000;
+});
+addFormatToken(0, ['SSSSSSSSS', 9], 0, function () {
+    return this.millisecond() * 1000000;
+});
+
+
+// ALIASES
+
+addUnitAlias('millisecond', 'ms');
+
+// PRIORITY
+
+addUnitPriority('millisecond', 16);
+
+// PARSING
+
+addRegexToken('S',    match1to3, match1);
+addRegexToken('SS',   match1to3, match2);
+addRegexToken('SSS',  match1to3, match3);
+
+var token;
+for (token = 'SSSS'; token.length <= 9; token += 'S') {
+    addRegexToken(token, matchUnsigned);
+}
+
+function parseMs(input, array) {
+    array[MILLISECOND] = toInt(('0.' + input) * 1000);
+}
+
+for (token = 'S'; token.length <= 9; token += 'S') {
+    addParseToken(token, parseMs);
+}
+// MOMENTS
+
+var getSetMillisecond = makeGetSet('Milliseconds', false);
+
+// FORMATTING
+
+addFormatToken('z',  0, 0, 'zoneAbbr');
+addFormatToken('zz', 0, 0, 'zoneName');
+
+// MOMENTS
+
+function getZoneAbbr () {
+    return this._isUTC ? 'UTC' : '';
+}
+
+function getZoneName () {
+    return this._isUTC ? 'Coordinated Universal Time' : '';
+}
+
+var proto = Moment.prototype;
+
+proto.add               = add;
+proto.calendar          = calendar$1;
+proto.clone             = clone;
+proto.diff              = diff;
+proto.endOf             = endOf;
+proto.format            = format;
+proto.from              = from;
+proto.fromNow           = fromNow;
+proto.to                = to;
+proto.toNow             = toNow;
+proto.get               = stringGet;
+proto.invalidAt         = invalidAt;
+proto.isAfter           = isAfter;
+proto.isBefore          = isBefore;
+proto.isBetween         = isBetween;
+proto.isSame            = isSame;
+proto.isSameOrAfter     = isSameOrAfter;
+proto.isSameOrBefore    = isSameOrBefore;
+proto.isValid           = isValid$1;
+proto.lang              = lang;
+proto.locale            = locale;
+proto.localeData        = localeData;
+proto.max               = prototypeMax;
+proto.min               = prototypeMin;
+proto.parsingFlags      = parsingFlags;
+proto.set               = stringSet;
+proto.startOf           = startOf;
+proto.subtract          = subtract;
+proto.toArray           = toArray;
+proto.toObject          = toObject;
+proto.toDate            = toDate;
+proto.toISOString       = toISOString;
+proto.inspect           = inspect;
+proto.toJSON            = toJSON;
+proto.toString          = toString;
+proto.unix              = unix;
+proto.valueOf           = valueOf;
+proto.creationData      = creationData;
+
+// Year
+proto.year       = getSetYear;
+proto.isLeapYear = getIsLeapYear;
+
+// Week Year
+proto.weekYear    = getSetWeekYear;
+proto.isoWeekYear = getSetISOWeekYear;
+
+// Quarter
+proto.quarter = proto.quarters = getSetQuarter;
+
+// Month
+proto.month       = getSetMonth;
+proto.daysInMonth = getDaysInMonth;
+
+// Week
+proto.week           = proto.weeks        = getSetWeek;
+proto.isoWeek        = proto.isoWeeks     = getSetISOWeek;
+proto.weeksInYear    = getWeeksInYear;
+proto.isoWeeksInYear = getISOWeeksInYear;
+
+// Day
+proto.date       = getSetDayOfMonth;
+proto.day        = proto.days             = getSetDayOfWeek;
+proto.weekday    = getSetLocaleDayOfWeek;
+proto.isoWeekday = getSetISODayOfWeek;
+proto.dayOfYear  = getSetDayOfYear;
+
+// Hour
+proto.hour = proto.hours = getSetHour;
+
+// Minute
+proto.minute = proto.minutes = getSetMinute;
+
+// Second
+proto.second = proto.seconds = getSetSecond;
+
+// Millisecond
+proto.millisecond = proto.milliseconds = getSetMillisecond;
+
+// Offset
+proto.utcOffset            = getSetOffset;
+proto.utc                  = setOffsetToUTC;
+proto.local                = setOffsetToLocal;
+proto.parseZone            = setOffsetToParsedOffset;
+proto.hasAlignedHourOffset = hasAlignedHourOffset;
+proto.isDST                = isDaylightSavingTime;
+proto.isLocal              = isLocal;
+proto.isUtcOffset          = isUtcOffset;
+proto.isUtc                = isUtc;
+proto.isUTC                = isUtc;
+
+// Timezone
+proto.zoneAbbr = getZoneAbbr;
+proto.zoneName = getZoneName;
+
+// Deprecations
+proto.dates  = deprecate('dates accessor is deprecated. Use date instead.', getSetDayOfMonth);
+proto.months = deprecate('months accessor is deprecated. Use month instead', getSetMonth);
+proto.years  = deprecate('years accessor is deprecated. Use year instead', getSetYear);
+proto.zone   = deprecate('moment().zone is deprecated, use moment().utcOffset instead. http://momentjs.com/guides/#/warnings/zone/', getSetZone);
+proto.isDSTShifted = deprecate('isDSTShifted is deprecated. See http://momentjs.com/guides/#/warnings/dst-shifted/ for more information', isDaylightSavingTimeShifted);
+
+function createUnix (input) {
+    return createLocal(input * 1000);
+}
+
+function createInZone () {
+    return createLocal.apply(null, arguments).parseZone();
+}
+
+function preParsePostFormat (string) {
+    return string;
+}
+
+var proto$1 = Locale.prototype;
+
+proto$1.calendar        = calendar;
+proto$1.longDateFormat  = longDateFormat;
+proto$1.invalidDate     = invalidDate;
+proto$1.ordinal         = ordinal;
+proto$1.preparse        = preParsePostFormat;
+proto$1.postformat      = preParsePostFormat;
+proto$1.relativeTime    = relativeTime;
+proto$1.pastFuture      = pastFuture;
+proto$1.set             = set;
+
+// Month
+proto$1.months            =        localeMonths;
+proto$1.monthsShort       =        localeMonthsShort;
+proto$1.monthsParse       =        localeMonthsParse;
+proto$1.monthsRegex       = monthsRegex;
+proto$1.monthsShortRegex  = monthsShortRegex;
+
+// Week
+proto$1.week = localeWeek;
+proto$1.firstDayOfYear = localeFirstDayOfYear;
+proto$1.firstDayOfWeek = localeFirstDayOfWeek;
+
+// Day of Week
+proto$1.weekdays       =        localeWeekdays;
+proto$1.weekdaysMin    =        localeWeekdaysMin;
+proto$1.weekdaysShort  =        localeWeekdaysShort;
+proto$1.weekdaysParse  =        localeWeekdaysParse;
+
+proto$1.weekdaysRegex       =        weekdaysRegex;
+proto$1.weekdaysShortRegex  =        weekdaysShortRegex;
+proto$1.weekdaysMinRegex    =        weekdaysMinRegex;
+
+// Hours
+proto$1.isPM = localeIsPM;
+proto$1.meridiem = localeMeridiem;
+
+function get$1 (format, index, field, setter) {
+    var locale = getLocale();
+    var utc = createUTC().set(setter, index);
+    return locale[field](utc, format);
+}
+
+function listMonthsImpl (format, index, field) {
+    if (isNumber(format)) {
+        index = format;
+        format = undefined;
     }
 
-    // FORMATTING
+    format = format || '';
 
-    addFormatToken('m', ['mm', 2], 0, 'minute');
-
-    // ALIASES
-
-    addUnitAlias('minute', 'm');
-
-    // PRIORITY
-
-    addUnitPriority('minute', 14);
-
-    // PARSING
-
-    addRegexToken('m',  match1to2);
-    addRegexToken('mm', match1to2, match2);
-    addParseToken(['m', 'mm'], MINUTE);
-
-    // MOMENTS
-
-    var getSetMinute = makeGetSet('Minutes', false);
-
-    // FORMATTING
-
-    addFormatToken('s', ['ss', 2], 0, 'second');
-
-    // ALIASES
-
-    addUnitAlias('second', 's');
-
-    // PRIORITY
-
-    addUnitPriority('second', 15);
-
-    // PARSING
-
-    addRegexToken('s',  match1to2);
-    addRegexToken('ss', match1to2, match2);
-    addParseToken(['s', 'ss'], SECOND);
-
-    // MOMENTS
-
-    var getSetSecond = makeGetSet('Seconds', false);
-
-    // FORMATTING
-
-    addFormatToken('S', 0, 0, function () {
-        return ~~(this.millisecond() / 100);
-    });
-
-    addFormatToken(0, ['SS', 2], 0, function () {
-        return ~~(this.millisecond() / 10);
-    });
-
-    addFormatToken(0, ['SSS', 3], 0, 'millisecond');
-    addFormatToken(0, ['SSSS', 4], 0, function () {
-        return this.millisecond() * 10;
-    });
-    addFormatToken(0, ['SSSSS', 5], 0, function () {
-        return this.millisecond() * 100;
-    });
-    addFormatToken(0, ['SSSSSS', 6], 0, function () {
-        return this.millisecond() * 1000;
-    });
-    addFormatToken(0, ['SSSSSSS', 7], 0, function () {
-        return this.millisecond() * 10000;
-    });
-    addFormatToken(0, ['SSSSSSSS', 8], 0, function () {
-        return this.millisecond() * 100000;
-    });
-    addFormatToken(0, ['SSSSSSSSS', 9], 0, function () {
-        return this.millisecond() * 1000000;
-    });
-
-
-    // ALIASES
-
-    addUnitAlias('millisecond', 'ms');
-
-    // PRIORITY
-
-    addUnitPriority('millisecond', 16);
-
-    // PARSING
-
-    addRegexToken('S',    match1to3, match1);
-    addRegexToken('SS',   match1to3, match2);
-    addRegexToken('SSS',  match1to3, match3);
-
-    var token;
-    for (token = 'SSSS'; token.length <= 9; token += 'S') {
-        addRegexToken(token, matchUnsigned);
+    if (index != null) {
+        return get$1(format, index, field, 'month');
     }
 
-    function parseMs(input, array) {
-        array[MILLISECOND] = toInt(('0.' + input) * 1000);
+    var i;
+    var out = [];
+    for (i = 0; i < 12; i++) {
+        out[i] = get$1(format, i, field, 'month');
     }
+    return out;
+}
 
-    for (token = 'S'; token.length <= 9; token += 'S') {
-        addParseToken(token, parseMs);
-    }
-    // MOMENTS
-
-    var getSetMillisecond = makeGetSet('Milliseconds', false);
-
-    // FORMATTING
-
-    addFormatToken('z',  0, 0, 'zoneAbbr');
-    addFormatToken('zz', 0, 0, 'zoneName');
-
-    // MOMENTS
-
-    function getZoneAbbr () {
-        return this._isUTC ? 'UTC' : '';
-    }
-
-    function getZoneName () {
-        return this._isUTC ? 'Coordinated Universal Time' : '';
-    }
-
-    var momentPrototype__proto = Moment.prototype;
-
-    momentPrototype__proto.add               = add_subtract__add;
-    momentPrototype__proto.calendar          = moment_calendar__calendar;
-    momentPrototype__proto.clone             = clone;
-    momentPrototype__proto.diff              = diff;
-    momentPrototype__proto.endOf             = endOf;
-    momentPrototype__proto.format            = format;
-    momentPrototype__proto.from              = from;
-    momentPrototype__proto.fromNow           = fromNow;
-    momentPrototype__proto.to                = to;
-    momentPrototype__proto.toNow             = toNow;
-    momentPrototype__proto.get               = stringGet;
-    momentPrototype__proto.invalidAt         = invalidAt;
-    momentPrototype__proto.isAfter           = isAfter;
-    momentPrototype__proto.isBefore          = isBefore;
-    momentPrototype__proto.isBetween         = isBetween;
-    momentPrototype__proto.isSame            = isSame;
-    momentPrototype__proto.isSameOrAfter     = isSameOrAfter;
-    momentPrototype__proto.isSameOrBefore    = isSameOrBefore;
-    momentPrototype__proto.isValid           = moment_valid__isValid;
-    momentPrototype__proto.lang              = lang;
-    momentPrototype__proto.locale            = locale;
-    momentPrototype__proto.localeData        = localeData;
-    momentPrototype__proto.max               = prototypeMax;
-    momentPrototype__proto.min               = prototypeMin;
-    momentPrototype__proto.parsingFlags      = parsingFlags;
-    momentPrototype__proto.set               = stringSet;
-    momentPrototype__proto.startOf           = startOf;
-    momentPrototype__proto.subtract          = add_subtract__subtract;
-    momentPrototype__proto.toArray           = toArray;
-    momentPrototype__proto.toObject          = toObject;
-    momentPrototype__proto.toDate            = toDate;
-    momentPrototype__proto.toISOString       = moment_format__toISOString;
-    momentPrototype__proto.toJSON            = toJSON;
-    momentPrototype__proto.toString          = toString;
-    momentPrototype__proto.unix              = unix;
-    momentPrototype__proto.valueOf           = to_type__valueOf;
-    momentPrototype__proto.creationData      = creationData;
-
-    // Year
-    momentPrototype__proto.year       = getSetYear;
-    momentPrototype__proto.isLeapYear = getIsLeapYear;
-
-    // Week Year
-    momentPrototype__proto.weekYear    = getSetWeekYear;
-    momentPrototype__proto.isoWeekYear = getSetISOWeekYear;
-
-    // Quarter
-    momentPrototype__proto.quarter = momentPrototype__proto.quarters = getSetQuarter;
-
-    // Month
-    momentPrototype__proto.month       = getSetMonth;
-    momentPrototype__proto.daysInMonth = getDaysInMonth;
-
-    // Week
-    momentPrototype__proto.week           = momentPrototype__proto.weeks        = getSetWeek;
-    momentPrototype__proto.isoWeek        = momentPrototype__proto.isoWeeks     = getSetISOWeek;
-    momentPrototype__proto.weeksInYear    = getWeeksInYear;
-    momentPrototype__proto.isoWeeksInYear = getISOWeeksInYear;
-
-    // Day
-    momentPrototype__proto.date       = getSetDayOfMonth;
-    momentPrototype__proto.day        = momentPrototype__proto.days             = getSetDayOfWeek;
-    momentPrototype__proto.weekday    = getSetLocaleDayOfWeek;
-    momentPrototype__proto.isoWeekday = getSetISODayOfWeek;
-    momentPrototype__proto.dayOfYear  = getSetDayOfYear;
-
-    // Hour
-    momentPrototype__proto.hour = momentPrototype__proto.hours = getSetHour;
-
-    // Minute
-    momentPrototype__proto.minute = momentPrototype__proto.minutes = getSetMinute;
-
-    // Second
-    momentPrototype__proto.second = momentPrototype__proto.seconds = getSetSecond;
-
-    // Millisecond
-    momentPrototype__proto.millisecond = momentPrototype__proto.milliseconds = getSetMillisecond;
-
-    // Offset
-    momentPrototype__proto.utcOffset            = getSetOffset;
-    momentPrototype__proto.utc                  = setOffsetToUTC;
-    momentPrototype__proto.local                = setOffsetToLocal;
-    momentPrototype__proto.parseZone            = setOffsetToParsedOffset;
-    momentPrototype__proto.hasAlignedHourOffset = hasAlignedHourOffset;
-    momentPrototype__proto.isDST                = isDaylightSavingTime;
-    momentPrototype__proto.isLocal              = isLocal;
-    momentPrototype__proto.isUtcOffset          = isUtcOffset;
-    momentPrototype__proto.isUtc                = isUtc;
-    momentPrototype__proto.isUTC                = isUtc;
-
-    // Timezone
-    momentPrototype__proto.zoneAbbr = getZoneAbbr;
-    momentPrototype__proto.zoneName = getZoneName;
-
-    // Deprecations
-    momentPrototype__proto.dates  = deprecate('dates accessor is deprecated. Use date instead.', getSetDayOfMonth);
-    momentPrototype__proto.months = deprecate('months accessor is deprecated. Use month instead', getSetMonth);
-    momentPrototype__proto.years  = deprecate('years accessor is deprecated. Use year instead', getSetYear);
-    momentPrototype__proto.zone   = deprecate('moment().zone is deprecated, use moment().utcOffset instead. http://momentjs.com/guides/#/warnings/zone/', getSetZone);
-    momentPrototype__proto.isDSTShifted = deprecate('isDSTShifted is deprecated. See http://momentjs.com/guides/#/warnings/dst-shifted/ for more information', isDaylightSavingTimeShifted);
-
-    var momentPrototype = momentPrototype__proto;
-
-    function moment__createUnix (input) {
-        return local__createLocal(input * 1000);
-    }
-
-    function moment__createInZone () {
-        return local__createLocal.apply(null, arguments).parseZone();
-    }
-
-    function preParsePostFormat (string) {
-        return string;
-    }
-
-    var prototype__proto = Locale.prototype;
-
-    prototype__proto.calendar        = locale_calendar__calendar;
-    prototype__proto.longDateFormat  = longDateFormat;
-    prototype__proto.invalidDate     = invalidDate;
-    prototype__proto.ordinal         = ordinal;
-    prototype__proto.preparse        = preParsePostFormat;
-    prototype__proto.postformat      = preParsePostFormat;
-    prototype__proto.relativeTime    = relative__relativeTime;
-    prototype__proto.pastFuture      = pastFuture;
-    prototype__proto.set             = locale_set__set;
-
-    // Month
-    prototype__proto.months            =        localeMonths;
-    prototype__proto.monthsShort       =        localeMonthsShort;
-    prototype__proto.monthsParse       =        localeMonthsParse;
-    prototype__proto.monthsRegex       = monthsRegex;
-    prototype__proto.monthsShortRegex  = monthsShortRegex;
-
-    // Week
-    prototype__proto.week = localeWeek;
-    prototype__proto.firstDayOfYear = localeFirstDayOfYear;
-    prototype__proto.firstDayOfWeek = localeFirstDayOfWeek;
-
-    // Day of Week
-    prototype__proto.weekdays       =        localeWeekdays;
-    prototype__proto.weekdaysMin    =        localeWeekdaysMin;
-    prototype__proto.weekdaysShort  =        localeWeekdaysShort;
-    prototype__proto.weekdaysParse  =        localeWeekdaysParse;
-
-    prototype__proto.weekdaysRegex       =        weekdaysRegex;
-    prototype__proto.weekdaysShortRegex  =        weekdaysShortRegex;
-    prototype__proto.weekdaysMinRegex    =        weekdaysMinRegex;
-
-    // Hours
-    prototype__proto.isPM = localeIsPM;
-    prototype__proto.meridiem = localeMeridiem;
-
-    function lists__get (format, index, field, setter) {
-        var locale = locale_locales__getLocale();
-        var utc = create_utc__createUTC().set(setter, index);
-        return locale[field](utc, format);
-    }
-
-    function listMonthsImpl (format, index, field) {
-        if (typeof format === 'number') {
+// ()
+// (5)
+// (fmt, 5)
+// (fmt)
+// (true)
+// (true, 5)
+// (true, fmt, 5)
+// (true, fmt)
+function listWeekdaysImpl (localeSorted, format, index, field) {
+    if (typeof localeSorted === 'boolean') {
+        if (isNumber(format)) {
             index = format;
             format = undefined;
         }
 
         format = format || '';
+    } else {
+        format = localeSorted;
+        index = format;
+        localeSorted = false;
 
-        if (index != null) {
-            return lists__get(format, index, field, 'month');
-        }
-
-        var i;
-        var out = [];
-        for (i = 0; i < 12; i++) {
-            out[i] = lists__get(format, i, field, 'month');
-        }
-        return out;
-    }
-
-    // ()
-    // (5)
-    // (fmt, 5)
-    // (fmt)
-    // (true)
-    // (true, 5)
-    // (true, fmt, 5)
-    // (true, fmt)
-    function listWeekdaysImpl (localeSorted, format, index, field) {
-        if (typeof localeSorted === 'boolean') {
-            if (typeof format === 'number') {
-                index = format;
-                format = undefined;
-            }
-
-            format = format || '';
-        } else {
-            format = localeSorted;
+        if (isNumber(format)) {
             index = format;
-            localeSorted = false;
-
-            if (typeof format === 'number') {
-                index = format;
-                format = undefined;
-            }
-
-            format = format || '';
+            format = undefined;
         }
 
-        var locale = locale_locales__getLocale(),
-            shift = localeSorted ? locale._week.dow : 0;
+        format = format || '';
+    }
 
-        if (index != null) {
-            return lists__get(format, (index + shift) % 7, field, 'day');
+    var locale = getLocale(),
+        shift = localeSorted ? locale._week.dow : 0;
+
+    if (index != null) {
+        return get$1(format, (index + shift) % 7, field, 'day');
+    }
+
+    var i;
+    var out = [];
+    for (i = 0; i < 7; i++) {
+        out[i] = get$1(format, (i + shift) % 7, field, 'day');
+    }
+    return out;
+}
+
+function listMonths (format, index) {
+    return listMonthsImpl(format, index, 'months');
+}
+
+function listMonthsShort (format, index) {
+    return listMonthsImpl(format, index, 'monthsShort');
+}
+
+function listWeekdays (localeSorted, format, index) {
+    return listWeekdaysImpl(localeSorted, format, index, 'weekdays');
+}
+
+function listWeekdaysShort (localeSorted, format, index) {
+    return listWeekdaysImpl(localeSorted, format, index, 'weekdaysShort');
+}
+
+function listWeekdaysMin (localeSorted, format, index) {
+    return listWeekdaysImpl(localeSorted, format, index, 'weekdaysMin');
+}
+
+getSetGlobalLocale('en', {
+    ordinalParse: /\d{1,2}(th|st|nd|rd)/,
+    ordinal : function (number) {
+        var b = number % 10,
+            output = (toInt(number % 100 / 10) === 1) ? 'th' :
+            (b === 1) ? 'st' :
+            (b === 2) ? 'nd' :
+            (b === 3) ? 'rd' : 'th';
+        return number + output;
+    }
+});
+
+// Side effect imports
+hooks.lang = deprecate('moment.lang is deprecated. Use moment.locale instead.', getSetGlobalLocale);
+hooks.langData = deprecate('moment.langData is deprecated. Use moment.localeData instead.', getLocale);
+
+var mathAbs = Math.abs;
+
+function abs () {
+    var data           = this._data;
+
+    this._milliseconds = mathAbs(this._milliseconds);
+    this._days         = mathAbs(this._days);
+    this._months       = mathAbs(this._months);
+
+    data.milliseconds  = mathAbs(data.milliseconds);
+    data.seconds       = mathAbs(data.seconds);
+    data.minutes       = mathAbs(data.minutes);
+    data.hours         = mathAbs(data.hours);
+    data.months        = mathAbs(data.months);
+    data.years         = mathAbs(data.years);
+
+    return this;
+}
+
+function addSubtract$1 (duration, input, value, direction) {
+    var other = createDuration(input, value);
+
+    duration._milliseconds += direction * other._milliseconds;
+    duration._days         += direction * other._days;
+    duration._months       += direction * other._months;
+
+    return duration._bubble();
+}
+
+// supports only 2.0-style add(1, 's') or add(duration)
+function add$1 (input, value) {
+    return addSubtract$1(this, input, value, 1);
+}
+
+// supports only 2.0-style subtract(1, 's') or subtract(duration)
+function subtract$1 (input, value) {
+    return addSubtract$1(this, input, value, -1);
+}
+
+function absCeil (number) {
+    if (number < 0) {
+        return Math.floor(number);
+    } else {
+        return Math.ceil(number);
+    }
+}
+
+function bubble () {
+    var milliseconds = this._milliseconds;
+    var days         = this._days;
+    var months       = this._months;
+    var data         = this._data;
+    var seconds, minutes, hours, years, monthsFromDays;
+
+    // if we have a mix of positive and negative values, bubble down first
+    // check: https://github.com/moment/moment/issues/2166
+    if (!((milliseconds >= 0 && days >= 0 && months >= 0) ||
+            (milliseconds <= 0 && days <= 0 && months <= 0))) {
+        milliseconds += absCeil(monthsToDays(months) + days) * 864e5;
+        days = 0;
+        months = 0;
+    }
+
+    // The following code bubbles up values, see the tests for
+    // examples of what that means.
+    data.milliseconds = milliseconds % 1000;
+
+    seconds           = absFloor(milliseconds / 1000);
+    data.seconds      = seconds % 60;
+
+    minutes           = absFloor(seconds / 60);
+    data.minutes      = minutes % 60;
+
+    hours             = absFloor(minutes / 60);
+    data.hours        = hours % 24;
+
+    days += absFloor(hours / 24);
+
+    // convert days to months
+    monthsFromDays = absFloor(daysToMonths(days));
+    months += monthsFromDays;
+    days -= absCeil(monthsToDays(monthsFromDays));
+
+    // 12 months -> 1 year
+    years = absFloor(months / 12);
+    months %= 12;
+
+    data.days   = days;
+    data.months = months;
+    data.years  = years;
+
+    return this;
+}
+
+function daysToMonths (days) {
+    // 400 years have 146097 days (taking into account leap year rules)
+    // 400 years have 12 months === 4800
+    return days * 4800 / 146097;
+}
+
+function monthsToDays (months) {
+    // the reverse of daysToMonths
+    return months * 146097 / 4800;
+}
+
+function as (units) {
+    var days;
+    var months;
+    var milliseconds = this._milliseconds;
+
+    units = normalizeUnits(units);
+
+    if (units === 'month' || units === 'year') {
+        days   = this._days   + milliseconds / 864e5;
+        months = this._months + daysToMonths(days);
+        return units === 'month' ? months : months / 12;
+    } else {
+        // handle milliseconds separately because of floating point math errors (issue #1867)
+        days = this._days + Math.round(monthsToDays(this._months));
+        switch (units) {
+            case 'week'   : return days / 7     + milliseconds / 6048e5;
+            case 'day'    : return days         + milliseconds / 864e5;
+            case 'hour'   : return days * 24    + milliseconds / 36e5;
+            case 'minute' : return days * 1440  + milliseconds / 6e4;
+            case 'second' : return days * 86400 + milliseconds / 1000;
+            // Math.floor prevents floating point math errors here
+            case 'millisecond': return Math.floor(days * 864e5) + milliseconds;
+            default: throw new Error('Unknown unit ' + units);
         }
-
-        var i;
-        var out = [];
-        for (i = 0; i < 7; i++) {
-            out[i] = lists__get(format, (i + shift) % 7, field, 'day');
-        }
-        return out;
     }
+}
 
-    function lists__listMonths (format, index) {
-        return listMonthsImpl(format, index, 'months');
-    }
+// TODO: Use this.as('ms')?
+function valueOf$1 () {
+    return (
+        this._milliseconds +
+        this._days * 864e5 +
+        (this._months % 12) * 2592e6 +
+        toInt(this._months / 12) * 31536e6
+    );
+}
 
-    function lists__listMonthsShort (format, index) {
-        return listMonthsImpl(format, index, 'monthsShort');
-    }
-
-    function lists__listWeekdays (localeSorted, format, index) {
-        return listWeekdaysImpl(localeSorted, format, index, 'weekdays');
-    }
-
-    function lists__listWeekdaysShort (localeSorted, format, index) {
-        return listWeekdaysImpl(localeSorted, format, index, 'weekdaysShort');
-    }
-
-    function lists__listWeekdaysMin (localeSorted, format, index) {
-        return listWeekdaysImpl(localeSorted, format, index, 'weekdaysMin');
-    }
-
-    locale_locales__getSetGlobalLocale('en', {
-        ordinalParse: /\d{1,2}(th|st|nd|rd)/,
-        ordinal : function (number) {
-            var b = number % 10,
-                output = (toInt(number % 100 / 10) === 1) ? 'th' :
-                (b === 1) ? 'st' :
-                (b === 2) ? 'nd' :
-                (b === 3) ? 'rd' : 'th';
-            return number + output;
-        }
-    });
-
-    // Side effect imports
-    utils_hooks__hooks.lang = deprecate('moment.lang is deprecated. Use moment.locale instead.', locale_locales__getSetGlobalLocale);
-    utils_hooks__hooks.langData = deprecate('moment.langData is deprecated. Use moment.localeData instead.', locale_locales__getLocale);
-
-    var mathAbs = Math.abs;
-
-    function duration_abs__abs () {
-        var data           = this._data;
-
-        this._milliseconds = mathAbs(this._milliseconds);
-        this._days         = mathAbs(this._days);
-        this._months       = mathAbs(this._months);
-
-        data.milliseconds  = mathAbs(data.milliseconds);
-        data.seconds       = mathAbs(data.seconds);
-        data.minutes       = mathAbs(data.minutes);
-        data.hours         = mathAbs(data.hours);
-        data.months        = mathAbs(data.months);
-        data.years         = mathAbs(data.years);
-
-        return this;
-    }
-
-    function duration_add_subtract__addSubtract (duration, input, value, direction) {
-        var other = create__createDuration(input, value);
-
-        duration._milliseconds += direction * other._milliseconds;
-        duration._days         += direction * other._days;
-        duration._months       += direction * other._months;
-
-        return duration._bubble();
-    }
-
-    // supports only 2.0-style add(1, 's') or add(duration)
-    function duration_add_subtract__add (input, value) {
-        return duration_add_subtract__addSubtract(this, input, value, 1);
-    }
-
-    // supports only 2.0-style subtract(1, 's') or subtract(duration)
-    function duration_add_subtract__subtract (input, value) {
-        return duration_add_subtract__addSubtract(this, input, value, -1);
-    }
-
-    function absCeil (number) {
-        if (number < 0) {
-            return Math.floor(number);
-        } else {
-            return Math.ceil(number);
-        }
-    }
-
-    function bubble () {
-        var milliseconds = this._milliseconds;
-        var days         = this._days;
-        var months       = this._months;
-        var data         = this._data;
-        var seconds, minutes, hours, years, monthsFromDays;
-
-        // if we have a mix of positive and negative values, bubble down first
-        // check: https://github.com/moment/moment/issues/2166
-        if (!((milliseconds >= 0 && days >= 0 && months >= 0) ||
-                (milliseconds <= 0 && days <= 0 && months <= 0))) {
-            milliseconds += absCeil(monthsToDays(months) + days) * 864e5;
-            days = 0;
-            months = 0;
-        }
-
-        // The following code bubbles up values, see the tests for
-        // examples of what that means.
-        data.milliseconds = milliseconds % 1000;
-
-        seconds           = absFloor(milliseconds / 1000);
-        data.seconds      = seconds % 60;
-
-        minutes           = absFloor(seconds / 60);
-        data.minutes      = minutes % 60;
-
-        hours             = absFloor(minutes / 60);
-        data.hours        = hours % 24;
-
-        days += absFloor(hours / 24);
-
-        // convert days to months
-        monthsFromDays = absFloor(daysToMonths(days));
-        months += monthsFromDays;
-        days -= absCeil(monthsToDays(monthsFromDays));
-
-        // 12 months -> 1 year
-        years = absFloor(months / 12);
-        months %= 12;
-
-        data.days   = days;
-        data.months = months;
-        data.years  = years;
-
-        return this;
-    }
-
-    function daysToMonths (days) {
-        // 400 years have 146097 days (taking into account leap year rules)
-        // 400 years have 12 months === 4800
-        return days * 4800 / 146097;
-    }
-
-    function monthsToDays (months) {
-        // the reverse of daysToMonths
-        return months * 146097 / 4800;
-    }
-
-    function as (units) {
-        var days;
-        var months;
-        var milliseconds = this._milliseconds;
-
-        units = normalizeUnits(units);
-
-        if (units === 'month' || units === 'year') {
-            days   = this._days   + milliseconds / 864e5;
-            months = this._months + daysToMonths(days);
-            return units === 'month' ? months : months / 12;
-        } else {
-            // handle milliseconds separately because of floating point math errors (issue #1867)
-            days = this._days + Math.round(monthsToDays(this._months));
-            switch (units) {
-                case 'week'   : return days / 7     + milliseconds / 6048e5;
-                case 'day'    : return days         + milliseconds / 864e5;
-                case 'hour'   : return days * 24    + milliseconds / 36e5;
-                case 'minute' : return days * 1440  + milliseconds / 6e4;
-                case 'second' : return days * 86400 + milliseconds / 1000;
-                // Math.floor prevents floating point math errors here
-                case 'millisecond': return Math.floor(days * 864e5) + milliseconds;
-                default: throw new Error('Unknown unit ' + units);
-            }
-        }
-    }
-
-    // TODO: Use this.as('ms')?
-    function duration_as__valueOf () {
-        return (
-            this._milliseconds +
-            this._days * 864e5 +
-            (this._months % 12) * 2592e6 +
-            toInt(this._months / 12) * 31536e6
-        );
-    }
-
-    function makeAs (alias) {
-        return function () {
-            return this.as(alias);
-        };
-    }
-
-    var asMilliseconds = makeAs('ms');
-    var asSeconds      = makeAs('s');
-    var asMinutes      = makeAs('m');
-    var asHours        = makeAs('h');
-    var asDays         = makeAs('d');
-    var asWeeks        = makeAs('w');
-    var asMonths       = makeAs('M');
-    var asYears        = makeAs('y');
-
-    function duration_get__get (units) {
-        units = normalizeUnits(units);
-        return this[units + 's']();
-    }
-
-    function makeGetter(name) {
-        return function () {
-            return this._data[name];
-        };
-    }
-
-    var milliseconds = makeGetter('milliseconds');
-    var seconds      = makeGetter('seconds');
-    var minutes      = makeGetter('minutes');
-    var hours        = makeGetter('hours');
-    var days         = makeGetter('days');
-    var months       = makeGetter('months');
-    var years        = makeGetter('years');
-
-    function weeks () {
-        return absFloor(this.days() / 7);
-    }
-
-    var round = Math.round;
-    var thresholds = {
-        s: 45,  // seconds to minute
-        m: 45,  // minutes to hour
-        h: 22,  // hours to day
-        d: 26,  // days to month
-        M: 11   // months to year
+function makeAs (alias) {
+    return function () {
+        return this.as(alias);
     };
+}
 
-    // helper function for moment.fn.from, moment.fn.fromNow, and moment.duration.fn.humanize
-    function substituteTimeAgo(string, number, withoutSuffix, isFuture, locale) {
-        return locale.relativeTime(number || 1, !!withoutSuffix, string, isFuture);
+var asMilliseconds = makeAs('ms');
+var asSeconds      = makeAs('s');
+var asMinutes      = makeAs('m');
+var asHours        = makeAs('h');
+var asDays         = makeAs('d');
+var asWeeks        = makeAs('w');
+var asMonths       = makeAs('M');
+var asYears        = makeAs('y');
+
+function get$2 (units) {
+    units = normalizeUnits(units);
+    return this[units + 's']();
+}
+
+function makeGetter(name) {
+    return function () {
+        return this._data[name];
+    };
+}
+
+var milliseconds = makeGetter('milliseconds');
+var seconds      = makeGetter('seconds');
+var minutes      = makeGetter('minutes');
+var hours        = makeGetter('hours');
+var days         = makeGetter('days');
+var months       = makeGetter('months');
+var years        = makeGetter('years');
+
+function weeks () {
+    return absFloor(this.days() / 7);
+}
+
+var round = Math.round;
+var thresholds = {
+    s: 45,  // seconds to minute
+    m: 45,  // minutes to hour
+    h: 22,  // hours to day
+    d: 26,  // days to month
+    M: 11   // months to year
+};
+
+// helper function for moment.fn.from, moment.fn.fromNow, and moment.duration.fn.humanize
+function substituteTimeAgo(string, number, withoutSuffix, isFuture, locale) {
+    return locale.relativeTime(number || 1, !!withoutSuffix, string, isFuture);
+}
+
+function relativeTime$1 (posNegDuration, withoutSuffix, locale) {
+    var duration = createDuration(posNegDuration).abs();
+    var seconds  = round(duration.as('s'));
+    var minutes  = round(duration.as('m'));
+    var hours    = round(duration.as('h'));
+    var days     = round(duration.as('d'));
+    var months   = round(duration.as('M'));
+    var years    = round(duration.as('y'));
+
+    var a = seconds < thresholds.s && ['s', seconds]  ||
+            minutes <= 1           && ['m']           ||
+            minutes < thresholds.m && ['mm', minutes] ||
+            hours   <= 1           && ['h']           ||
+            hours   < thresholds.h && ['hh', hours]   ||
+            days    <= 1           && ['d']           ||
+            days    < thresholds.d && ['dd', days]    ||
+            months  <= 1           && ['M']           ||
+            months  < thresholds.M && ['MM', months]  ||
+            years   <= 1           && ['y']           || ['yy', years];
+
+    a[2] = withoutSuffix;
+    a[3] = +posNegDuration > 0;
+    a[4] = locale;
+    return substituteTimeAgo.apply(null, a);
+}
+
+// This function allows you to set the rounding function for relative time strings
+function getSetRelativeTimeRounding (roundingFunction) {
+    if (roundingFunction === undefined) {
+        return round;
     }
-
-    function duration_humanize__relativeTime (posNegDuration, withoutSuffix, locale) {
-        var duration = create__createDuration(posNegDuration).abs();
-        var seconds  = round(duration.as('s'));
-        var minutes  = round(duration.as('m'));
-        var hours    = round(duration.as('h'));
-        var days     = round(duration.as('d'));
-        var months   = round(duration.as('M'));
-        var years    = round(duration.as('y'));
-
-        var a = seconds < thresholds.s && ['s', seconds]  ||
-                minutes <= 1           && ['m']           ||
-                minutes < thresholds.m && ['mm', minutes] ||
-                hours   <= 1           && ['h']           ||
-                hours   < thresholds.h && ['hh', hours]   ||
-                days    <= 1           && ['d']           ||
-                days    < thresholds.d && ['dd', days]    ||
-                months  <= 1           && ['M']           ||
-                months  < thresholds.M && ['MM', months]  ||
-                years   <= 1           && ['y']           || ['yy', years];
-
-        a[2] = withoutSuffix;
-        a[3] = +posNegDuration > 0;
-        a[4] = locale;
-        return substituteTimeAgo.apply(null, a);
-    }
-
-    // This function allows you to set the rounding function for relative time strings
-    function duration_humanize__getSetRelativeTimeRounding (roundingFunction) {
-        if (roundingFunction === undefined) {
-            return round;
-        }
-        if (typeof(roundingFunction) === 'function') {
-            round = roundingFunction;
-            return true;
-        }
-        return false;
-    }
-
-    // This function allows you to set a threshold for relative time strings
-    function duration_humanize__getSetRelativeTimeThreshold (threshold, limit) {
-        if (thresholds[threshold] === undefined) {
-            return false;
-        }
-        if (limit === undefined) {
-            return thresholds[threshold];
-        }
-        thresholds[threshold] = limit;
+    if (typeof(roundingFunction) === 'function') {
+        round = roundingFunction;
         return true;
     }
+    return false;
+}
 
-    function humanize (withSuffix) {
-        var locale = this.localeData();
-        var output = duration_humanize__relativeTime(this, !withSuffix, locale);
+// This function allows you to set a threshold for relative time strings
+function getSetRelativeTimeThreshold (threshold, limit) {
+    if (thresholds[threshold] === undefined) {
+        return false;
+    }
+    if (limit === undefined) {
+        return thresholds[threshold];
+    }
+    thresholds[threshold] = limit;
+    return true;
+}
 
-        if (withSuffix) {
-            output = locale.pastFuture(+this, output);
-        }
+function humanize (withSuffix) {
+    var locale = this.localeData();
+    var output = relativeTime$1(this, !withSuffix, locale);
 
-        return locale.postformat(output);
+    if (withSuffix) {
+        output = locale.pastFuture(+this, output);
     }
 
-    var iso_string__abs = Math.abs;
+    return locale.postformat(output);
+}
 
-    function iso_string__toISOString() {
-        // for ISO strings we do not use the normal bubbling rules:
-        //  * milliseconds bubble up until they become hours
-        //  * days do not bubble at all
-        //  * months bubble up until they become years
-        // This is because there is no context-free conversion between hours and days
-        // (think of clock changes)
-        // and also not between days and months (28-31 days per month)
-        var seconds = iso_string__abs(this._milliseconds) / 1000;
-        var days         = iso_string__abs(this._days);
-        var months       = iso_string__abs(this._months);
-        var minutes, hours, years;
+var abs$1 = Math.abs;
 
-        // 3600 seconds -> 60 minutes -> 1 hour
-        minutes           = absFloor(seconds / 60);
-        hours             = absFloor(minutes / 60);
-        seconds %= 60;
-        minutes %= 60;
+function toISOString$1() {
+    // for ISO strings we do not use the normal bubbling rules:
+    //  * milliseconds bubble up until they become hours
+    //  * days do not bubble at all
+    //  * months bubble up until they become years
+    // This is because there is no context-free conversion between hours and days
+    // (think of clock changes)
+    // and also not between days and months (28-31 days per month)
+    var seconds = abs$1(this._milliseconds) / 1000;
+    var days         = abs$1(this._days);
+    var months       = abs$1(this._months);
+    var minutes, hours, years;
 
-        // 12 months -> 1 year
-        years  = absFloor(months / 12);
-        months %= 12;
+    // 3600 seconds -> 60 minutes -> 1 hour
+    minutes           = absFloor(seconds / 60);
+    hours             = absFloor(minutes / 60);
+    seconds %= 60;
+    minutes %= 60;
+
+    // 12 months -> 1 year
+    years  = absFloor(months / 12);
+    months %= 12;
 
 
-        // inspired by https://github.com/dordille/moment-isoduration/blob/master/moment.isoduration.js
-        var Y = years;
-        var M = months;
-        var D = days;
-        var h = hours;
-        var m = minutes;
-        var s = seconds;
-        var total = this.asSeconds();
+    // inspired by https://github.com/dordille/moment-isoduration/blob/master/moment.isoduration.js
+    var Y = years;
+    var M = months;
+    var D = days;
+    var h = hours;
+    var m = minutes;
+    var s = seconds;
+    var total = this.asSeconds();
 
-        if (!total) {
-            // this is the same as C#'s (Noda) and python (isodate)...
-            // but not other JS (goog.date)
-            return 'P0D';
-        }
-
-        return (total < 0 ? '-' : '') +
-            'P' +
-            (Y ? Y + 'Y' : '') +
-            (M ? M + 'M' : '') +
-            (D ? D + 'D' : '') +
-            ((h || m || s) ? 'T' : '') +
-            (h ? h + 'H' : '') +
-            (m ? m + 'M' : '') +
-            (s ? s + 'S' : '');
+    if (!total) {
+        // this is the same as C#'s (Noda) and python (isodate)...
+        // but not other JS (goog.date)
+        return 'P0D';
     }
 
-    var duration_prototype__proto = Duration.prototype;
+    return (total < 0 ? '-' : '') +
+        'P' +
+        (Y ? Y + 'Y' : '') +
+        (M ? M + 'M' : '') +
+        (D ? D + 'D' : '') +
+        ((h || m || s) ? 'T' : '') +
+        (h ? h + 'H' : '') +
+        (m ? m + 'M' : '') +
+        (s ? s + 'S' : '');
+}
 
-    duration_prototype__proto.abs            = duration_abs__abs;
-    duration_prototype__proto.add            = duration_add_subtract__add;
-    duration_prototype__proto.subtract       = duration_add_subtract__subtract;
-    duration_prototype__proto.as             = as;
-    duration_prototype__proto.asMilliseconds = asMilliseconds;
-    duration_prototype__proto.asSeconds      = asSeconds;
-    duration_prototype__proto.asMinutes      = asMinutes;
-    duration_prototype__proto.asHours        = asHours;
-    duration_prototype__proto.asDays         = asDays;
-    duration_prototype__proto.asWeeks        = asWeeks;
-    duration_prototype__proto.asMonths       = asMonths;
-    duration_prototype__proto.asYears        = asYears;
-    duration_prototype__proto.valueOf        = duration_as__valueOf;
-    duration_prototype__proto._bubble        = bubble;
-    duration_prototype__proto.get            = duration_get__get;
-    duration_prototype__proto.milliseconds   = milliseconds;
-    duration_prototype__proto.seconds        = seconds;
-    duration_prototype__proto.minutes        = minutes;
-    duration_prototype__proto.hours          = hours;
-    duration_prototype__proto.days           = days;
-    duration_prototype__proto.weeks          = weeks;
-    duration_prototype__proto.months         = months;
-    duration_prototype__proto.years          = years;
-    duration_prototype__proto.humanize       = humanize;
-    duration_prototype__proto.toISOString    = iso_string__toISOString;
-    duration_prototype__proto.toString       = iso_string__toISOString;
-    duration_prototype__proto.toJSON         = iso_string__toISOString;
-    duration_prototype__proto.locale         = locale;
-    duration_prototype__proto.localeData     = localeData;
+var proto$2 = Duration.prototype;
 
-    // Deprecations
-    duration_prototype__proto.toIsoString = deprecate('toIsoString() is deprecated. Please use toISOString() instead (notice the capitals)', iso_string__toISOString);
-    duration_prototype__proto.lang = lang;
+proto$2.abs            = abs;
+proto$2.add            = add$1;
+proto$2.subtract       = subtract$1;
+proto$2.as             = as;
+proto$2.asMilliseconds = asMilliseconds;
+proto$2.asSeconds      = asSeconds;
+proto$2.asMinutes      = asMinutes;
+proto$2.asHours        = asHours;
+proto$2.asDays         = asDays;
+proto$2.asWeeks        = asWeeks;
+proto$2.asMonths       = asMonths;
+proto$2.asYears        = asYears;
+proto$2.valueOf        = valueOf$1;
+proto$2._bubble        = bubble;
+proto$2.get            = get$2;
+proto$2.milliseconds   = milliseconds;
+proto$2.seconds        = seconds;
+proto$2.minutes        = minutes;
+proto$2.hours          = hours;
+proto$2.days           = days;
+proto$2.weeks          = weeks;
+proto$2.months         = months;
+proto$2.years          = years;
+proto$2.humanize       = humanize;
+proto$2.toISOString    = toISOString$1;
+proto$2.toString       = toISOString$1;
+proto$2.toJSON         = toISOString$1;
+proto$2.locale         = locale;
+proto$2.localeData     = localeData;
 
-    // Side effect imports
+// Deprecations
+proto$2.toIsoString = deprecate('toIsoString() is deprecated. Please use toISOString() instead (notice the capitals)', toISOString$1);
+proto$2.lang = lang;
 
-    // FORMATTING
+// Side effect imports
 
-    addFormatToken('X', 0, 0, 'unix');
-    addFormatToken('x', 0, 0, 'valueOf');
+// FORMATTING
 
-    // PARSING
+addFormatToken('X', 0, 0, 'unix');
+addFormatToken('x', 0, 0, 'valueOf');
 
-    addRegexToken('x', matchSigned);
-    addRegexToken('X', matchTimestamp);
-    addParseToken('X', function (input, array, config) {
-        config._d = new Date(parseFloat(input, 10) * 1000);
-    });
-    addParseToken('x', function (input, array, config) {
-        config._d = new Date(toInt(input));
-    });
+// PARSING
 
-    // Side effect imports
+addRegexToken('x', matchSigned);
+addRegexToken('X', matchTimestamp);
+addParseToken('X', function (input, array, config) {
+    config._d = new Date(parseFloat(input, 10) * 1000);
+});
+addParseToken('x', function (input, array, config) {
+    config._d = new Date(toInt(input));
+});
+
+// Side effect imports
 
 
-    utils_hooks__hooks.version = '2.14.1';
+hooks.version = '2.17.1';
 
-    setHookCallback(local__createLocal);
+setHookCallback(createLocal);
 
-    utils_hooks__hooks.fn                    = momentPrototype;
-    utils_hooks__hooks.min                   = min;
-    utils_hooks__hooks.max                   = max;
-    utils_hooks__hooks.now                   = now;
-    utils_hooks__hooks.utc                   = create_utc__createUTC;
-    utils_hooks__hooks.unix                  = moment__createUnix;
-    utils_hooks__hooks.months                = lists__listMonths;
-    utils_hooks__hooks.isDate                = isDate;
-    utils_hooks__hooks.locale                = locale_locales__getSetGlobalLocale;
-    utils_hooks__hooks.invalid               = valid__createInvalid;
-    utils_hooks__hooks.duration              = create__createDuration;
-    utils_hooks__hooks.isMoment              = isMoment;
-    utils_hooks__hooks.weekdays              = lists__listWeekdays;
-    utils_hooks__hooks.parseZone             = moment__createInZone;
-    utils_hooks__hooks.localeData            = locale_locales__getLocale;
-    utils_hooks__hooks.isDuration            = isDuration;
-    utils_hooks__hooks.monthsShort           = lists__listMonthsShort;
-    utils_hooks__hooks.weekdaysMin           = lists__listWeekdaysMin;
-    utils_hooks__hooks.defineLocale          = defineLocale;
-    utils_hooks__hooks.updateLocale          = updateLocale;
-    utils_hooks__hooks.locales               = locale_locales__listLocales;
-    utils_hooks__hooks.weekdaysShort         = lists__listWeekdaysShort;
-    utils_hooks__hooks.normalizeUnits        = normalizeUnits;
-    utils_hooks__hooks.relativeTimeRounding = duration_humanize__getSetRelativeTimeRounding;
-    utils_hooks__hooks.relativeTimeThreshold = duration_humanize__getSetRelativeTimeThreshold;
-    utils_hooks__hooks.calendarFormat        = getCalendarFormat;
-    utils_hooks__hooks.prototype             = momentPrototype;
+hooks.fn                    = proto;
+hooks.min                   = min;
+hooks.max                   = max;
+hooks.now                   = now;
+hooks.utc                   = createUTC;
+hooks.unix                  = createUnix;
+hooks.months                = listMonths;
+hooks.isDate                = isDate;
+hooks.locale                = getSetGlobalLocale;
+hooks.invalid               = createInvalid;
+hooks.duration              = createDuration;
+hooks.isMoment              = isMoment;
+hooks.weekdays              = listWeekdays;
+hooks.parseZone             = createInZone;
+hooks.localeData            = getLocale;
+hooks.isDuration            = isDuration;
+hooks.monthsShort           = listMonthsShort;
+hooks.weekdaysMin           = listWeekdaysMin;
+hooks.defineLocale          = defineLocale;
+hooks.updateLocale          = updateLocale;
+hooks.locales               = listLocales;
+hooks.weekdaysShort         = listWeekdaysShort;
+hooks.normalizeUnits        = normalizeUnits;
+hooks.relativeTimeRounding = getSetRelativeTimeRounding;
+hooks.relativeTimeThreshold = getSetRelativeTimeThreshold;
+hooks.calendarFormat        = getCalendarFormat;
+hooks.prototype             = proto;
 
-    var _moment = utils_hooks__hooks;
+return hooks;
 
-    return _moment;
+})));
 
-}));
-},{}],53:[function(require,module,exports){
-(function (process){
-// Generated by CoffeeScript 1.7.1
-(function() {
-  var getNanoSeconds, hrtime, loadTime;
-
-  if ((typeof performance !== "undefined" && performance !== null) && performance.now) {
-    module.exports = function() {
-      return performance.now();
-    };
-  } else if ((typeof process !== "undefined" && process !== null) && process.hrtime) {
-    module.exports = function() {
-      return (getNanoSeconds() - loadTime) / 1e6;
-    };
-    hrtime = process.hrtime;
-    getNanoSeconds = function() {
-      var hr;
-      hr = hrtime();
-      return hr[0] * 1e9 + hr[1];
-    };
-    loadTime = getNanoSeconds();
-  } else if (Date.now) {
-    module.exports = function() {
-      return Date.now() - loadTime;
-    };
-    loadTime = Date.now();
-  } else {
-    module.exports = function() {
-      return new Date().getTime() - loadTime;
-    };
-    loadTime = new Date().getTime();
-  }
-
-}).call(this);
-
-}).call(this,require('_process'))
-},{"_process":54}],54:[function(require,module,exports){
+},{}],51:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -7712,11705 +7300,284 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],55:[function(require,module,exports){
-(function (global){
-var now = require('performance-now')
-  , root = typeof window === 'undefined' ? global : window
-  , vendors = ['moz', 'webkit']
-  , suffix = 'AnimationFrame'
-  , raf = root['request' + suffix]
-  , caf = root['cancel' + suffix] || root['cancelRequest' + suffix]
-
-for(var i = 0; !raf && i < vendors.length; i++) {
-  raf = root[vendors[i] + 'Request' + suffix]
-  caf = root[vendors[i] + 'Cancel' + suffix]
-      || root[vendors[i] + 'CancelRequest' + suffix]
-}
-
-// Some versions of FF have rAF but not cAF
-if(!raf || !caf) {
-  var last = 0
-    , id = 0
-    , queue = []
-    , frameDuration = 1000 / 60
-
-  raf = function(callback) {
-    if(queue.length === 0) {
-      var _now = now()
-        , next = Math.max(0, frameDuration - (_now - last))
-      last = next + _now
-      setTimeout(function() {
-        var cp = queue.slice(0)
-        // Clear queue here to prevent
-        // callbacks from appending listeners
-        // to the current frame's queue
-        queue.length = 0
-        for(var i = 0; i < cp.length; i++) {
-          if(!cp[i].cancelled) {
-            try{
-              cp[i].callback(last)
-            } catch(e) {
-              setTimeout(function() { throw e }, 0)
-            }
-          }
-        }
-      }, Math.round(next))
-    }
-    queue.push({
-      handle: ++id,
-      callback: callback,
-      cancelled: false
-    })
-    return id
-  }
-
-  caf = function(handle) {
-    for(var i = 0; i < queue.length; i++) {
-      if(queue[i].handle === handle) {
-        queue[i].cancelled = true
-      }
-    }
-  }
-}
-
-module.exports = function(fn) {
-  // Wrap in a new function to prevent
-  // `cancel` potentially being assigned
-  // to the native rAF function
-  return raf.call(root, fn)
-}
-module.exports.cancel = function() {
-  caf.apply(root, arguments)
-}
-module.exports.polyfill = function() {
-  root.requestAnimationFrame = raf
-  root.cancelAnimationFrame = caf
-}
-
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"performance-now":53}],56:[function(require,module,exports){
-'use strict';
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; desc = parent = undefined; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var React = require('react');
-var assign = require('object-assign');
-
-function autoBind(object) {
-  var proto = object.constructor.prototype;
-
-  var names = Object.getOwnPropertyNames(proto).filter(function (key) {
-    return key != 'constructor' && key != 'render' && typeof proto[key] == 'function';
-  });
-
-  names.push('setState');
-  names.forEach(function (key) {
-    object[key] = object[key].bind(object);
-  });
-
-  return object;
-}
-
-var ReactClass = (function (_React$Component) {
-  _inherits(ReactClass, _React$Component);
-
-  function ReactClass(props) {
-    _classCallCheck(this, ReactClass);
-
-    _get(Object.getPrototypeOf(ReactClass.prototype), 'constructor', this).call(this, props);
-    autoBind(this);
-  }
-
-  _createClass(ReactClass, [{
-    key: 'prepareProps',
-    value: function prepareProps(thisProps) {
-
-      var props = assign({}, thisProps);
-
-      props.style = this.prepareStyle(props);
-      props.className = this.prepareClassName(props);
-
-      return props;
-    }
-  }, {
-    key: 'prepareClassName',
-    value: function prepareClassName(props) {
-      var className = props.className || '';
-
-      var defaultProps = this.constructor.defaultProps;
-
-      if (defaultProps && defaultProps.defaultClassName != null) {
-        className += ' ' + defaultProps.defaultClassName;
-      }
-
-      return className;
-    }
-  }, {
-    key: 'prepareStyle',
-    value: function prepareStyle(props) {
-      var defaultStyle;
-
-      if (this.constructor.defaultProps) {
-        defaultStyle = this.constructor.defaultProps.defaultStyle;
-      }
-
-      return assign({}, defaultStyle, props.style);
-    }
-  }]);
-
-  return ReactClass;
-})(React.Component);
-
-module.exports = ReactClass;
-},{"object-assign":57,"react":263}],57:[function(require,module,exports){
-'use strict';
-/* eslint-disable no-unused-vars */
-var hasOwnProperty = Object.prototype.hasOwnProperty;
-var propIsEnumerable = Object.prototype.propertyIsEnumerable;
-
-function toObject(val) {
-	if (val === null || val === undefined) {
-		throw new TypeError('Object.assign cannot be called with null or undefined');
-	}
-
-	return Object(val);
-}
-
-function shouldUseNative() {
-	try {
-		if (!Object.assign) {
-			return false;
-		}
-
-		// Detect buggy property enumeration order in older V8 versions.
-
-		// https://bugs.chromium.org/p/v8/issues/detail?id=4118
-		var test1 = new String('abc');  // eslint-disable-line
-		test1[5] = 'de';
-		if (Object.getOwnPropertyNames(test1)[0] === '5') {
-			return false;
-		}
-
-		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
-		var test2 = {};
-		for (var i = 0; i < 10; i++) {
-			test2['_' + String.fromCharCode(i)] = i;
-		}
-		var order2 = Object.getOwnPropertyNames(test2).map(function (n) {
-			return test2[n];
-		});
-		if (order2.join('') !== '0123456789') {
-			return false;
-		}
-
-		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
-		var test3 = {};
-		'abcdefghijklmnopqrst'.split('').forEach(function (letter) {
-			test3[letter] = letter;
-		});
-		if (Object.keys(Object.assign({}, test3)).join('') !==
-				'abcdefghijklmnopqrst') {
-			return false;
-		}
-
-		return true;
-	} catch (e) {
-		// We don't expect any of the above to throw, but better to be safe.
-		return false;
-	}
-}
-
-module.exports = shouldUseNative() ? Object.assign : function (target, source) {
-	var from;
-	var to = toObject(target);
-	var symbols;
-
-	for (var s = 1; s < arguments.length; s++) {
-		from = Object(arguments[s]);
-
-		for (var key in from) {
-			if (hasOwnProperty.call(from, key)) {
-				to[key] = from[key];
-			}
-		}
-
-		if (Object.getOwnPropertySymbols) {
-			symbols = Object.getOwnPropertySymbols(from);
-			for (var i = 0; i < symbols.length; i++) {
-				if (propIsEnumerable.call(from, symbols[i])) {
-					to[symbols[i]] = from[symbols[i]];
-				}
-			}
-		}
-	}
-
-	return to;
-};
-
-},{}],58:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.getDaysInMonthView = exports.getWeekendStartDay = exports.getWeekStartMoment = exports.getWeekStartDay = undefined;
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactClass = require('react-class');
-
-var _reactClass2 = _interopRequireDefault(_reactClass);
-
-var _moment = require('moment');
-
-var _moment2 = _interopRequireDefault(_moment);
-
-var _objectAssign = require('object-assign');
-
-var _objectAssign2 = _interopRequireDefault(_objectAssign);
-
-var _reactFlex = require('react-flex');
-
-var _format = require('./utils/format');
-
-var _format2 = _interopRequireDefault(_format);
-
-var _toMoment = require('./toMoment');
-
-var _toMoment2 = _interopRequireDefault(_toMoment);
-
-var _getWeekDayNames = require('./utils/getWeekDayNames');
-
-var _getWeekDayNames2 = _interopRequireDefault(_getWeekDayNames);
-
-var _join = require('./join');
-
-var _join2 = _interopRequireDefault(_join);
-
-var _bemFactory = require('./bemFactory');
-
-var _bemFactory2 = _interopRequireDefault(_bemFactory);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
-var CLASS_NAME = 'react-date-picker__basic-month-view';
-
-var RENDER_DAY = function RENDER_DAY(props) {
-  var divProps = (0, _objectAssign2.default)({}, props);
-
-  delete divProps.date;
-  delete divProps.dateMoment;
-  delete divProps.day;
-  delete divProps.timestamp;
-
-  return _react2.default.createElement('div', divProps);
-};
-
-var getWeekStartDay = function getWeekStartDay(props) {
-  var locale = props.locale;
-  var weekStartDay = props.weekStartDay;
-
-  if (weekStartDay == null) {
-    var localeData = props.localeData || _moment2.default.localeData(locale);
-    weekStartDay = localeData._week ? localeData._week.dow : null;
-  }
-
-  return weekStartDay;
-};
-
+},{}],52:[function(require,module,exports){
+!function(e,t){"object"==typeof exports&&"object"==typeof module?module.exports=t(require("moment"),require("react"),require("react-onclickoutside"),require("react-dom")):"function"==typeof define&&define.amd?define(["moment","react","react-onclickoutside","react-dom"],t):"object"==typeof exports?exports.DatePicker=t(require("moment"),require("react"),require("react-onclickoutside"),require("react-dom")):e.DatePicker=t(e.moment,e.React,e.onClickOutside,e.ReactDOM)}(this,function(e,t,n,r){return function(e){function t(r){if(n[r])return n[r].exports;var o=n[r]={exports:{},id:r,loaded:!1};return e[r].call(o.exports,o,o.exports,t),o.loaded=!0,o.exports}var n={};return t.m=e,t.c=n,t.p="",t(0)}([function(e,t,n){"use strict";function r(e){return e&&e.__esModule?e:{default:e}}function o(e,t,n){return t in e?Object.defineProperty(e,t,{value:n,enumerable:!0,configurable:!0,writable:!0}):e[t]=n,e}var a=n(1),i=r(a),s=n(5),u=r(s),p=n(3),l=r(p),c=n(136),f=r(c),d=n(146),h=r(d),y=n(124),m=r(y),g=n(4),v=n(2),b=r(v),D=n(125),w=r(D),_="react-datepicker-ignore-onclickoutside",x=(0,w.default)(u.default),T=l.default.createClass({displayName:"DatePicker",propTypes:{autoComplete:l.default.PropTypes.string,autoFocus:l.default.PropTypes.bool,className:l.default.PropTypes.string,customInput:l.default.PropTypes.element,dateFormat:l.default.PropTypes.oneOfType([l.default.PropTypes.string,l.default.PropTypes.array]),dateFormatCalendar:l.default.PropTypes.string,disabled:l.default.PropTypes.bool,dropdownMode:l.default.PropTypes.oneOf(["scroll","select"]).isRequired,endDate:l.default.PropTypes.object,excludeDates:l.default.PropTypes.array,filterDate:l.default.PropTypes.func,fixedHeight:l.default.PropTypes.bool,highlightDates:l.default.PropTypes.array,id:l.default.PropTypes.string,includeDates:l.default.PropTypes.array,inline:l.default.PropTypes.bool,isClearable:l.default.PropTypes.bool,locale:l.default.PropTypes.string,maxDate:l.default.PropTypes.object,minDate:l.default.PropTypes.object,monthsShown:l.default.PropTypes.number,name:l.default.PropTypes.string,onBlur:l.default.PropTypes.func,onChange:l.default.PropTypes.func.isRequired,onFocus:l.default.PropTypes.func,onMonthChange:l.default.PropTypes.func,openToDate:l.default.PropTypes.object,peekNextMonth:l.default.PropTypes.bool,placeholderText:l.default.PropTypes.string,popoverAttachment:l.default.PropTypes.string,popoverTargetAttachment:l.default.PropTypes.string,popoverTargetOffset:l.default.PropTypes.string,readOnly:l.default.PropTypes.bool,renderCalendarTo:l.default.PropTypes.any,required:l.default.PropTypes.bool,scrollableYearDropdown:l.default.PropTypes.bool,selected:l.default.PropTypes.object,selectsEnd:l.default.PropTypes.bool,selectsStart:l.default.PropTypes.bool,showMonthDropdown:l.default.PropTypes.bool,showWeekNumbers:l.default.PropTypes.bool,showYearDropdown:l.default.PropTypes.bool,forceShowMonthNavigation:l.default.PropTypes.bool,startDate:l.default.PropTypes.object,tabIndex:l.default.PropTypes.number,tetherConstraints:l.default.PropTypes.array,title:l.default.PropTypes.string,todayButton:l.default.PropTypes.string,utcOffset:l.default.PropTypes.number},getDefaultProps:function(){return{dateFormatCalendar:"MMMM YYYY",onChange:function(){},disabled:!1,dropdownMode:"scroll",onFocus:function(){},onBlur:function(){},onMonthChange:function(){},popoverAttachment:"top left",popoverTargetAttachment:"bottom left",popoverTargetOffset:"10px 0",tetherConstraints:[{to:"window",attachment:"together"}],utcOffset:b.default.utc().utcOffset(),monthsShown:1}},getInitialState:function(){return{open:!1,preventFocus:!1}},setFocus:function(){this.refs.input.focus()},setOpen:function(e){this.setState({open:e})},handleFocus:function(e){this.state.preventFocus||(this.props.onFocus(e),this.setOpen(!0))},cancelFocusInput:function(){clearTimeout(this.inputFocusTimeout),this.inputFocusTimeout=null},deferFocusInput:function(){var e=this;this.cancelFocusInput(),this.inputFocusTimeout=(0,f.default)(function(){return e.setFocus()})},handleDropdownFocus:function(){this.cancelFocusInput()},handleBlur:function(e){this.state.open?this.deferFocusInput():this.props.onBlur(e)},handleCalendarClickOutside:function(e){this.setOpen(!1)},handleSelect:function(e,t){var n=this;this.setState({preventFocus:!0},function(){return setTimeout(function(){return n.setState({preventFocus:!1})},50)}),this.setSelected(e,t),this.setOpen(!1)},setSelected:function(e,t){var n=e;(0,g.isSameDay)(this.props.selected,n)||(this.props.selected&&null!=n&&(n=(0,b.default)(n).set({hour:this.props.selected.hour(),minute:this.props.selected.minute(),second:this.props.selected.second()})),this.props.onChange(n,t))},onInputClick:function(){this.props.disabled||this.setOpen(!0)},onInputKeyDown:function(e){var t=this.props.selected?(0,b.default)(this.props.selected):(0,b.default)();"Enter"===e.key||"Escape"===e.key?(e.preventDefault(),this.setOpen(!1)):"Tab"===e.key?this.setOpen(!1):"ArrowLeft"===e.key?(e.preventDefault(),this.setSelected(t.subtract(1,"days"))):"ArrowRight"===e.key?(e.preventDefault(),this.setSelected(t.add(1,"days"))):"ArrowUp"===e.key?(e.preventDefault(),this.setSelected(t.subtract(1,"weeks"))):"ArrowDown"===e.key?(e.preventDefault(),this.setSelected(t.add(1,"weeks"))):"PageUp"===e.key?(e.preventDefault(),this.setSelected(t.subtract(1,"months"))):"PageDown"===e.key?(e.preventDefault(),this.setSelected(t.add(1,"months"))):"Home"===e.key?(e.preventDefault(),this.setSelected(t.subtract(1,"years"))):"End"===e.key&&(e.preventDefault(),this.setSelected(t.add(1,"years")))},onClearClick:function(e){e.preventDefault(),this.props.onChange(null,e)},renderCalendar:function(){return this.props.inline||this.state.open&&!this.props.disabled?l.default.createElement(x,{ref:"calendar",locale:this.props.locale,dateFormat:this.props.dateFormatCalendar,dropdownMode:this.props.dropdownMode,selected:this.props.selected,onSelect:this.handleSelect,openToDate:this.props.openToDate,minDate:this.props.minDate,maxDate:this.props.maxDate,selectsStart:this.props.selectsStart,selectsEnd:this.props.selectsEnd,startDate:this.props.startDate,endDate:this.props.endDate,excludeDates:this.props.excludeDates,filterDate:this.props.filterDate,onClickOutside:this.handleCalendarClickOutside,highlightDates:this.props.highlightDates,includeDates:this.props.includeDates,peekNextMonth:this.props.peekNextMonth,showMonthDropdown:this.props.showMonthDropdown,showWeekNumbers:this.props.showWeekNumbers,showYearDropdown:this.props.showYearDropdown,forceShowMonthNavigation:this.props.forceShowMonthNavigation,scrollableYearDropdown:this.props.scrollableYearDropdown,todayButton:this.props.todayButton,utcOffset:this.props.utcOffset,outsideClickIgnoreClass:_,fixedHeight:this.props.fixedHeight,monthsShown:this.props.monthsShown,onDropdownFocus:this.handleDropdownFocus,onMonthChange:this.props.onMonthChange}):null},renderDateInput:function(){var e=(0,m.default)(this.props.className,o({},_,this.state.open));return l.default.createElement(i.default,{ref:"input",id:this.props.id,name:this.props.name,autoFocus:this.props.autoFocus,date:this.props.selected,locale:this.props.locale,minDate:this.props.minDate,maxDate:this.props.maxDate,excludeDates:this.props.excludeDates,includeDates:this.props.includeDates,filterDate:this.props.filterDate,dateFormat:this.props.dateFormat,onFocus:this.handleFocus,onBlur:this.handleBlur,onClick:this.onInputClick,onKeyDown:this.onInputKeyDown,onChangeDate:this.setSelected,placeholder:this.props.placeholderText,disabled:this.props.disabled,autoComplete:this.props.autoComplete,className:e,title:this.props.title,readOnly:this.props.readOnly,required:this.props.required,tabIndex:this.props.tabIndex,customInput:this.props.customInput})},renderClearButton:function(){return this.props.isClearable&&null!=this.props.selected?l.default.createElement("a",{className:"react-datepicker__close-icon",href:"#",onClick:this.onClearClick}):null},render:function(){var e=this.renderCalendar();return this.props.inline?e:l.default.createElement(h.default,{classPrefix:"react-datepicker__tether",attachment:this.props.popoverAttachment,targetAttachment:this.props.popoverTargetAttachment,targetOffset:this.props.popoverTargetOffset,renderElementTo:this.props.renderCalendarTo,constraints:this.props.tetherConstraints},l.default.createElement("div",{className:"react-datepicker__input-container"},this.renderDateInput(),this.renderClearButton()),e)}});e.exports=T},function(e,t,n){"use strict";function r(e){return e&&e.__esModule?e:{default:e}}function o(e,t){var n={};for(var r in e)t.indexOf(r)>=0||Object.prototype.hasOwnProperty.call(e,r)&&(n[r]=e[r]);return n}var a=Object.assign||function(e){for(var t=1;t<arguments.length;t++){var n=arguments[t];for(var r in n)Object.prototype.hasOwnProperty.call(n,r)&&(e[r]=n[r])}return e},i=n(2),s=r(i),u=n(3),p=r(u),l=n(4),c=p.default.createClass({displayName:"DateInput",propTypes:{customInput:p.default.PropTypes.element,date:p.default.PropTypes.object,dateFormat:p.default.PropTypes.oneOfType([p.default.PropTypes.string,p.default.PropTypes.array]),disabled:p.default.PropTypes.bool,excludeDates:p.default.PropTypes.array,filterDate:p.default.PropTypes.func,includeDates:p.default.PropTypes.array,locale:p.default.PropTypes.string,maxDate:p.default.PropTypes.object,minDate:p.default.PropTypes.object,onBlur:p.default.PropTypes.func,onChange:p.default.PropTypes.func,onChangeDate:p.default.PropTypes.func},getDefaultProps:function(){return{dateFormat:"L"}},getInitialState:function(){return{value:this.safeDateFormat(this.props)}},componentWillReceiveProps:function(e){(0,l.isSameDay)(e.date,this.props.date)&&e.locale===this.props.locale&&e.dateFormat===this.props.dateFormat||this.setState({value:this.safeDateFormat(e)})},handleChange:function(e){this.props.onChange&&this.props.onChange(e),e.defaultPrevented||this.handleChangeDate(e.target.value)},handleChangeDate:function(e){if(this.props.onChangeDate){var t=(0,s.default)(e,this.props.dateFormat,this.props.locale||s.default.locale(),!0);t.isValid()&&!(0,l.isDayDisabled)(t,this.props)?this.props.onChangeDate(t):""===e&&this.props.onChangeDate(null)}this.setState({value:e})},safeDateFormat:function(e){return e.date&&e.date.clone().locale(e.locale||s.default.locale()).format(Array.isArray(e.dateFormat)?e.dateFormat[0]:e.dateFormat)||""},handleBlur:function(e){this.setState({value:this.safeDateFormat(this.props)}),this.props.onBlur&&this.props.onBlur(e)},focus:function(){this.refs.input.focus()},render:function(){var e=this.props,t=e.customInput,n=(e.date,e.locale,e.minDate,e.maxDate,e.excludeDates,e.includeDates,e.filterDate,e.dateFormat,e.onChangeDate,o(e,["customInput","date","locale","minDate","maxDate","excludeDates","includeDates","filterDate","dateFormat","onChangeDate"]));return t?p.default.cloneElement(t,a({},n,{ref:"input",value:this.state.value,onBlur:this.handleBlur,onChange:this.handleChange})):p.default.createElement("input",a({ref:"input",type:"text"},n,{value:this.state.value,onBlur:this.handleBlur,onChange:this.handleChange}))}});e.exports=c},function(t,n){t.exports=e},function(e,n){e.exports=t},function(e,t,n){"use strict";function r(e){return e&&e.__esModule?e:{default:e}}function o(e,t){return e&&t?e.isSame(t,"day"):!e&&!t}function a(e,t,n){var r=t.clone().startOf("day").subtract(1,"seconds"),o=n.clone().startOf("day").add(1,"seconds");return e.clone().startOf("day").isBetween(r,o)}function i(e){var t=arguments.length>1&&void 0!==arguments[1]?arguments[1]:{},n=t.minDate,r=t.maxDate,a=t.excludeDates,i=t.includeDates,s=t.filterDate;return n&&e.isBefore(n,"day")||r&&e.isAfter(r,"day")||a&&a.some(function(t){return o(e,t)})||i&&!i.some(function(t){return o(e,t)})||s&&!s(e.clone())||!1}function s(e,t){var n=arguments.length>2&&void 0!==arguments[2]?arguments[2]:{},r=n.minDate,o=n.includeDates,a=e.clone().subtract(1,t);return r&&a.isBefore(r,t)||o&&o.every(function(e){return a.isBefore(e,t)})||!1}function u(e,t){var n=arguments.length>2&&void 0!==arguments[2]?arguments[2]:{},r=n.maxDate,o=n.includeDates,a=e.clone().add(1,t);return r&&a.isAfter(r,t)||o&&o.every(function(e){return a.isAfter(e,t)})||!1}function p(e){var t=e.minDate,n=e.includeDates;return n&&t?f.default.min(n.filter(function(e){return t.isSameOrBefore(e,"day")})):n?f.default.min(n):t}function l(e){var t=e.maxDate,n=e.includeDates;return n&&t?f.default.max(n.filter(function(e){return t.isSameOrAfter(e,"day")})):n?f.default.max(n):t}Object.defineProperty(t,"__esModule",{value:!0}),t.isSameDay=o,t.isDayInRange=a,t.isDayDisabled=i,t.allDaysDisabledBefore=s,t.allDaysDisabledAfter=u,t.getEffectiveMinDate=p,t.getEffectiveMaxDate=l;var c=n(2),f=r(c)},function(e,t,n){"use strict";function r(e){return e&&e.__esModule?e:{default:e}}var o=n(2),a=r(o),i=n(6),s=r(i),u=n(122),p=r(u),l=n(126),c=r(l),f=n(132),d=r(f),h=n(3),y=r(h),m=n(4),g=["react-datepicker__year-select","react-datepicker__month-select"],v=function(){var e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:{},t=(e.className||"").split(/\s+/);return!!(0,s.default)(g,function(e){return t.indexOf(e)>=0})},b=y.default.createClass({displayName:"Calendar",propTypes:{dateFormat:y.default.PropTypes.oneOfType([y.default.PropTypes.string,y.default.PropTypes.array]).isRequired,dropdownMode:y.default.PropTypes.oneOf(["scroll","select"]).isRequired,endDate:y.default.PropTypes.object,excludeDates:y.default.PropTypes.array,filterDate:y.default.PropTypes.func,fixedHeight:y.default.PropTypes.bool,highlightDates:y.default.PropTypes.array,includeDates:y.default.PropTypes.array,locale:y.default.PropTypes.string,maxDate:y.default.PropTypes.object,minDate:y.default.PropTypes.object,monthsShown:y.default.PropTypes.number,onClickOutside:y.default.PropTypes.func.isRequired,onMonthChange:y.default.PropTypes.func,forceShowMonthNavigation:y.default.PropTypes.bool,onDropdownFocus:y.default.PropTypes.func,onSelect:y.default.PropTypes.func.isRequired,openToDate:y.default.PropTypes.object,peekNextMonth:y.default.PropTypes.bool,scrollableYearDropdown:y.default.PropTypes.bool,selected:y.default.PropTypes.object,selectsEnd:y.default.PropTypes.bool,selectsStart:y.default.PropTypes.bool,showMonthDropdown:y.default.PropTypes.bool,showWeekNumbers:y.default.PropTypes.bool,showYearDropdown:y.default.PropTypes.bool,startDate:y.default.PropTypes.object,todayButton:y.default.PropTypes.string,utcOffset:y.default.PropTypes.number},defaultProps:{onDropdownFocus:function(){}},getDefaultProps:function(){return{utcOffset:a.default.utc().utcOffset(),monthsShown:1,forceShowMonthNavigation:!1}},getInitialState:function(){return{date:this.localizeMoment(this.getDateInView()),selectingDate:null}},componentWillReceiveProps:function(e){e.selected&&!(0,m.isSameDay)(e.selected,this.props.selected)?this.setState({date:this.localizeMoment(e.selected)}):e.openToDate&&!(0,m.isSameDay)(e.openToDate,this.props.openToDate)&&this.setState({date:this.localizeMoment(e.openToDate)})},handleClickOutside:function(e){this.props.onClickOutside(e)},handleDropdownFocus:function(e){v(e.target)&&this.props.onDropdownFocus()},getDateInView:function(){var e=this.props,t=e.selected,n=e.openToDate,r=e.utcOffset,o=(0,m.getEffectiveMinDate)(this.props),i=(0,m.getEffectiveMaxDate)(this.props),s=a.default.utc().utcOffset(r);return t?t:o&&i&&n&&n.isBetween(o,i)?n:o&&n&&n.isAfter(o)?n:o&&o.isAfter(s)?o:i&&n&&n.isBefore(i)?n:i&&i.isBefore(s)?i:n?n:s},localizeMoment:function(e){return e.clone().locale(this.props.locale||a.default.locale())},increaseMonth:function(){var e=this;this.setState({date:this.state.date.clone().add(1,"month")},function(){return e.handleMonthChange(e.state.date)})},decreaseMonth:function(){var e=this;this.setState({date:this.state.date.clone().subtract(1,"month")},function(){return e.handleMonthChange(e.state.date)})},handleDayClick:function(e,t){this.props.onSelect(e,t)},handleDayMouseEnter:function(e){this.setState({selectingDate:e})},handleMonthMouseLeave:function(){this.setState({selectingDate:null})},handleMonthChange:function(e){this.props.onMonthChange&&this.props.onMonthChange(e)},changeYear:function(e){this.setState({date:this.state.date.clone().set("year",e)})},changeMonth:function(e){var t=this;this.setState({date:this.state.date.clone().set("month",e)},function(){return t.handleMonthChange(t.state.date)})},header:function(){var e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:this.state.date,t=e.clone().startOf("week"),n=[];return this.props.showWeekNumbers&&n.push(y.default.createElement("div",{key:"W",className:"react-datepicker__day-name"},"#")),n.concat([0,1,2,3,4,5,6].map(function(e){var n=t.clone().add(e,"days");return y.default.createElement("div",{key:e,className:"react-datepicker__day-name"},n.localeData().weekdaysMin(n))}))},renderPreviousMonthButton:function(){if(this.props.forceShowMonthNavigation||!(0,m.allDaysDisabledBefore)(this.state.date,"month",this.props))return y.default.createElement("a",{className:"react-datepicker__navigation react-datepicker__navigation--previous",onClick:this.decreaseMonth})},renderNextMonthButton:function(){if(this.props.forceShowMonthNavigation||!(0,m.allDaysDisabledAfter)(this.state.date,"month",this.props))return y.default.createElement("a",{className:"react-datepicker__navigation react-datepicker__navigation--next",onClick:this.increaseMonth})},renderCurrentMonth:function(){var e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:this.state.date,t=["react-datepicker__current-month"];return this.props.showYearDropdown&&t.push("react-datepicker__current-month--hasYearDropdown"),this.props.showMonthDropdown&&t.push("react-datepicker__current-month--hasMonthDropdown"),y.default.createElement("div",{className:t.join(" ")},e.format(this.props.dateFormat))},renderYearDropdown:function(){var e=arguments.length>0&&void 0!==arguments[0]&&arguments[0];if(this.props.showYearDropdown&&!e)return y.default.createElement(p.default,{dropdownMode:this.props.dropdownMode,onChange:this.changeYear,minDate:this.props.minDate,maxDate:this.props.maxDate,year:this.state.date.year(),scrollableYearDropdown:this.props.scrollableYearDropdown})},renderMonthDropdown:function(){arguments.length>0&&void 0!==arguments[0]&&arguments[0];if(this.props.showMonthDropdown)return y.default.createElement(c.default,{dropdownMode:this.props.dropdownMode,locale:this.props.locale,onChange:this.changeMonth,month:this.state.date.month()})},renderTodayButton:function(){var e=this;if(this.props.todayButton)return y.default.createElement("div",{className:"react-datepicker__today-button",onClick:function(t){return e.props.onSelect(a.default.utc().utcOffset(e.props.utcOffset).startOf("date"),t)}},this.props.todayButton)},renderMonths:function(){for(var e=[],t=0;t<this.props.monthsShown;++t){var n=this.state.date.clone().add(t,"M"),r="month-"+t;e.push(y.default.createElement("div",{key:r,className:"react-datepicker__month-container"},y.default.createElement("div",{className:"react-datepicker__header"},this.renderCurrentMonth(n),y.default.createElement("div",{className:"react-datepicker__header__dropdown react-datepicker__header__dropdown--"+this.props.dropdownMode,onFocus:this.handleDropdownFocus},this.renderMonthDropdown(0!==t),this.renderYearDropdown(0!==t)),y.default.createElement("div",{className:"react-datepicker__day-names"},this.header(n))),y.default.createElement(d.default,{day:n,onDayClick:this.handleDayClick,onDayMouseEnter:this.handleDayMouseEnter,onMouseLeave:this.handleMonthMouseLeave,minDate:this.props.minDate,maxDate:this.props.maxDate,excludeDates:this.props.excludeDates,highlightDates:this.props.highlightDates,selectingDate:this.state.selectingDate,includeDates:this.props.includeDates,fixedHeight:this.props.fixedHeight,filterDate:this.props.filterDate,selected:this.props.selected,selectsStart:this.props.selectsStart,selectsEnd:this.props.selectsEnd,showWeekNumbers:this.props.showWeekNumbers,startDate:this.props.startDate,endDate:this.props.endDate,peekNextMonth:this.props.peekNextMonth,utcOffset:this.props.utcOffset})))}return e},render:function(){return y.default.createElement("div",{className:"react-datepicker"},y.default.createElement("div",{className:"react-datepicker__triangle"}),this.renderPreviousMonthButton(),this.renderNextMonthButton(),this.renderMonths(),this.renderTodayButton())}});e.exports=b},function(e,t,n){var r=n(7),o=n(117),a=r(o);e.exports=a},function(e,t,n){function r(e){return function(t,n,r){var s=Object(t);if(!a(t)){var u=o(n,3);t=i(t),n=function(e){return u(s[e],e,s)}}var p=e(t,n,r);return p>-1?s[u?t[p]:p]:void 0}}var o=n(8),a=n(88),i=n(68);e.exports=r},function(e,t,n){function r(e){return"function"==typeof e?e:null==e?i:"object"==typeof e?s(e)?a(e[0],e[1]):o(e):u(e)}var o=n(9),a=n(97),i=n(113),s=n(74),u=n(114);e.exports=r},function(e,t,n){function r(e){var t=a(e);return 1==t.length&&t[0][2]?i(t[0][0],t[0][1]):function(n){return n===e||o(n,e,t)}}var o=n(10),a=n(94),i=n(96);e.exports=r},function(e,t,n){function r(e,t,n,r){var u=n.length,p=u,l=!r;if(null==e)return!p;for(e=Object(e);u--;){var c=n[u];if(l&&c[2]?c[1]!==e[c[0]]:!(c[0]in e))return!1}for(;++u<p;){c=n[u];var f=c[0],d=e[f],h=c[1];if(l&&c[2]){if(void 0===d&&!(f in e))return!1}else{var y=new o;if(r)var m=r(d,h,f,e,t,y);if(!(void 0===m?a(h,d,r,i|s,y):m))return!1}}return!0}var o=n(11),a=n(55),i=1,s=2;e.exports=r},function(e,t,n){function r(e){var t=this.__data__=new o(e);this.size=t.size}var o=n(12),a=n(20),i=n(21),s=n(22),u=n(23),p=n(24);r.prototype.clear=a,r.prototype.delete=i,r.prototype.get=s,r.prototype.has=u,r.prototype.set=p,e.exports=r},function(e,t,n){function r(e){var t=-1,n=null==e?0:e.length;for(this.clear();++t<n;){var r=e[t];this.set(r[0],r[1])}}var o=n(13),a=n(14),i=n(17),s=n(18),u=n(19);r.prototype.clear=o,r.prototype.delete=a,r.prototype.get=i,r.prototype.has=s,r.prototype.set=u,e.exports=r},function(e,t){function n(){this.__data__=[],this.size=0}e.exports=n},function(e,t,n){function r(e){var t=this.__data__,n=o(t,e);if(n<0)return!1;var r=t.length-1;return n==r?t.pop():i.call(t,n,1),--this.size,!0}var o=n(15),a=Array.prototype,i=a.splice;e.exports=r},function(e,t,n){function r(e,t){for(var n=e.length;n--;)if(o(e[n][0],t))return n;return-1}var o=n(16);e.exports=r},function(e,t){function n(e,t){return e===t||e!==e&&t!==t}e.exports=n},function(e,t,n){function r(e){var t=this.__data__,n=o(t,e);return n<0?void 0:t[n][1]}var o=n(15);e.exports=r},function(e,t,n){function r(e){return o(this.__data__,e)>-1}var o=n(15);e.exports=r},function(e,t,n){function r(e,t){var n=this.__data__,r=o(n,e);return r<0?(++this.size,n.push([e,t])):n[r][1]=t,this}var o=n(15);e.exports=r},function(e,t,n){function r(){this.__data__=new o,this.size=0}var o=n(12);e.exports=r},function(e,t){function n(e){var t=this.__data__,n=t.delete(e);return this.size=t.size,n}e.exports=n},function(e,t){function n(e){return this.__data__.get(e)}e.exports=n},function(e,t){function n(e){return this.__data__.has(e)}e.exports=n},function(e,t,n){function r(e,t){var n=this.__data__;if(n instanceof o){var r=n.__data__;if(!a||r.length<s-1)return r.push([e,t]),this.size=++n.size,this;n=this.__data__=new i(r)}return n.set(e,t),this.size=n.size,this}var o=n(12),a=n(25),i=n(40),s=200;e.exports=r},function(e,t,n){var r=n(26),o=n(31),a=r(o,"Map");e.exports=a},function(e,t,n){function r(e,t){var n=a(e,t);return o(n)?n:void 0}var o=n(27),a=n(39);e.exports=r},function(e,t,n){function r(e){if(!i(e)||a(e))return!1;var t=o(e)?h:p;return t.test(s(e))}var o=n(28),a=n(36),i=n(35),s=n(38),u=/[\\^$.*+?()[\]{}|]/g,p=/^\[object .+?Constructor\]$/,l=Function.prototype,c=Object.prototype,f=l.toString,d=c.hasOwnProperty,h=RegExp("^"+f.call(d).replace(u,"\\$&").replace(/hasOwnProperty|(function).*?(?=\\\()| for .+?(?=\\\])/g,"$1.*?")+"$");e.exports=r},function(e,t,n){function r(e){if(!a(e))return!1;var t=o(e);return t==s||t==u||t==i||t==p}var o=n(29),a=n(35),i="[object AsyncFunction]",s="[object Function]",u="[object GeneratorFunction]",p="[object Proxy]";e.exports=r},function(e,t,n){function r(e){return null==e?void 0===e?u:s:(e=Object(e),p&&p in e?a(e):i(e))}var o=n(30),a=n(33),i=n(34),s="[object Null]",u="[object Undefined]",p=o?o.toStringTag:void 0;e.exports=r},function(e,t,n){var r=n(31),o=r.Symbol;e.exports=o},function(e,t,n){var r=n(32),o="object"==typeof self&&self&&self.Object===Object&&self,a=r||o||Function("return this")();e.exports=a},function(e,t){(function(t){var n="object"==typeof t&&t&&t.Object===Object&&t;e.exports=n}).call(t,function(){return this}())},function(e,t,n){function r(e){var t=i.call(e,u),n=e[u];try{e[u]=void 0;var r=!0}catch(e){}var o=s.call(e);return r&&(t?e[u]=n:delete e[u]),o}var o=n(30),a=Object.prototype,i=a.hasOwnProperty,s=a.toString,u=o?o.toStringTag:void 0;e.exports=r},function(e,t){function n(e){return o.call(e)}var r=Object.prototype,o=r.toString;e.exports=n},function(e,t){function n(e){var t=typeof e;return null!=e&&("object"==t||"function"==t)}e.exports=n},function(e,t,n){function r(e){return!!a&&a in e}var o=n(37),a=function(){var e=/[^.]+$/.exec(o&&o.keys&&o.keys.IE_PROTO||"");return e?"Symbol(src)_1."+e:""}();e.exports=r},function(e,t,n){var r=n(31),o=r["__core-js_shared__"];e.exports=o},function(e,t){function n(e){if(null!=e){try{return o.call(e)}catch(e){}try{return e+""}catch(e){}}return""}var r=Function.prototype,o=r.toString;e.exports=n},function(e,t){function n(e,t){return null==e?void 0:e[t]}e.exports=n},function(e,t,n){function r(e){var t=-1,n=null==e?0:e.length;for(this.clear();++t<n;){var r=e[t];this.set(r[0],r[1])}}var o=n(41),a=n(49),i=n(52),s=n(53),u=n(54);r.prototype.clear=o,r.prototype.delete=a,r.prototype.get=i,r.prototype.has=s,r.prototype.set=u,e.exports=r},function(e,t,n){function r(){this.size=0,this.__data__={hash:new o,map:new(i||a),string:new o}}var o=n(42),a=n(12),i=n(25);e.exports=r},function(e,t,n){function r(e){var t=-1,n=null==e?0:e.length;for(this.clear();++t<n;){var r=e[t];this.set(r[0],r[1])}}var o=n(43),a=n(45),i=n(46),s=n(47),u=n(48);r.prototype.clear=o,r.prototype.delete=a,r.prototype.get=i,r.prototype.has=s,r.prototype.set=u,e.exports=r},function(e,t,n){function r(){this.__data__=o?o(null):{},this.size=0}var o=n(44);e.exports=r},function(e,t,n){var r=n(26),o=r(Object,"create");e.exports=o},function(e,t){function n(e){var t=this.has(e)&&delete this.__data__[e];return this.size-=t?1:0,t}e.exports=n},function(e,t,n){function r(e){var t=this.__data__;if(o){var n=t[e];return n===a?void 0:n}return s.call(t,e)?t[e]:void 0}var o=n(44),a="__lodash_hash_undefined__",i=Object.prototype,s=i.hasOwnProperty;e.exports=r},function(e,t,n){function r(e){var t=this.__data__;return o?void 0!==t[e]:i.call(t,e)}var o=n(44),a=Object.prototype,i=a.hasOwnProperty;e.exports=r},function(e,t,n){function r(e,t){var n=this.__data__;return this.size+=this.has(e)?0:1,n[e]=o&&void 0===t?a:t,this}var o=n(44),a="__lodash_hash_undefined__";e.exports=r},function(e,t,n){function r(e){var t=o(this,e).delete(e);return this.size-=t?1:0,t}var o=n(50);e.exports=r},function(e,t,n){function r(e,t){var n=e.__data__;return o(t)?n["string"==typeof t?"string":"hash"]:n.map}var o=n(51);e.exports=r},function(e,t){function n(e){var t=typeof e;return"string"==t||"number"==t||"symbol"==t||"boolean"==t?"__proto__"!==e:null===e}e.exports=n},function(e,t,n){function r(e){return o(this,e).get(e)}var o=n(50);e.exports=r},function(e,t,n){function r(e){return o(this,e).has(e)}var o=n(50);e.exports=r},function(e,t,n){function r(e,t){var n=o(this,e),r=n.size;return n.set(e,t),this.size+=n.size==r?0:1,this}var o=n(50);e.exports=r},function(e,t,n){function r(e,t,n,s,u){return e===t||(null==e||null==t||!a(e)&&!i(t)?e!==e&&t!==t:o(e,t,r,n,s,u))}var o=n(56),a=n(35),i=n(73);e.exports=r},function(e,t,n){function r(e,t,n,r,m,v){var b=p(e),D=p(t),w=h,_=h;b||(w=u(e),w=w==d?y:w),D||(_=u(t),_=_==d?y:_);var x=w==y,T=_==y,P=w==_;if(P&&l(e)){if(!l(t))return!1;b=!0,x=!1}if(P&&!x)return v||(v=new o),b||c(e)?a(e,t,n,r,m,v):i(e,t,w,n,r,m,v);if(!(m&f)){var C=x&&g.call(e,"__wrapped__"),k=T&&g.call(t,"__wrapped__");if(C||k){var O=C?e.value():e,E=k?t.value():t;return v||(v=new o),n(O,E,r,m,v)}}return!!P&&(v||(v=new o),s(e,t,n,r,m,v))}var o=n(11),a=n(57),i=n(63),s=n(67),u=n(89),p=n(74),l=n(75),c=n(79),f=2,d="[object Arguments]",h="[object Array]",y="[object Object]",m=Object.prototype,g=m.hasOwnProperty;e.exports=r},function(e,t,n){function r(e,t,n,r,p,l){var c=p&u,f=e.length,d=t.length;if(f!=d&&!(c&&d>f))return!1;var h=l.get(e);if(h&&l.get(t))return h==t;var y=-1,m=!0,g=p&s?new o:void 0;for(l.set(e,t),l.set(t,e);++y<f;){var v=e[y],b=t[y];if(r)var D=c?r(b,v,y,t,e,l):r(v,b,y,e,t,l);if(void 0!==D){if(D)continue;m=!1;break}if(g){if(!a(t,function(e,t){if(!i(g,t)&&(v===e||n(v,e,r,p,l)))return g.push(t)})){m=!1;break}}else if(v!==b&&!n(v,b,r,p,l)){m=!1;break}}return l.delete(e),l.delete(t),m}var o=n(58),a=n(61),i=n(62),s=1,u=2;e.exports=r},function(e,t,n){function r(e){var t=-1,n=null==e?0:e.length;for(this.__data__=new o;++t<n;)this.add(e[t])}var o=n(40),a=n(59),i=n(60);r.prototype.add=r.prototype.push=a,r.prototype.has=i,e.exports=r},function(e,t){function n(e){return this.__data__.set(e,r),this}var r="__lodash_hash_undefined__";e.exports=n},function(e,t){function n(e){return this.__data__.has(e)}e.exports=n},function(e,t){function n(e,t){for(var n=-1,r=null==e?0:e.length;++n<r;)if(t(e[n],n,e))return!0;return!1}e.exports=n},function(e,t){function n(e,t){return e.has(t)}e.exports=n},function(e,t,n){function r(e,t,n,r,o,x,P){switch(n){case _:if(e.byteLength!=t.byteLength||e.byteOffset!=t.byteOffset)return!1;e=e.buffer,t=t.buffer;case w:return!(e.byteLength!=t.byteLength||!r(new a(e),new a(t)));case f:case d:case m:return i(+e,+t);case h:return e.name==t.name&&e.message==t.message;case g:case b:return e==t+"";case y:var C=u;case v:var k=x&c;if(C||(C=p),e.size!=t.size&&!k)return!1;var O=P.get(e);if(O)return O==t;x|=l,P.set(e,t);var E=s(C(e),C(t),r,o,x,P);return P.delete(e),E;case D:if(T)return T.call(e)==T.call(t)}return!1}var o=n(30),a=n(64),i=n(16),s=n(57),u=n(65),p=n(66),l=1,c=2,f="[object Boolean]",d="[object Date]",h="[object Error]",y="[object Map]",m="[object Number]",g="[object RegExp]",v="[object Set]",b="[object String]",D="[object Symbol]",w="[object ArrayBuffer]",_="[object DataView]",x=o?o.prototype:void 0,T=x?x.valueOf:void 0;e.exports=r},function(e,t,n){var r=n(31),o=r.Uint8Array;e.exports=o},function(e,t){function n(e){var t=-1,n=Array(e.size);return e.forEach(function(e,r){n[++t]=[r,e]}),n}e.exports=n},function(e,t){function n(e){var t=-1,n=Array(e.size);return e.forEach(function(e){n[++t]=e}),n}e.exports=n},function(e,t,n){function r(e,t,n,r,i,u){var p=i&a,l=o(e),c=l.length,f=o(t),d=f.length;if(c!=d&&!p)return!1;for(var h=c;h--;){var y=l[h];if(!(p?y in t:s.call(t,y)))return!1}var m=u.get(e);if(m&&u.get(t))return m==t;var g=!0;u.set(e,t),u.set(t,e);for(var v=p;++h<c;){y=l[h];var b=e[y],D=t[y];if(r)var w=p?r(D,b,y,t,e,u):r(b,D,y,e,t,u);if(!(void 0===w?b===D||n(b,D,r,i,u):w)){g=!1;break}v||(v="constructor"==y)}if(g&&!v){var _=e.constructor,x=t.constructor;_!=x&&"constructor"in e&&"constructor"in t&&!("function"==typeof _&&_ instanceof _&&"function"==typeof x&&x instanceof x)&&(g=!1)}return u.delete(e),u.delete(t),g}var o=n(68),a=2,i=Object.prototype,s=i.hasOwnProperty;e.exports=r},function(e,t,n){function r(e){return i(e)?o(e):a(e)}var o=n(69),a=n(84),i=n(88);e.exports=r},function(e,t,n){function r(e,t){var n=i(e),r=!n&&a(e),l=!n&&!r&&s(e),f=!n&&!r&&!l&&p(e),d=n||r||l||f,h=d?o(e.length,String):[],y=h.length;for(var m in e)!t&&!c.call(e,m)||d&&("length"==m||l&&("offset"==m||"parent"==m)||f&&("buffer"==m||"byteLength"==m||"byteOffset"==m)||u(m,y))||h.push(m);return h}var o=n(70),a=n(71),i=n(74),s=n(75),u=n(78),p=n(79),l=Object.prototype,c=l.hasOwnProperty;e.exports=r},function(e,t){function n(e,t){for(var n=-1,r=Array(e);++n<e;)r[n]=t(n);return r}e.exports=n},function(e,t,n){var r=n(72),o=n(73),a=Object.prototype,i=a.hasOwnProperty,s=a.propertyIsEnumerable,u=r(function(){return arguments}())?r:function(e){return o(e)&&i.call(e,"callee")&&!s.call(e,"callee")};e.exports=u},function(e,t,n){
+function r(e){return a(e)&&o(e)==i}var o=n(29),a=n(73),i="[object Arguments]";e.exports=r},function(e,t){function n(e){return null!=e&&"object"==typeof e}e.exports=n},function(e,t){var n=Array.isArray;e.exports=n},function(e,t,n){(function(e){var r=n(31),o=n(77),a="object"==typeof t&&t&&!t.nodeType&&t,i=a&&"object"==typeof e&&e&&!e.nodeType&&e,s=i&&i.exports===a,u=s?r.Buffer:void 0,p=u?u.isBuffer:void 0,l=p||o;e.exports=l}).call(t,n(76)(e))},function(e,t){e.exports=function(e){return e.webpackPolyfill||(e.deprecate=function(){},e.paths=[],e.children=[],e.webpackPolyfill=1),e}},function(e,t){function n(){return!1}e.exports=n},function(e,t){function n(e,t){return t=null==t?r:t,!!t&&("number"==typeof e||o.test(e))&&e>-1&&e%1==0&&e<t}var r=9007199254740991,o=/^(?:0|[1-9]\d*)$/;e.exports=n},function(e,t,n){var r=n(80),o=n(82),a=n(83),i=a&&a.isTypedArray,s=i?o(i):r;e.exports=s},function(e,t,n){function r(e){return i(e)&&a(e.length)&&!!S[o(e)]}var o=n(29),a=n(81),i=n(73),s="[object Arguments]",u="[object Array]",p="[object Boolean]",l="[object Date]",c="[object Error]",f="[object Function]",d="[object Map]",h="[object Number]",y="[object Object]",m="[object RegExp]",g="[object Set]",v="[object String]",b="[object WeakMap]",D="[object ArrayBuffer]",w="[object DataView]",_="[object Float32Array]",x="[object Float64Array]",T="[object Int8Array]",P="[object Int16Array]",C="[object Int32Array]",k="[object Uint8Array]",O="[object Uint8ClampedArray]",E="[object Uint16Array]",M="[object Uint32Array]",S={};S[_]=S[x]=S[T]=S[P]=S[C]=S[k]=S[O]=S[E]=S[M]=!0,S[s]=S[u]=S[D]=S[p]=S[w]=S[l]=S[c]=S[f]=S[d]=S[h]=S[y]=S[m]=S[g]=S[v]=S[b]=!1,e.exports=r},function(e,t){function n(e){return"number"==typeof e&&e>-1&&e%1==0&&e<=r}var r=9007199254740991;e.exports=n},function(e,t){function n(e){return function(t){return e(t)}}e.exports=n},function(e,t,n){(function(e){var r=n(32),o="object"==typeof t&&t&&!t.nodeType&&t,a=o&&"object"==typeof e&&e&&!e.nodeType&&e,i=a&&a.exports===o,s=i&&r.process,u=function(){try{return s&&s.binding("util")}catch(e){}}();e.exports=u}).call(t,n(76)(e))},function(e,t,n){function r(e){if(!o(e))return a(e);var t=[];for(var n in Object(e))s.call(e,n)&&"constructor"!=n&&t.push(n);return t}var o=n(85),a=n(86),i=Object.prototype,s=i.hasOwnProperty;e.exports=r},function(e,t){function n(e){var t=e&&e.constructor,n="function"==typeof t&&t.prototype||r;return e===n}var r=Object.prototype;e.exports=n},function(e,t,n){var r=n(87),o=r(Object.keys,Object);e.exports=o},function(e,t){function n(e,t){return function(n){return e(t(n))}}e.exports=n},function(e,t,n){function r(e){return null!=e&&a(e.length)&&!o(e)}var o=n(28),a=n(81);e.exports=r},function(e,t,n){var r=n(90),o=n(25),a=n(91),i=n(92),s=n(93),u=n(29),p=n(38),l="[object Map]",c="[object Object]",f="[object Promise]",d="[object Set]",h="[object WeakMap]",y="[object DataView]",m=p(r),g=p(o),v=p(a),b=p(i),D=p(s),w=u;(r&&w(new r(new ArrayBuffer(1)))!=y||o&&w(new o)!=l||a&&w(a.resolve())!=f||i&&w(new i)!=d||s&&w(new s)!=h)&&(w=function(e){var t=u(e),n=t==c?e.constructor:void 0,r=n?p(n):"";if(r)switch(r){case m:return y;case g:return l;case v:return f;case b:return d;case D:return h}return t}),e.exports=w},function(e,t,n){var r=n(26),o=n(31),a=r(o,"DataView");e.exports=a},function(e,t,n){var r=n(26),o=n(31),a=r(o,"Promise");e.exports=a},function(e,t,n){var r=n(26),o=n(31),a=r(o,"Set");e.exports=a},function(e,t,n){var r=n(26),o=n(31),a=r(o,"WeakMap");e.exports=a},function(e,t,n){function r(e){for(var t=a(e),n=t.length;n--;){var r=t[n],i=e[r];t[n]=[r,i,o(i)]}return t}var o=n(95),a=n(68);e.exports=r},function(e,t,n){function r(e){return e===e&&!o(e)}var o=n(35);e.exports=r},function(e,t){function n(e,t){return function(n){return null!=n&&(n[e]===t&&(void 0!==t||e in Object(n)))}}e.exports=n},function(e,t,n){function r(e,t){return s(e)&&u(t)?p(l(e),t):function(n){var r=a(n,e);return void 0===r&&r===t?i(n,e):o(t,r,void 0,c|f)}}var o=n(55),a=n(98),i=n(110),s=n(108),u=n(95),p=n(96),l=n(109),c=1,f=2;e.exports=r},function(e,t,n){function r(e,t,n){var r=null==e?void 0:o(e,t);return void 0===r?n:r}var o=n(99);e.exports=r},function(e,t,n){function r(e,t){t=a(t,e)?[t]:o(t);for(var n=0,r=t.length;null!=e&&n<r;)e=e[i(t[n++])];return n&&n==r?e:void 0}var o=n(100),a=n(108),i=n(109);e.exports=r},function(e,t,n){function r(e){return o(e)?e:a(e)}var o=n(74),a=n(101);e.exports=r},function(e,t,n){var r=n(102),o=n(104),a=/^\./,i=/[^.[\]]+|\[(?:(-?\d+(?:\.\d+)?)|(["'])((?:(?!\2)[^\\]|\\.)*?)\2)\]|(?=(?:\.|\[\])(?:\.|\[\]|$))/g,s=/\\(\\)?/g,u=r(function(e){e=o(e);var t=[];return a.test(e)&&t.push(""),e.replace(i,function(e,n,r,o){t.push(r?o.replace(s,"$1"):n||e)}),t});e.exports=u},function(e,t,n){function r(e){var t=o(e,function(e){return n.size===a&&n.clear(),e}),n=t.cache;return t}var o=n(103),a=500;e.exports=r},function(e,t,n){function r(e,t){if("function"!=typeof e||null!=t&&"function"!=typeof t)throw new TypeError(a);var n=function(){var r=arguments,o=t?t.apply(this,r):r[0],a=n.cache;if(a.has(o))return a.get(o);var i=e.apply(this,r);return n.cache=a.set(o,i)||a,i};return n.cache=new(r.Cache||o),n}var o=n(40),a="Expected a function";r.Cache=o,e.exports=r},function(e,t,n){function r(e){return null==e?"":o(e)}var o=n(105);e.exports=r},function(e,t,n){function r(e){if("string"==typeof e)return e;if(i(e))return a(e,r)+"";if(s(e))return l?l.call(e):"";var t=e+"";return"0"==t&&1/e==-u?"-0":t}var o=n(30),a=n(106),i=n(74),s=n(107),u=1/0,p=o?o.prototype:void 0,l=p?p.toString:void 0;e.exports=r},function(e,t){function n(e,t){for(var n=-1,r=null==e?0:e.length,o=Array(r);++n<r;)o[n]=t(e[n],n,e);return o}e.exports=n},function(e,t,n){function r(e){return"symbol"==typeof e||a(e)&&o(e)==i}var o=n(29),a=n(73),i="[object Symbol]";e.exports=r},function(e,t,n){function r(e,t){if(o(e))return!1;var n=typeof e;return!("number"!=n&&"symbol"!=n&&"boolean"!=n&&null!=e&&!a(e))||(s.test(e)||!i.test(e)||null!=t&&e in Object(t))}var o=n(74),a=n(107),i=/\.|\[(?:[^[\]]*|(["'])(?:(?!\1)[^\\]|\\.)*?\1)\]/,s=/^\w*$/;e.exports=r},function(e,t,n){function r(e){if("string"==typeof e||o(e))return e;var t=e+"";return"0"==t&&1/e==-a?"-0":t}var o=n(107),a=1/0;e.exports=r},function(e,t,n){function r(e,t){return null!=e&&a(e,t,o)}var o=n(111),a=n(112);e.exports=r},function(e,t){function n(e,t){return null!=e&&t in Object(e)}e.exports=n},function(e,t,n){function r(e,t,n){t=u(t,e)?[t]:o(t);for(var r=-1,c=t.length,f=!1;++r<c;){var d=l(t[r]);if(!(f=null!=e&&n(e,d)))break;e=e[d]}return f||++r!=c?f:(c=null==e?0:e.length,!!c&&p(c)&&s(d,c)&&(i(e)||a(e)))}var o=n(100),a=n(71),i=n(74),s=n(78),u=n(108),p=n(81),l=n(109);e.exports=r},function(e,t){function n(e){return e}e.exports=n},function(e,t,n){function r(e){return i(e)?o(s(e)):a(e)}var o=n(115),a=n(116),i=n(108),s=n(109);e.exports=r},function(e,t){function n(e){return function(t){return null==t?void 0:t[e]}}e.exports=n},function(e,t,n){function r(e){return function(t){return o(t,e)}}var o=n(99);e.exports=r},function(e,t,n){function r(e,t,n){var r=null==e?0:e.length;if(!r)return-1;var u=null==n?0:i(n);return u<0&&(u=s(r+u,0)),o(e,a(t,3),u)}var o=n(118),a=n(8),i=n(119),s=Math.max;e.exports=r},function(e,t){function n(e,t,n,r){for(var o=e.length,a=n+(r?1:-1);r?a--:++a<o;)if(t(e[a],a,e))return a;return-1}e.exports=n},function(e,t,n){function r(e){var t=o(e),n=t%1;return t===t?n?t-n:t:0}var o=n(120);e.exports=r},function(e,t,n){function r(e){if(!e)return 0===e?e:0;if(e=o(e),e===a||e===-a){var t=e<0?-1:1;return t*i}return e===e?e:0}var o=n(121),a=1/0,i=1.7976931348623157e308;e.exports=r},function(e,t,n){function r(e){if("number"==typeof e)return e;if(a(e))return i;if(o(e)){var t="function"==typeof e.valueOf?e.valueOf():e;e=o(t)?t+"":t}if("string"!=typeof e)return 0===e?e:+e;e=e.replace(s,"");var n=p.test(e);return n||l.test(e)?c(e.slice(2),n?2:8):u.test(e)?i:+e}var o=n(35),a=n(107),i=NaN,s=/^\s+|\s+$/g,u=/^[-+]0x[0-9a-f]+$/i,p=/^0b[01]+$/i,l=/^0o[0-7]+$/i,c=parseInt;e.exports=r},function(e,t,n){"use strict";function r(e){return e&&e.__esModule?e:{default:e}}var o=n(3),a=r(o),i=n(123),s=r(i),u=n(125),p=r(u),l=(0,p.default)(s.default),c=a.default.createClass({displayName:"YearDropdown",propTypes:{dropdownMode:a.default.PropTypes.oneOf(["scroll","select"]).isRequired,maxDate:a.default.PropTypes.object,minDate:a.default.PropTypes.object,onChange:a.default.PropTypes.func.isRequired,scrollableYearDropdown:a.default.PropTypes.bool,year:a.default.PropTypes.number.isRequired},getInitialState:function(){return{dropdownVisible:!1}},renderSelectOptions:function(){for(var e=this.props.minDate?this.props.minDate.year():1900,t=this.props.maxDate?this.props.maxDate.year():2100,n=[],r=e;r<=t;r++)n.push(a.default.createElement("option",{key:r,value:r},r));return n},onSelectChange:function(e){this.onChange(e.target.value)},renderSelectMode:function(){return a.default.createElement("select",{value:this.props.year,className:"react-datepicker__year-select",onChange:this.onSelectChange},this.renderSelectOptions())},renderReadView:function(e){return a.default.createElement("div",{key:"read",style:{visibility:e?"visible":"hidden"},className:"react-datepicker__year-read-view",onClick:this.toggleDropdown},a.default.createElement("span",{className:"react-datepicker__year-read-view--down-arrow"}),a.default.createElement("span",{className:"react-datepicker__year-read-view--selected-year"},this.props.year))},renderDropdown:function(){return a.default.createElement(l,{key:"dropdown",ref:"options",year:this.props.year,onChange:this.onChange,onCancel:this.toggleDropdown,scrollableYearDropdown:this.props.scrollableYearDropdown})},renderScrollMode:function(){var e=this.state.dropdownVisible,t=[this.renderReadView(!e)];return e&&t.unshift(this.renderDropdown()),t},onChange:function(e){this.toggleDropdown(),e!==this.props.year&&this.props.onChange(e)},toggleDropdown:function(){this.setState({dropdownVisible:!this.state.dropdownVisible})},render:function(){var e=void 0;switch(this.props.dropdownMode){case"scroll":e=this.renderScrollMode();break;case"select":e=this.renderSelectMode()}return a.default.createElement("div",{className:"react-datepicker__year-dropdown-container react-datepicker__year-dropdown-container--"+this.props.dropdownMode},e)}});e.exports=c},function(e,t,n){"use strict";function r(e){return e&&e.__esModule?e:{default:e}}function o(e,t){for(var n=[],r=0;r<t;r++)n.push(e-r);return n}var a=n(3),i=r(a),s=n(124),u=r(s),p=i.default.createClass({displayName:"YearDropdownOptions",propTypes:{onCancel:i.default.PropTypes.func.isRequired,onChange:i.default.PropTypes.func.isRequired,scrollableYearDropdown:i.default.PropTypes.bool,year:i.default.PropTypes.number.isRequired},getInitialState:function(){return{yearsList:this.props.scrollableYearDropdown?o(this.props.year,50):o(this.props.year,5)}},renderOptions:function(){var e=this,t=this.props.year,n=this.state.yearsList.map(function(n){return i.default.createElement("div",{className:"react-datepicker__year-option",key:n,ref:n,onClick:e.onChange.bind(e,n)},t===n?i.default.createElement("span",{className:"react-datepicker__year-option--selected"},"✓"):"",n)});return n.unshift(i.default.createElement("div",{className:"react-datepicker__year-option",ref:"upcoming",key:"upcoming",onClick:this.incrementYears},i.default.createElement("a",{className:"react-datepicker__navigation react-datepicker__navigation--years react-datepicker__navigation--years-upcoming"}))),n.push(i.default.createElement("div",{className:"react-datepicker__year-option",ref:"previous",key:"previous",onClick:this.decrementYears},i.default.createElement("a",{className:"react-datepicker__navigation react-datepicker__navigation--years react-datepicker__navigation--years-previous"}))),n},onChange:function(e){this.props.onChange(e)},handleClickOutside:function(){this.props.onCancel()},shiftYears:function(e){var t=this.state.yearsList.map(function(t){return t+e});this.setState({yearsList:t})},incrementYears:function(){return this.shiftYears(1)},decrementYears:function(){return this.shiftYears(-1)},render:function(){var e=(0,u.default)({"react-datepicker__year-dropdown":!0,"react-datepicker__year-dropdown--scrollable":this.props.scrollableYearDropdown});return i.default.createElement("div",{className:e},this.renderOptions())}});e.exports=p},function(e,t,n){var r,o;/*!
+	  Copyright (c) 2016 Jed Watson.
+	  Licensed under the MIT License (MIT), see
+	  http://jedwatson.github.io/classnames
+	*/
+!function(){"use strict";function n(){for(var e=[],t=0;t<arguments.length;t++){var r=arguments[t];if(r){var o=typeof r;if("string"===o||"number"===o)e.push(r);else if(Array.isArray(r))e.push(n.apply(null,r));else if("object"===o)for(var i in r)a.call(r,i)&&r[i]&&e.push(i)}}return e.join(" ")}var a={}.hasOwnProperty;"undefined"!=typeof e&&e.exports?e.exports=n:(r=[],o=function(){return n}.apply(t,r),!(void 0!==o&&(e.exports=o)))}()},function(e,t){e.exports=n},function(e,t,n){"use strict";function r(e){return e&&e.__esModule?e:{default:e}}var o=n(3),a=r(o),i=n(127),s=r(i),u=n(125),p=r(u),l=n(2),c=r(l),f=n(128),d=r(f),h=(0,p.default)(s.default),y=a.default.createClass({displayName:"MonthDropdown",propTypes:{dropdownMode:a.default.PropTypes.oneOf(["scroll","select"]).isRequired,locale:a.default.PropTypes.string,month:a.default.PropTypes.number.isRequired,onChange:a.default.PropTypes.func.isRequired},getInitialState:function(){return{dropdownVisible:!1}},renderSelectOptions:function(e){return e.map(function(e,t){return a.default.createElement("option",{key:t,value:t},e)})},renderSelectMode:function(e){var t=this;return a.default.createElement("select",{value:this.props.month,className:"react-datepicker__month-select",onChange:function(e){return t.onChange(e.target.value)}},this.renderSelectOptions(e))},renderReadView:function(e,t){return a.default.createElement("div",{key:"read",style:{visibility:e?"visible":"hidden"},className:"react-datepicker__month-read-view",onClick:this.toggleDropdown},a.default.createElement("span",{className:"react-datepicker__month-read-view--selected-month"},t[this.props.month]),a.default.createElement("span",{className:"react-datepicker__month-read-view--down-arrow"}))},renderDropdown:function(e){return a.default.createElement(h,{key:"dropdown",ref:"options",month:this.props.month,monthNames:e,onChange:this.onChange,onCancel:this.toggleDropdown})},renderScrollMode:function(e){var t=this.state.dropdownVisible,n=[this.renderReadView(!t,e)];return t&&n.unshift(this.renderDropdown(e)),n},onChange:function(e){this.toggleDropdown(),e!==this.props.month&&this.props.onChange(e)},toggleDropdown:function(){this.setState({dropdownVisible:!this.state.dropdownVisible})},render:function(){var e=c.default.localeData(this.props.locale),t=(0,d.default)(0,12).map(function(t){return e.months((0,c.default)({M:t}))}),n=void 0;switch(this.props.dropdownMode){case"scroll":n=this.renderScrollMode(t);break;case"select":n=this.renderSelectMode(t)}return a.default.createElement("div",{className:"react-datepicker__month-dropdown-container react-datepicker__month-dropdown-container--"+this.props.dropdownMode},n)}});e.exports=y},function(e,t,n){"use strict";function r(e){return e&&e.__esModule?e:{default:e}}var o=n(3),a=r(o),i=a.default.createClass({displayName:"MonthDropdownOptions",propTypes:{onCancel:a.default.PropTypes.func.isRequired,onChange:a.default.PropTypes.func.isRequired,month:a.default.PropTypes.number.isRequired,monthNames:a.default.PropTypes.arrayOf(a.default.PropTypes.string.isRequired).isRequired},renderOptions:function(){var e=this,t=this.props.month,n=this.props.monthNames.map(function(n,r){return a.default.createElement("div",{className:"react-datepicker__month-option",key:n,ref:n,onClick:e.onChange.bind(e,r)},t===r?a.default.createElement("span",{className:"react-datepicker__month-option--selected"},"✓"):"",n)});return n},onChange:function(e){this.props.onChange(e)},handleClickOutside:function(){this.props.onCancel()},render:function(){return a.default.createElement("div",{className:"react-datepicker__month-dropdown"},this.renderOptions())}});e.exports=i},function(e,t,n){var r=n(129),o=r();e.exports=o},function(e,t,n){function r(e){return function(t,n,r){return r&&"number"!=typeof r&&a(t,n,r)&&(n=r=void 0),t=i(t),void 0===n?(n=t,t=0):n=i(n),r=void 0===r?t<n?1:-1:i(r),o(t,n,r,e)}}var o=n(130),a=n(131),i=n(120);e.exports=r},function(e,t){function n(e,t,n,a){for(var i=-1,s=o(r((t-e)/(n||1)),0),u=Array(s);s--;)u[a?s:++i]=e,e+=n;return u}var r=Math.ceil,o=Math.max;e.exports=n},function(e,t,n){function r(e,t,n){if(!s(n))return!1;var r=typeof t;return!!("number"==r?a(n)&&i(t,n.length):"string"==r&&t in n)&&o(n[t],e)}var o=n(16),a=n(88),i=n(78),s=n(35);e.exports=r},function(e,t,n){"use strict";function r(e){return e&&e.__esModule?e:{default:e}}var o=n(3),a=r(o),i=n(124),s=r(i),u=n(133),p=r(u),l=6,c=a.default.createClass({displayName:"Month",propTypes:{day:a.default.PropTypes.object.isRequired,endDate:a.default.PropTypes.object,excludeDates:a.default.PropTypes.array,filterDate:a.default.PropTypes.func,fixedHeight:a.default.PropTypes.bool,highlightDates:a.default.PropTypes.array,includeDates:a.default.PropTypes.array,maxDate:a.default.PropTypes.object,minDate:a.default.PropTypes.object,onDayClick:a.default.PropTypes.func,onDayMouseEnter:a.default.PropTypes.func,onMouseLeave:a.default.PropTypes.func,peekNextMonth:a.default.PropTypes.bool,selected:a.default.PropTypes.object,selectingDate:a.default.PropTypes.object,selectsEnd:a.default.PropTypes.bool,selectsStart:a.default.PropTypes.bool,showWeekNumbers:a.default.PropTypes.bool,startDate:a.default.PropTypes.object,utcOffset:a.default.PropTypes.number},handleDayClick:function(e,t){this.props.onDayClick&&this.props.onDayClick(e,t)},handleDayMouseEnter:function(e){this.props.onDayMouseEnter&&this.props.onDayMouseEnter(e)},handleMouseLeave:function(){this.props.onMouseLeave&&this.props.onMouseLeave()},isWeekInMonth:function(e){var t=this.props.day,n=e.clone().add(6,"days");return e.isSame(t,"month")||n.isSame(t,"month")},renderWeeks:function(){for(var e=[],t=this.props.fixedHeight,n=this.props.day.clone().startOf("month").startOf("week"),r=0,o=!1;;){if(e.push(a.default.createElement(p.default,{key:r,day:n,month:this.props.day.month(),onDayClick:this.handleDayClick,onDayMouseEnter:this.handleDayMouseEnter,minDate:this.props.minDate,maxDate:this.props.maxDate,excludeDates:this.props.excludeDates,includeDates:this.props.includeDates,highlightDates:this.props.highlightDates,selectingDate:this.props.selectingDate,filterDate:this.props.filterDate,selected:this.props.selected,selectsStart:this.props.selectsStart,selectsEnd:this.props.selectsEnd,showWeekNumber:this.props.showWeekNumbers,startDate:this.props.startDate,endDate:this.props.endDate,utcOffset:this.props.utcOffset})),o)break;r++,n=n.clone().add(1,"weeks");var i=t&&r>=l,s=!t&&!this.isWeekInMonth(n);if(i||s){if(!this.props.peekNextMonth)break;o=!0}}return e},getClassNames:function(){var e=this.props,t=e.selectingDate,n=e.selectsStart,r=e.selectsEnd;return(0,s.default)("react-datepicker__month",{"react-datepicker__month--selecting-range":t&&(n||r)})},render:function(){return a.default.createElement("div",{className:this.getClassNames(),onMouseLeave:this.handleMouseLeave,role:"listbox"},this.renderWeeks())}});e.exports=c},function(e,t,n){"use strict";function r(e){return e&&e.__esModule?e:{default:e}}var o=n(3),a=r(o),i=n(134),s=r(i),u=n(135),p=r(u),l=a.default.createClass({displayName:"Week",propTypes:{day:a.default.PropTypes.object.isRequired,endDate:a.default.PropTypes.object,excludeDates:a.default.PropTypes.array,filterDate:a.default.PropTypes.func,highlightDates:a.default.PropTypes.array,includeDates:a.default.PropTypes.array,maxDate:a.default.PropTypes.object,minDate:a.default.PropTypes.object,month:a.default.PropTypes.number,onDayClick:a.default.PropTypes.func,onDayMouseEnter:a.default.PropTypes.func,selected:a.default.PropTypes.object,selectingDate:a.default.PropTypes.object,selectsEnd:a.default.PropTypes.bool,selectsStart:a.default.PropTypes.bool,showWeekNumber:a.default.PropTypes.bool,startDate:a.default.PropTypes.object,utcOffset:a.default.PropTypes.number},handleDayClick:function(e,t){this.props.onDayClick&&this.props.onDayClick(e,t)},handleDayMouseEnter:function(e){this.props.onDayMouseEnter&&this.props.onDayMouseEnter(e)},renderDays:function(){var e=this,t=this.props.day.clone().startOf("week"),n=[];return this.props.showWeekNumber&&n.push(a.default.createElement(p.default,{key:"W",weekNumber:parseInt(t.format("w"),10)})),n.concat([0,1,2,3,4,5,6].map(function(n){var r=t.clone().add(n,"days");return a.default.createElement(s.default,{key:n,day:r,month:e.props.month,onClick:e.handleDayClick.bind(e,r),onMouseEnter:e.handleDayMouseEnter.bind(e,r),minDate:e.props.minDate,maxDate:e.props.maxDate,excludeDates:e.props.excludeDates,includeDates:e.props.includeDates,highlightDates:e.props.highlightDates,selectingDate:e.props.selectingDate,filterDate:e.props.filterDate,selected:e.props.selected,selectsStart:e.props.selectsStart,selectsEnd:e.props.selectsEnd,startDate:e.props.startDate,endDate:e.props.endDate,utcOffset:e.props.utcOffset})}))},render:function(){return a.default.createElement("div",{className:"react-datepicker__week"},this.renderDays())}});e.exports=l},function(e,t,n){"use strict";function r(e){return e&&e.__esModule?e:{default:e}}var o=n(2),a=r(o),i=n(3),s=r(i),u=n(124),p=r(u),l=n(4),c=s.default.createClass({displayName:"Day",propTypes:{day:s.default.PropTypes.object.isRequired,endDate:s.default.PropTypes.object,highlightDates:s.default.PropTypes.array,month:s.default.PropTypes.number,onClick:s.default.PropTypes.func,onMouseEnter:s.default.PropTypes.func,selected:s.default.PropTypes.object,selectingDate:s.default.PropTypes.object,selectsEnd:s.default.PropTypes.bool,selectsStart:s.default.PropTypes.bool,startDate:s.default.PropTypes.object,utcOffset:s.default.PropTypes.number},getDefaultProps:function(){return{utcOffset:a.default.utc().utcOffset()}},handleClick:function(e){!this.isDisabled()&&this.props.onClick&&this.props.onClick(e)},handleMouseEnter:function(e){!this.isDisabled()&&this.props.onMouseEnter&&this.props.onMouseEnter(e)},isSameDay:function(e){return(0,l.isSameDay)(this.props.day,e)},isDisabled:function(){return(0,l.isDayDisabled)(this.props.day,this.props)},isHighlighted:function(){var e=this.props,t=e.day,n=e.highlightDates;return!!n&&n.some(function(e){return(0,l.isSameDay)(t,e)})},isInRange:function(){var e=this.props,t=e.day,n=e.startDate,r=e.endDate;return!(!n||!r)&&(0,l.isDayInRange)(t,n,r)},isInSelectingRange:function(){var e=this.props,t=e.day,n=e.selectsStart,r=e.selectsEnd,o=e.selectingDate,a=e.startDate,i=e.endDate;return!(!n&&!r||!o||this.isDisabled())&&(n&&i&&o.isSameOrBefore(i)?(0,l.isDayInRange)(t,o,i):!!(r&&a&&o.isSameOrAfter(a))&&(0,l.isDayInRange)(t,a,o))},isSelectingRangeStart:function(){if(!this.isInSelectingRange())return!1;var e=this.props,t=e.day,n=e.selectingDate,r=e.startDate,o=e.selectsStart;return o?(0,l.isSameDay)(t,n):(0,l.isSameDay)(t,r)},isSelectingRangeEnd:function(){if(!this.isInSelectingRange())return!1;var e=this.props,t=e.day,n=e.selectingDate,r=e.endDate,o=e.selectsEnd;return o?(0,l.isSameDay)(t,n):(0,l.isSameDay)(t,r)},isRangeStart:function(){var e=this.props,t=e.day,n=e.startDate,r=e.endDate;return!(!n||!r)&&(0,l.isSameDay)(n,t)},isRangeEnd:function(){var e=this.props,t=e.day,n=e.startDate,r=e.endDate;return!(!n||!r)&&(0,l.isSameDay)(r,t)},isWeekend:function(){var e=this.props.day.day();return 0===e||6===e},isOutsideMonth:function(){return void 0!==this.props.month&&this.props.month!==this.props.day.month()},getClassNames:function(){return(0,p.default)("react-datepicker__day",{"react-datepicker__day--disabled":this.isDisabled(),"react-datepicker__day--selected":this.isSameDay(this.props.selected),"react-datepicker__day--highlighted":this.isHighlighted(),"react-datepicker__day--range-start":this.isRangeStart(),"react-datepicker__day--range-end":this.isRangeEnd(),"react-datepicker__day--in-range":this.isInRange(),"react-datepicker__day--in-selecting-range":this.isInSelectingRange(),"react-datepicker__day--selecting-range-start":this.isSelectingRangeStart(),"react-datepicker__day--selecting-range-end":this.isSelectingRangeEnd(),"react-datepicker__day--today":this.isSameDay(a.default.utc().utcOffset(this.props.utcOffset)),"react-datepicker__day--weekend":this.isWeekend(),"react-datepicker__day--outside-month":this.isOutsideMonth()})},render:function(){return s.default.createElement("div",{className:this.getClassNames(),onClick:this.handleClick,onMouseEnter:this.handleMouseEnter,"aria-label":"day-"+this.props.day.date(),role:"option"},this.props.day.date())}});e.exports=c},function(e,t,n){"use strict";function r(e){return e&&e.__esModule?e:{default:e}}var o=n(3),a=r(o),i=a.default.createClass({displayName:"WeekNumber",propTypes:{weekNumber:a.default.PropTypes.number.isRequired},render:function(){return a.default.createElement("div",{className:"react-datepicker__week-number","aria-label":"week-"+this.props.weekNumber},this.props.weekNumber)}});e.exports=i},function(e,t,n){var r=n(137),o=n(138),a=o(function(e,t){return r(e,1,t)});e.exports=a},function(e,t){function n(e,t,n){if("function"!=typeof e)throw new TypeError(r);return setTimeout(function(){e.apply(void 0,n)},t)}var r="Expected a function";e.exports=n},function(e,t,n){function r(e,t){return i(a(e,t,o),e+"")}var o=n(113),a=n(139),i=n(141);e.exports=r},function(e,t,n){function r(e,t,n){return t=a(void 0===t?e.length-1:t,0),function(){for(var r=arguments,i=-1,s=a(r.length-t,0),u=Array(s);++i<s;)u[i]=r[t+i];i=-1;for(var p=Array(t+1);++i<t;)p[i]=r[i];return p[t]=n(u),o(e,this,p)}}var o=n(140),a=Math.max;e.exports=r},function(e,t){function n(e,t,n){switch(n.length){case 0:return e.call(t);case 1:return e.call(t,n[0]);case 2:return e.call(t,n[0],n[1]);case 3:return e.call(t,n[0],n[1],n[2])}return e.apply(t,n)}e.exports=n},function(e,t,n){var r=n(142),o=n(145),a=o(r);e.exports=a},function(e,t,n){var r=n(143),o=n(144),a=n(113),i=o?function(e,t){return o(e,"toString",{configurable:!0,enumerable:!1,value:r(t),writable:!0})}:a;e.exports=i},function(e,t){function n(e){return function(){return e}}e.exports=n},function(e,t,n){var r=n(26),o=function(){try{var e=r(Object,"defineProperty");return e({},"",{}),e}catch(e){}}();e.exports=o},function(e,t){function n(e){var t=0,n=0;return function(){var i=a(),s=o-(i-n);if(n=i,s>0){if(++t>=r)return arguments[0]}else t=0;return e.apply(void 0,arguments)}}var r=800,o=16,a=Date.now;e.exports=n},function(e,t,n){"use strict";function r(e){return e&&e.__esModule?e:{default:e}}function o(e,t){var n={};for(var r in e)t.indexOf(r)>=0||Object.prototype.hasOwnProperty.call(e,r)&&(n[r]=e[r]);return n}function a(e,t,n){var r=e.children,o=s.Children.count(r);return o<=0?new Error(n+" expects at least one child to use as the target element."):o>2?new Error("Only a max of two children allowed in "+n+"."):void 0}var i=Object.assign||function(e){for(var t=1;t<arguments.length;t++){var n=arguments[t];for(var r in n)Object.prototype.hasOwnProperty.call(n,r)&&(e[r]=n[r])}return e},s=n(3),u=r(s),p=n(147),l=r(p),c=n(148),f=r(c),d=["top left","top center","top right","middle left","middle center","middle right","bottom left","bottom center","bottom right"],h=u.default.createClass({displayName:"TetherComponent",propTypes:{attachment:s.PropTypes.oneOf(d).isRequired,children:a,className:s.PropTypes.string,classPrefix:s.PropTypes.string,classes:s.PropTypes.object,constraints:s.PropTypes.array,enabled:s.PropTypes.bool,id:s.PropTypes.string,offset:s.PropTypes.string,optimizations:s.PropTypes.object,renderElementTag:s.PropTypes.string,renderElementTo:s.PropTypes.any,style:s.PropTypes.object,targetAttachment:s.PropTypes.oneOf(d),targetModifier:s.PropTypes.string,targetOffset:s.PropTypes.string},getDefaultProps:function(){return{renderElementTag:"div",renderElementTo:null}},componentDidMount:function(){this._targetNode=l.default.findDOMNode(this),this._update()},componentDidUpdate:function(){this._update()},componentWillUnmount:function(){this._destroy()},disable:function(){this._tether.disable()},enable:function(){this._tether.enable()},position:function(){this._tether.position()},_destroy:function(){this._elementParentNode&&(l.default.unmountComponentAtNode(this._elementParentNode),this._elementParentNode.parentNode.removeChild(this._elementParentNode)),this._tether&&this._tether.destroy(),this._elementParentNode=null,this._tether=null},_update:function(){var e=this,t=this.props,n=t.children,r=t.renderElementTag,o=t.renderElementTo,a=n[1];if(!a)return void(this._tether&&this._destroy());if(!this._elementParentNode){this._elementParentNode=document.createElement(r);var i=o||document.body;i.appendChild(this._elementParentNode)}l.default.unstable_renderSubtreeIntoContainer(this,a,this._elementParentNode,function(){e._updateTether()})},_updateTether:function(){var e=this.props,t=(e.renderElementTag,e.renderElementTo,o(e,["renderElementTag","renderElementTo"])),n=i({target:this._targetNode,element:this._elementParentNode},t);this._tether?this._tether.setOptions(n):this._tether=new f.default(n),this._tether.position()},render:function(){var e=this.props.children,t=null;return s.Children.forEach(e,function(e,n){if(0===n)return t=e,!1}),t}});e.exports=h},function(e,t){e.exports=r},function(e,t,n){var r,o;/*! tether 1.3.7 */
+!function(a,i){r=i,o="function"==typeof r?r.call(t,n,t,e):r,!(void 0!==o&&(e.exports=o))}(this,function(e,t,n){"use strict";function r(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}function o(e){var t=e.getBoundingClientRect(),n={};for(var r in t)n[r]=t[r];if(e.ownerDocument!==document){var a=e.ownerDocument.defaultView.frameElement;if(a){var i=o(a);n.top+=i.top,n.bottom+=i.top,n.left+=i.left,n.right+=i.left}}return n}function a(e){var t=getComputedStyle(e)||{},n=t.position,r=[];if("fixed"===n)return[e];for(var o=e;(o=o.parentNode)&&o&&1===o.nodeType;){var a=void 0;try{a=getComputedStyle(o)}catch(e){}if("undefined"==typeof a||null===a)return r.push(o),r;var i=a,s=i.overflow,u=i.overflowX,p=i.overflowY;/(auto|scroll)/.test(s+p+u)&&("absolute"!==n||["relative","absolute","fixed"].indexOf(a.position)>=0)&&r.push(o)}return r.push(e.ownerDocument.body),e.ownerDocument!==document&&r.push(e.ownerDocument.defaultView),r}function i(){P&&document.body.removeChild(P),P=null}function s(e){var t=void 0;e===document?(t=document,e=document.documentElement):t=e.ownerDocument;var n=t.documentElement,r=o(e),a=O();return r.top-=a.top,r.left-=a.left,"undefined"==typeof r.width&&(r.width=document.body.scrollWidth-r.left-r.right),"undefined"==typeof r.height&&(r.height=document.body.scrollHeight-r.top-r.bottom),r.top=r.top-n.clientTop,r.left=r.left-n.clientLeft,r.right=t.body.clientWidth-r.width-r.left,r.bottom=t.body.clientHeight-r.height-r.top,r}function u(e){return e.offsetParent||document.documentElement}function p(){if(E)return E;var e=document.createElement("div");e.style.width="100%",e.style.height="200px";var t=document.createElement("div");l(t.style,{position:"absolute",top:0,left:0,pointerEvents:"none",visibility:"hidden",width:"200px",height:"150px",overflow:"hidden"}),t.appendChild(e),document.body.appendChild(t);var n=e.offsetWidth;t.style.overflow="scroll";var r=e.offsetWidth;n===r&&(r=t.clientWidth),document.body.removeChild(t);var o=n-r;return E={width:o,height:o}}function l(){var e=arguments.length<=0||void 0===arguments[0]?{}:arguments[0],t=[];return Array.prototype.push.apply(t,arguments),t.slice(1).forEach(function(t){if(t)for(var n in t)({}).hasOwnProperty.call(t,n)&&(e[n]=t[n])}),e}function c(e,t){if("undefined"!=typeof e.classList)t.split(" ").forEach(function(t){t.trim()&&e.classList.remove(t)});else{var n=new RegExp("(^| )"+t.split(" ").join("|")+"( |$)","gi"),r=h(e).replace(n," ");y(e,r)}}function f(e,t){if("undefined"!=typeof e.classList)t.split(" ").forEach(function(t){t.trim()&&e.classList.add(t)});else{c(e,t);var n=h(e)+(" "+t);y(e,n)}}function d(e,t){if("undefined"!=typeof e.classList)return e.classList.contains(t);var n=h(e);return new RegExp("(^| )"+t+"( |$)","gi").test(n)}function h(e){return e.className instanceof e.ownerDocument.defaultView.SVGAnimatedString?e.className.baseVal:e.className}function y(e,t){e.setAttribute("class",t)}function m(e,t,n){n.forEach(function(n){t.indexOf(n)===-1&&d(e,n)&&c(e,n)}),t.forEach(function(t){d(e,t)||f(e,t)})}function r(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}function g(e,t){if("function"!=typeof t&&null!==t)throw new TypeError("Super expression must either be null or a function, not "+typeof t);e.prototype=Object.create(t&&t.prototype,{constructor:{value:e,enumerable:!1,writable:!0,configurable:!0}}),t&&(Object.setPrototypeOf?Object.setPrototypeOf(e,t):e.__proto__=t)}function v(e,t){var n=arguments.length<=2||void 0===arguments[2]?1:arguments[2];return e+n>=t&&t>=e-n}function b(){return"undefined"!=typeof performance&&"undefined"!=typeof performance.now?performance.now():+new Date}function D(){for(var e={top:0,left:0},t=arguments.length,n=Array(t),r=0;r<t;r++)n[r]=arguments[r];return n.forEach(function(t){var n=t.top,r=t.left;"string"==typeof n&&(n=parseFloat(n,10)),"string"==typeof r&&(r=parseFloat(r,10)),e.top+=n,e.left+=r}),e}function w(e,t){return"string"==typeof e.left&&e.left.indexOf("%")!==-1&&(e.left=parseFloat(e.left,10)/100*t.width),"string"==typeof e.top&&e.top.indexOf("%")!==-1&&(e.top=parseFloat(e.top,10)/100*t.height),e}function _(e,t){return"scrollParent"===t?t=e.scrollParents[0]:"window"===t&&(t=[pageXOffset,pageYOffset,innerWidth+pageXOffset,innerHeight+pageYOffset]),t===document&&(t=t.documentElement),"undefined"!=typeof t.nodeType&&!function(){var e=t,n=s(t),r=n,o=getComputedStyle(t);if(t=[r.left,r.top,n.width+r.left,n.height+r.top],e.ownerDocument!==document){var a=e.ownerDocument.defaultView;t[0]+=a.pageXOffset,t[1]+=a.pageYOffset,t[2]+=a.pageXOffset,t[3]+=a.pageYOffset}K.forEach(function(e,n){e=e[0].toUpperCase()+e.substr(1),"Top"===e||"Left"===e?t[n]+=parseFloat(o["border"+e+"Width"]):t[n]-=parseFloat(o["border"+e+"Width"])})}(),t}var x=function(){function e(e,t){for(var n=0;n<t.length;n++){var r=t[n];r.enumerable=r.enumerable||!1,r.configurable=!0,"value"in r&&(r.writable=!0),Object.defineProperty(e,r.key,r)}}return function(t,n,r){return n&&e(t.prototype,n),r&&e(t,r),t}}(),T=void 0;"undefined"==typeof T&&(T={modules:[]});var P=null,C=function(){var e=0;return function(){return++e}}(),k={},O=function(){var e=P;e||(e=document.createElement("div"),e.setAttribute("data-tether-id",C()),l(e.style,{top:0,left:0,position:"absolute"}),document.body.appendChild(e),P=e);var t=e.getAttribute("data-tether-id");return"undefined"==typeof k[t]&&(k[t]=o(e),S(function(){delete k[t]})),k[t]},E=null,M=[],S=function(e){M.push(e)},j=function(){for(var e=void 0;e=M.pop();)e()},N=function(){function e(){r(this,e)}return x(e,[{key:"on",value:function(e,t,n){var r=!(arguments.length<=3||void 0===arguments[3])&&arguments[3];"undefined"==typeof this.bindings&&(this.bindings={}),"undefined"==typeof this.bindings[e]&&(this.bindings[e]=[]),this.bindings[e].push({handler:t,ctx:n,once:r})}},{key:"once",value:function(e,t,n){this.on(e,t,n,!0)}},{key:"off",value:function(e,t){if("undefined"!=typeof this.bindings&&"undefined"!=typeof this.bindings[e])if("undefined"==typeof t)delete this.bindings[e];else for(var n=0;n<this.bindings[e].length;)this.bindings[e][n].handler===t?this.bindings[e].splice(n,1):++n}},{key:"trigger",value:function(e){if("undefined"!=typeof this.bindings&&this.bindings[e]){for(var t=0,n=arguments.length,r=Array(n>1?n-1:0),o=1;o<n;o++)r[o-1]=arguments[o];for(;t<this.bindings[e].length;){var a=this.bindings[e][t],i=a.handler,s=a.ctx,u=a.once,p=s;"undefined"==typeof p&&(p=this),i.apply(p,r),u?this.bindings[e].splice(t,1):++t}}}}]),e}();T.Utils={getActualBoundingClientRect:o,getScrollParents:a,getBounds:s,getOffsetParent:u,extend:l,addClass:f,removeClass:c,hasClass:d,updateClasses:m,defer:S,flush:j,uniqueId:C,Evented:N,getScrollBarSize:p,removeUtilElements:i};var A=function(){function e(e,t){var n=[],r=!0,o=!1,a=void 0;try{for(var i,s=e[Symbol.iterator]();!(r=(i=s.next()).done)&&(n.push(i.value),!t||n.length!==t);r=!0);}catch(e){o=!0,a=e}finally{try{!r&&s.return&&s.return()}finally{if(o)throw a}}return n}return function(t,n){if(Array.isArray(t))return t;if(Symbol.iterator in Object(t))return e(t,n);throw new TypeError("Invalid attempt to destructure non-iterable instance")}}(),x=function(){function e(e,t){for(var n=0;n<t.length;n++){var r=t[n];r.enumerable=r.enumerable||!1,r.configurable=!0,"value"in r&&(r.writable=!0),Object.defineProperty(e,r.key,r)}}return function(t,n,r){return n&&e(t.prototype,n),r&&e(t,r),t}}(),F=function(e,t,n){for(var r=!0;r;){var o=e,a=t,i=n;r=!1,null===o&&(o=Function.prototype);var s=Object.getOwnPropertyDescriptor(o,a);if(void 0!==s){if("value"in s)return s.value;var u=s.get;if(void 0===u)return;return u.call(i)}var p=Object.getPrototypeOf(o);if(null===p)return;e=p,t=a,n=i,r=!0,s=p=void 0}};if("undefined"==typeof T)throw new Error("You must include the utils.js file before tether.js");var B=T.Utils,a=B.getScrollParents,s=B.getBounds,u=B.getOffsetParent,l=B.extend,f=B.addClass,c=B.removeClass,m=B.updateClasses,S=B.defer,j=B.flush,p=B.getScrollBarSize,i=B.removeUtilElements,R=function(){if("undefined"==typeof document)return"";for(var e=document.createElement("div"),t=["transform","WebkitTransform","OTransform","MozTransform","msTransform"],n=0;n<t.length;++n){var r=t[n];if(void 0!==e.style[r])return r}}(),I=[],W=function(){I.forEach(function(e){e.position(!1)}),j()};!function(){var e=null,t=null,n=null,r=function r(){return"undefined"!=typeof t&&t>16?(t=Math.min(t-16,250),void(n=setTimeout(r,250))):void("undefined"!=typeof e&&b()-e<10||(null!=n&&(clearTimeout(n),n=null),e=b(),W(),t=b()-e))};"undefined"!=typeof window&&"undefined"!=typeof window.addEventListener&&["resize","scroll","touchmove"].forEach(function(e){window.addEventListener(e,r)})}();var Y={center:"center",left:"right",right:"left"},z={middle:"middle",top:"bottom",bottom:"top"},q={top:0,left:0,middle:"50%",center:"50%",bottom:"100%",right:"100%"},L=function(e,t){var n=e.left,r=e.top;return"auto"===n&&(n=Y[t.left]),"auto"===r&&(r=z[t.top]),{left:n,top:r}},V=function(e){var t=e.left,n=e.top;return"undefined"!=typeof q[e.left]&&(t=q[e.left]),"undefined"!=typeof q[e.top]&&(n=q[e.top]),{left:t,top:n}},H=function(e){var t=e.split(" "),n=A(t,2),r=n[0],o=n[1];return{top:r,left:o}},U=H,$=function(e){function t(e){var n=this;r(this,t),F(Object.getPrototypeOf(t.prototype),"constructor",this).call(this),this.position=this.position.bind(this),I.push(this),this.history=[],this.setOptions(e,!1),T.modules.forEach(function(e){"undefined"!=typeof e.initialize&&e.initialize.call(n)}),this.position()}return g(t,e),x(t,[{key:"getClass",value:function(){var e=arguments.length<=0||void 0===arguments[0]?"":arguments[0],t=this.options.classes;return"undefined"!=typeof t&&t[e]?this.options.classes[e]:this.options.classPrefix?this.options.classPrefix+"-"+e:e}},{key:"setOptions",value:function(e){var t=this,n=arguments.length<=1||void 0===arguments[1]||arguments[1],r={offset:"0 0",targetOffset:"0 0",targetAttachment:"auto auto",classPrefix:"tether"};this.options=l(r,e);var o=this.options,i=o.element,s=o.target,u=o.targetModifier;if(this.element=i,this.target=s,this.targetModifier=u,"viewport"===this.target?(this.target=document.body,this.targetModifier="visible"):"scroll-handle"===this.target&&(this.target=document.body,this.targetModifier="scroll-handle"),["element","target"].forEach(function(e){if("undefined"==typeof t[e])throw new Error("Tether Error: Both element and target must be defined");"undefined"!=typeof t[e].jquery?t[e]=t[e][0]:"string"==typeof t[e]&&(t[e]=document.querySelector(t[e]))}),f(this.element,this.getClass("element")),this.options.addTargetClasses!==!1&&f(this.target,this.getClass("target")),!this.options.attachment)throw new Error("Tether Error: You must provide an attachment");this.targetAttachment=U(this.options.targetAttachment),this.attachment=U(this.options.attachment),this.offset=H(this.options.offset),this.targetOffset=H(this.options.targetOffset),"undefined"!=typeof this.scrollParents&&this.disable(),"scroll-handle"===this.targetModifier?this.scrollParents=[this.target]:this.scrollParents=a(this.target),this.options.enabled!==!1&&this.enable(n)}},{key:"getTargetBounds",value:function(){if("undefined"==typeof this.targetModifier)return s(this.target);if("visible"===this.targetModifier){if(this.target===document.body)return{top:pageYOffset,left:pageXOffset,height:innerHeight,width:innerWidth};var e=s(this.target),t={height:e.height,width:e.width,top:e.top,left:e.left};return t.height=Math.min(t.height,e.height-(pageYOffset-e.top)),t.height=Math.min(t.height,e.height-(e.top+e.height-(pageYOffset+innerHeight))),t.height=Math.min(innerHeight,t.height),t.height-=2,t.width=Math.min(t.width,e.width-(pageXOffset-e.left)),t.width=Math.min(t.width,e.width-(e.left+e.width-(pageXOffset+innerWidth))),t.width=Math.min(innerWidth,t.width),t.width-=2,t.top<pageYOffset&&(t.top=pageYOffset),t.left<pageXOffset&&(t.left=pageXOffset),t}if("scroll-handle"===this.targetModifier){var e=void 0,n=this.target;n===document.body?(n=document.documentElement,e={left:pageXOffset,top:pageYOffset,height:innerHeight,width:innerWidth}):e=s(n);var r=getComputedStyle(n),o=n.scrollWidth>n.clientWidth||[r.overflow,r.overflowX].indexOf("scroll")>=0||this.target!==document.body,a=0;o&&(a=15);var i=e.height-parseFloat(r.borderTopWidth)-parseFloat(r.borderBottomWidth)-a,t={width:15,height:.975*i*(i/n.scrollHeight),left:e.left+e.width-parseFloat(r.borderLeftWidth)-15},u=0;i<408&&this.target===document.body&&(u=-11e-5*Math.pow(i,2)-.00727*i+22.58),this.target!==document.body&&(t.height=Math.max(t.height,24));var p=this.target.scrollTop/(n.scrollHeight-i);return t.top=p*(i-t.height-u)+e.top+parseFloat(r.borderTopWidth),this.target===document.body&&(t.height=Math.max(t.height,24)),t}}},{key:"clearCache",value:function(){this._cache={}}},{key:"cache",value:function(e,t){return"undefined"==typeof this._cache&&(this._cache={}),"undefined"==typeof this._cache[e]&&(this._cache[e]=t.call(this)),this._cache[e]}},{key:"enable",value:function(){var e=this,t=arguments.length<=0||void 0===arguments[0]||arguments[0];this.options.addTargetClasses!==!1&&f(this.target,this.getClass("enabled")),f(this.element,this.getClass("enabled")),this.enabled=!0,this.scrollParents.forEach(function(t){t!==e.target.ownerDocument&&t.addEventListener("scroll",e.position)}),t&&this.position()}},{key:"disable",value:function(){var e=this;c(this.target,this.getClass("enabled")),c(this.element,this.getClass("enabled")),this.enabled=!1,"undefined"!=typeof this.scrollParents&&this.scrollParents.forEach(function(t){t.removeEventListener("scroll",e.position)})}},{key:"destroy",value:function(){var e=this;this.disable(),I.forEach(function(t,n){t===e&&I.splice(n,1)}),0===I.length&&i()}},{key:"updateAttachClasses",value:function(e,t){var n=this;e=e||this.attachment,t=t||this.targetAttachment;var r=["left","top","bottom","right","middle","center"];"undefined"!=typeof this._addAttachClasses&&this._addAttachClasses.length&&this._addAttachClasses.splice(0,this._addAttachClasses.length),"undefined"==typeof this._addAttachClasses&&(this._addAttachClasses=[]);var o=this._addAttachClasses;e.top&&o.push(this.getClass("element-attached")+"-"+e.top),e.left&&o.push(this.getClass("element-attached")+"-"+e.left),t.top&&o.push(this.getClass("target-attached")+"-"+t.top),t.left&&o.push(this.getClass("target-attached")+"-"+t.left);var a=[];r.forEach(function(e){a.push(n.getClass("element-attached")+"-"+e),a.push(n.getClass("target-attached")+"-"+e)}),S(function(){"undefined"!=typeof n._addAttachClasses&&(m(n.element,n._addAttachClasses,a),n.options.addTargetClasses!==!1&&m(n.target,n._addAttachClasses,a),delete n._addAttachClasses)})}},{key:"position",value:function(){var e=this,t=arguments.length<=0||void 0===arguments[0]||arguments[0];if(this.enabled){this.clearCache();var n=L(this.targetAttachment,this.attachment);this.updateAttachClasses(this.attachment,n);var r=this.cache("element-bounds",function(){return s(e.element)}),o=r.width,a=r.height;if(0===o&&0===a&&"undefined"!=typeof this.lastSize){var i=this.lastSize;o=i.width,a=i.height}else this.lastSize={width:o,height:a};var l=this.cache("target-bounds",function(){return e.getTargetBounds()}),c=l,f=w(V(this.attachment),{width:o,height:a}),d=w(V(n),c),h=w(this.offset,{width:o,height:a}),y=w(this.targetOffset,c);f=D(f,h),d=D(d,y);for(var m=l.left+d.left-f.left,g=l.top+d.top-f.top,v=0;v<T.modules.length;++v){var b=T.modules[v],_=b.position.call(this,{left:m,top:g,targetAttachment:n,targetPos:l,elementPos:r,offset:f,targetOffset:d,manualOffset:h,manualTargetOffset:y,scrollbarSize:k,attachment:this.attachment});if(_===!1)return!1;"undefined"!=typeof _&&"object"==typeof _&&(g=_.top,m=_.left)}var x={page:{top:g,left:m},viewport:{top:g-pageYOffset,bottom:pageYOffset-g-a+innerHeight,left:m-pageXOffset,right:pageXOffset-m-o+innerWidth}},P=this.target.ownerDocument,C=P.defaultView,k=void 0;return C.innerHeight>P.documentElement.clientHeight&&(k=this.cache("scrollbar-size",p),x.viewport.bottom-=k.height),C.innerWidth>P.documentElement.clientWidth&&(k=this.cache("scrollbar-size",p),x.viewport.right-=k.width),["","static"].indexOf(P.body.style.position)!==-1&&["","static"].indexOf(P.body.parentElement.style.position)!==-1||(x.page.bottom=P.body.scrollHeight-g-a,x.page.right=P.body.scrollWidth-m-o),"undefined"!=typeof this.options.optimizations&&this.options.optimizations.moveElement!==!1&&"undefined"==typeof this.targetModifier&&!function(){var t=e.cache("target-offsetparent",function(){return u(e.target)}),n=e.cache("target-offsetparent-bounds",function(){return s(t)}),r=getComputedStyle(t),o=n,a={};if(["Top","Left","Bottom","Right"].forEach(function(e){a[e.toLowerCase()]=parseFloat(r["border"+e+"Width"])}),n.right=P.body.scrollWidth-n.left-o.width+a.right,n.bottom=P.body.scrollHeight-n.top-o.height+a.bottom,x.page.top>=n.top+a.top&&x.page.bottom>=n.bottom&&x.page.left>=n.left+a.left&&x.page.right>=n.right){var i=t.scrollTop,p=t.scrollLeft;x.offset={top:x.page.top-n.top+i-a.top,left:x.page.left-n.left+p-a.left}}}(),this.move(x),this.history.unshift(x),this.history.length>3&&this.history.pop(),t&&j(),!0}}},{key:"move",value:function(e){var t=this;if("undefined"!=typeof this.element.parentNode){var n={};for(var r in e){n[r]={};for(var o in e[r]){for(var a=!1,i=0;i<this.history.length;++i){var s=this.history[i];if("undefined"!=typeof s[r]&&!v(s[r][o],e[r][o])){a=!0;break}}a||(n[r][o]=!0)}}var p={top:"",left:"",right:"",bottom:""},c=function(e,n){var r="undefined"!=typeof t.options.optimizations,o=r?t.options.optimizations.gpu:null;if(o!==!1){var a=void 0,i=void 0;if(e.top?(p.top=0,a=n.top):(p.bottom=0,a=-n.bottom),e.left?(p.left=0,i=n.left):(p.right=0,i=-n.right),window.matchMedia){var s=window.matchMedia("only screen and (min-resolution: 1.3dppx)").matches||window.matchMedia("only screen and (-webkit-min-device-pixel-ratio: 1.3)").matches;s||(i=Math.round(i),a=Math.round(a))}p[R]="translateX("+i+"px) translateY("+a+"px)","msTransform"!==R&&(p[R]+=" translateZ(0)")}else e.top?p.top=n.top+"px":p.bottom=n.bottom+"px",e.left?p.left=n.left+"px":p.right=n.right+"px"},f=!1;if((n.page.top||n.page.bottom)&&(n.page.left||n.page.right)?(p.position="absolute",c(n.page,e.page)):(n.viewport.top||n.viewport.bottom)&&(n.viewport.left||n.viewport.right)?(p.position="fixed",c(n.viewport,e.viewport)):"undefined"!=typeof n.offset&&n.offset.top&&n.offset.left?!function(){p.position="absolute";var r=t.cache("target-offsetparent",function(){return u(t.target)});u(t.element)!==r&&S(function(){t.element.parentNode.removeChild(t.element),r.appendChild(t.element)}),c(n.offset,e.offset),f=!0}():(p.position="absolute",c({top:!0,left:!0},e.page)),!f){for(var d=!0,h=this.element.parentNode;h&&1===h.nodeType&&"BODY"!==h.tagName;){if("static"!==getComputedStyle(h).position){d=!1;break}h=h.parentNode}d||(this.element.parentNode.removeChild(this.element),this.element.ownerDocument.body.appendChild(this.element))}var y={},m=!1;for(var o in p){var g=p[o],b=this.element.style[o];b!==g&&(m=!0,y[o]=g)}m&&S(function(){l(t.element.style,y),t.trigger("repositioned")})}}}]),t}(N);$.modules=[],T.position=W;var X=l($,T),A=function(){function e(e,t){var n=[],r=!0,o=!1,a=void 0;try{for(var i,s=e[Symbol.iterator]();!(r=(i=s.next()).done)&&(n.push(i.value),!t||n.length!==t);r=!0);}catch(e){o=!0,a=e}finally{try{!r&&s.return&&s.return()}finally{if(o)throw a}}return n}return function(t,n){if(Array.isArray(t))return t;if(Symbol.iterator in Object(t))return e(t,n);throw new TypeError("Invalid attempt to destructure non-iterable instance")}}(),B=T.Utils,s=B.getBounds,l=B.extend,m=B.updateClasses,S=B.defer,K=["left","top","right","bottom"];T.modules.push({position:function(e){var t=this,n=e.top,r=e.left,o=e.targetAttachment;if(!this.options.constraints)return!0;var a=this.cache("element-bounds",function(){return s(t.element)}),i=a.height,u=a.width;if(0===u&&0===i&&"undefined"!=typeof this.lastSize){var p=this.lastSize;u=p.width,i=p.height}var c=this.cache("target-bounds",function(){return t.getTargetBounds()}),f=c.height,d=c.width,h=[this.getClass("pinned"),this.getClass("out-of-bounds")];this.options.constraints.forEach(function(e){var t=e.outOfBoundsClass,n=e.pinnedClass;t&&h.push(t),n&&h.push(n)}),h.forEach(function(e){["left","top","right","bottom"].forEach(function(t){h.push(e+"-"+t)})});var y=[],g=l({},o),v=l({},this.attachment);return this.options.constraints.forEach(function(e){var a=e.to,s=e.attachment,p=e.pin;"undefined"==typeof s&&(s="");var l=void 0,c=void 0;if(s.indexOf(" ")>=0){var h=s.split(" "),m=A(h,2);c=m[0],l=m[1]}else l=c=s;var b=_(t,a);"target"!==c&&"both"!==c||(n<b[1]&&"top"===g.top&&(n+=f,g.top="bottom"),n+i>b[3]&&"bottom"===g.top&&(n-=f,g.top="top")),"together"===c&&("top"===g.top&&("bottom"===v.top&&n<b[1]?(n+=f,g.top="bottom",n+=i,v.top="top"):"top"===v.top&&n+i>b[3]&&n-(i-f)>=b[1]&&(n-=i-f,g.top="bottom",v.top="bottom")),"bottom"===g.top&&("top"===v.top&&n+i>b[3]?(n-=f,g.top="top",n-=i,v.top="bottom"):"bottom"===v.top&&n<b[1]&&n+(2*i-f)<=b[3]&&(n+=i-f,g.top="top",v.top="top")),"middle"===g.top&&(n+i>b[3]&&"top"===v.top?(n-=i,v.top="bottom"):n<b[1]&&"bottom"===v.top&&(n+=i,v.top="top"))),"target"!==l&&"both"!==l||(r<b[0]&&"left"===g.left&&(r+=d,g.left="right"),r+u>b[2]&&"right"===g.left&&(r-=d,g.left="left")),"together"===l&&(r<b[0]&&"left"===g.left?"right"===v.left?(r+=d,g.left="right",r+=u,v.left="left"):"left"===v.left&&(r+=d,g.left="right",r-=u,v.left="right"):r+u>b[2]&&"right"===g.left?"left"===v.left?(r-=d,g.left="left",r-=u,v.left="right"):"right"===v.left&&(r-=d,g.left="left",r+=u,v.left="left"):"center"===g.left&&(r+u>b[2]&&"left"===v.left?(r-=u,v.left="right"):r<b[0]&&"right"===v.left&&(r+=u,v.left="left"))),"element"!==c&&"both"!==c||(n<b[1]&&"bottom"===v.top&&(n+=i,v.top="top"),n+i>b[3]&&"top"===v.top&&(n-=i,v.top="bottom")),"element"!==l&&"both"!==l||(r<b[0]&&("right"===v.left?(r+=u,v.left="left"):"center"===v.left&&(r+=u/2,v.left="left")),r+u>b[2]&&("left"===v.left?(r-=u,v.left="right"):"center"===v.left&&(r-=u/2,v.left="right"))),"string"==typeof p?p=p.split(",").map(function(e){return e.trim()}):p===!0&&(p=["top","left","right","bottom"]),p=p||[];var D=[],w=[];n<b[1]&&(p.indexOf("top")>=0?(n=b[1],D.push("top")):w.push("top")),n+i>b[3]&&(p.indexOf("bottom")>=0?(n=b[3]-i,D.push("bottom")):w.push("bottom")),r<b[0]&&(p.indexOf("left")>=0?(r=b[0],D.push("left")):w.push("left")),r+u>b[2]&&(p.indexOf("right")>=0?(r=b[2]-u,D.push("right")):w.push("right")),D.length&&!function(){var e=void 0;e="undefined"!=typeof t.options.pinnedClass?t.options.pinnedClass:t.getClass("pinned"),y.push(e),D.forEach(function(t){y.push(e+"-"+t)})}(),w.length&&!function(){var e=void 0;e="undefined"!=typeof t.options.outOfBoundsClass?t.options.outOfBoundsClass:t.getClass("out-of-bounds"),y.push(e),w.forEach(function(t){y.push(e+"-"+t)})}(),(D.indexOf("left")>=0||D.indexOf("right")>=0)&&(v.left=g.left=!1),(D.indexOf("top")>=0||D.indexOf("bottom")>=0)&&(v.top=g.top=!1),g.top===o.top&&g.left===o.left&&v.top===t.attachment.top&&v.left===t.attachment.left||(t.updateAttachClasses(v,g),t.trigger("update",{attachment:v,targetAttachment:g}))}),S(function(){t.options.addTargetClasses!==!1&&m(t.target,y,h),m(t.element,y,h)}),{top:n,left:r}}});var B=T.Utils,s=B.getBounds,m=B.updateClasses,S=B.defer;T.modules.push({position:function(e){var t=this,n=e.top,r=e.left,o=this.cache("element-bounds",function(){return s(t.element)}),a=o.height,i=o.width,u=this.getTargetBounds(),p=n+a,l=r+i,c=[];n<=u.bottom&&p>=u.top&&["left","right"].forEach(function(e){var t=u[e];t!==r&&t!==l||c.push(e)}),r<=u.right&&l>=u.left&&["top","bottom"].forEach(function(e){var t=u[e];t!==n&&t!==p||c.push(e)});var f=[],d=[],h=["left","top","right","bottom"];return f.push(this.getClass("abutted")),h.forEach(function(e){f.push(t.getClass("abutted")+"-"+e)}),c.length&&d.push(this.getClass("abutted")),c.forEach(function(e){d.push(t.getClass("abutted")+"-"+e)}),S(function(){t.options.addTargetClasses!==!1&&m(t.target,d,f),m(t.element,d,f)}),!0}});var A=function(){function e(e,t){var n=[],r=!0,o=!1,a=void 0;try{for(var i,s=e[Symbol.iterator]();!(r=(i=s.next()).done)&&(n.push(i.value),!t||n.length!==t);r=!0);}catch(e){o=!0,a=e}finally{try{!r&&s.return&&s.return()}finally{if(o)throw a}}return n}return function(t,n){if(Array.isArray(t))return t;if(Symbol.iterator in Object(t))return e(t,n);throw new TypeError("Invalid attempt to destructure non-iterable instance")}}();return T.modules.push({position:function(e){var t=e.top,n=e.left;if(this.options.shift){var r=this.options.shift;"function"==typeof this.options.shift&&(r=this.options.shift.call(this,{top:t,left:n}));var o=void 0,a=void 0;if("string"==typeof r){r=r.split(" "),r[1]=r[1]||r[0];var i=r,s=A(i,2);o=s[0],a=s[1],o=parseFloat(o,10),a=parseFloat(a,10)}else o=r.top,a=r.left;return t+=o,n+=a,{top:t,left:n}}}}),X})}])});
+},{"moment":50,"react":190,"react-dom":54,"react-onclickoutside":53}],53:[function(require,module,exports){
 /**
- * Gets the number for the first day of the weekend
- *
- * @param  {Object} props
- * @param  {Number/String} props.weekStartDay
- *
- * @return {Number}
+ * A higher-order-component for handling onClickOutside for React components.
  */
-var getWeekendStartDay = function getWeekendStartDay(props) {
-  var weekendStartDay = props.weekendStartDay;
-
-
-  if (weekendStartDay == null) {
-    return getWeekStartDay(props) + 5 % 7;
-  }
-
-  return weekendStartDay;
-};
-
-/**
- * Gets a moment that points to the first day of the week
- *
- * @param  {Moment/Date/String} value]
- * @param  {Object} props
- * @param  {String} props.dateFormat
- * @param  {String} props.locale
- * @param  {Number/String} props.weekStartDay
- *
- * @return {Moment}
- */
-var getWeekStartMoment = function getWeekStartMoment(value, props) {
-  var locale = props.locale;
-  var dateFormat = props.dateFormat;
-
-  var weekStartDay = getWeekStartDay(props);
-
-  return (0, _toMoment2.default)(value, {
-    locale: locale,
-    dateFormat: dateFormat
-  }).day(weekStartDay);
-};
-
-/**
- * Returns an array of moments with the days in the month of the value
- *
- * @param  {Moment/Date/String} value
- *
- * @param  {Object} props
- * @param  {String} props.locale
- * @param  {String} props.dateFormat
- * @param  {String} props.weekStartDay
- * @param  {Boolean} props.alwaysShowPrevWeek
- *
- * @return {Moment[]}
- */
-var getDaysInMonthView = function getDaysInMonthView(value, props) {
-  var locale = props.locale;
-  var dateFormat = props.dateFormat;
-
-  var toMomentParam = { locale: locale, dateFormat: dateFormat };
-
-  var first = (0, _toMoment2.default)(value, toMomentParam).startOf('month');
-  var beforeFirst = (0, _toMoment2.default)(value, toMomentParam).startOf('month').add(-1, 'days');
-
-  var start = getWeekStartMoment(first, props);
-
-  var result = [];
-
-  var i = 0;
-
-  if (beforeFirst.isBefore(start)
-  // and it doesn't start with a full week before and the
-  // week has at least 1 day from current month (default)
-   && (props.alwaysShowPrevWeek || !start.isSame(first))) {
-    start.add(-1, 'weeks');
-  }
-
-  for (; i < 42; i++) {
-    result.push((0, _toMoment2.default)(start, toMomentParam));
-    start.add(1, 'days');
-  }
-
-  return result;
-};
-
-/**
- * @param  {Object} props
- * @param  {String} props.locale
- * @param  {Number} props.weekStartDay
- * @param  {Array/Function} props.weekDayNames
- *
- * @return {String[]}
- */
-var getWeekDayNames = function getWeekDayNames(props) {
-  var weekStartDay = props.weekStartDay;
-  var weekDayNames = props.weekDayNames;
-  var locale = props.locale;
-
-
-  var names = weekDayNames;
-
-  if (typeof names == 'function') {
-    names = names(weekStartDay, locale);
-  } else if (Array.isArray(names)) {
-    names = [].concat(_toConsumableArray(names));
-
-    var index = weekStartDay;
-
-    while (index > 0) {
-      names.push(names.shift());
-      index--;
-    }
-  }
-
-  return names;
-};
-
-var BasicMonthView = function (_Component) {
-  _inherits(BasicMonthView, _Component);
-
-  function BasicMonthView() {
-    _classCallCheck(this, BasicMonthView);
-
-    return _possibleConstructorReturn(this, Object.getPrototypeOf(BasicMonthView).apply(this, arguments));
-  }
-
-  _createClass(BasicMonthView, [{
-    key: 'componentWillMount',
-    value: function componentWillMount() {
-      this.updateBem(this.props);
-      this.updateToMoment(this.props);
-    }
-  }, {
-    key: 'componentWillReceiveProps',
-    value: function componentWillReceiveProps(nextProps) {
-      if (nextProps.defaultClassName != this.props.defaultClassName) {
-        this.updateBem(nextProps);
-      }
-
-      this.updateToMoment(nextProps);
-    }
-  }, {
-    key: 'updateBem',
-    value: function updateBem(props) {
-      this.bem = (0, _bemFactory2.default)(props.defaultClassName);
-    }
-  }, {
-    key: 'updateToMoment',
-    value: function updateToMoment(props) {
-      this.toMoment = function (value, dateFormat) {
-        return (0, _toMoment2.default)(value, {
-          locale: props.locale,
-          dateFormat: dateFormat || props.dateFormat
-        });
-      };
-    }
-  }, {
-    key: 'prepareProps',
-    value: function prepareProps(thisProps) {
-      var props = (0, _objectAssign2.default)({}, thisProps);
-
-      props.viewMoment = props.viewMoment || this.toMoment(props.viewDate);
-
-      props.weekStartDay = getWeekStartDay(props);
-
-      props.className = this.prepareClassName(props);
-
-      return props;
-    }
-  }, {
-    key: 'prepareClassName',
-    value: function prepareClassName(props) {
-      return (0, _join2.default)(props.className, CLASS_NAME + ' dp-month-view');
-    }
-  }, {
-    key: 'render',
-    value: function render() {
-      var props = this.p = this.prepareProps(this.props);
-
-      var viewMoment = props.viewMoment;
-
-
-      var daysInView = props.daysInView || getDaysInMonthView(viewMoment, props);
-
-      var children = [this.renderWeekDayNames(), this.renderDays(props, daysInView)];
-
-      if (props.renderChildren) {
-        children = props.renderChildren(children, props);
-      }
-
-      var flexProps = (0, _objectAssign2.default)({}, props);
-
-      delete flexProps.alwaysShowPrevWeek;
-      delete flexProps.cleanup;
-      delete flexProps.dateFormat;
-      delete flexProps.daysInView;
-      delete flexProps.defaultClassName;
-      delete flexProps.defaultDate;
-      delete flexProps.defaultValue;
-      delete flexProps.forceValidDate;
-      delete flexProps.locale;
-      delete flexProps.moment;
-      delete flexProps.onClockEnterKey;
-      delete flexProps.onClockEscapeKey;
-      delete flexProps.onClockInputBlur;
-      delete flexProps.onClockInputFocus;
-      delete flexProps.onClockInputMouseDown;
-      delete flexProps.onFooterCancelClick;
-      delete flexProps.onFooterClearClick;
-      delete flexProps.onFooterOkClick;
-      delete flexProps.onFooterTodayClick;
-      delete flexProps.onRenderDay;
-      delete flexProps.renderChildren;
-      delete flexProps.renderDay;
-      delete flexProps.timestamp;
-      delete flexProps.value;
-      delete flexProps.viewDate;
-      delete flexProps.viewMoment;
-      delete flexProps.weekDayNames;
-      delete flexProps.weekNumbers;
-      delete flexProps.weekNumberName;
-      delete flexProps.weekStartDay;
-
-      if (typeof props.cleanup == 'function') {
-        props.cleanup(flexProps);
-      }
-
-      return _react2.default.createElement(_reactFlex.Flex, _extends({
-        column: true,
-        wrap: false,
-        inline: true,
-        alignItems: 'stretch'
-      }, flexProps, {
-
-        children: children
-      }));
-    }
-
-    /**
-     * Render the week number cell
-     * @param  {Moment[]} days The days in a week
-     * @return {React.DOM}
-     */
-
-  }, {
-    key: 'renderWeekNumber',
-    value: function renderWeekNumber(props, days) {
-      var firstDayOfWeek = days[0];
-      var week = firstDayOfWeek.weeks();
-
-      var weekNumberProps = {
-        key: 'week',
-
-        className: this.bem('cell') + ' ' + this.bem('week-number') + ' dp-cell dp-weeknumber',
-
-        // week number
-        week: week,
-
-        // the days in this week
-        days: days,
-
-        date: firstDayOfWeek,
-
-        children: week
-      };
-
-      var renderWeekNumber = props.renderWeekNumber;
-
-      var result = void 0;
-
-      if (renderWeekNumber) {
-        result = renderWeekNumber(weekNumberProps);
-      }
-
-      if (result === undefined) {
-        var divProps = (0, _objectAssign2.default)({}, weekNumberProps);
-
-        delete divProps.date;
-        delete divProps.days;
-        delete divProps.week;
-
-        result = _react2.default.createElement('div', divProps);
-      }
-
-      return result;
-    }
-
-    /**
-     * Render the given array of days
-     * @param  {Moment[]} days
-     *
-     * @return {React.DOM}
-     */
-
-  }, {
-    key: 'renderDays',
-    value: function renderDays(props, days) {
-      var _this2 = this;
-
-      var nodes = days.map(function (date) {
-        return _this2.renderDay(props, date);
-      });
-
-      var len = days.length;
-      var buckets = [];
-      var bucketsLen = Math.ceil(len / 7);
-
-      var i = 0;
-      var weekStart = void 0;
-      var weekEnd = void 0;
-
-      for (; i < bucketsLen; i++) {
-        weekStart = i * 7;
-        weekEnd = (i + 1) * 7;
-
-        buckets.push([props.weekNumbers && this.renderWeekNumber(props, days.slice(weekStart, weekEnd))].concat(nodes.slice(weekStart, weekEnd)));
-      }
-
-      return buckets.map(function (bucket, index) {
-        return _react2.default.createElement('div', {
-          key: 'row_' + index,
-          className: _this2.bem('row') + ' dp-week dp-row',
-          children: bucket
-        });
-      });
-    }
-  }, {
-    key: 'renderDay',
-    value: function renderDay(props, dateMoment) {
-      var dayText = _format2.default.day(dateMoment, props.dayFormat);
-
-      var classes = [this.bem('cell'), this.bem('day'), 'dp-cell dp-day'];
-
-      var renderDayProps = {
-        day: dayText,
-        dateMoment: dateMoment,
-        timestamp: +dateMoment,
-
-        key: dayText,
-        className: classes.join(' '),
-        children: dayText
-      };
-
-      if (typeof props.onRenderDay === 'function') {
-        renderDayProps = props.onRenderDay(renderDayProps);
-      }
-
-      var renderFunction = props.renderDay || RENDER_DAY;
-
-      var result = renderFunction(renderDayProps);
-
-      if (result === undefined) {
-        result = RENDER_DAY(renderDayProps);
-      }
-
-      return result;
-    }
-  }, {
-    key: 'renderWeekDayNames',
-    value: function renderWeekDayNames() {
-      var _this3 = this;
-
-      var props = this.p;
-      var weekNumbers = props.weekNumbers;
-      var weekNumberName = props.weekNumberName;
-      var weekDayNames = props.weekDayNames;
-      var renderWeekDayNames = props.renderWeekDayNames;
-      var renderWeekDayName = props.renderWeekDayName;
-      var weekStartDay = props.weekStartDay;
-
-
-      if (weekDayNames === false) {
-        return null;
-      }
-
-      var names = weekNumbers ? [weekNumberName].concat(getWeekDayNames(props)) : getWeekDayNames(props);
-
-      var className = this.bem('row') + ' ' + this.bem('week-day-names') + ' dp-row dp-week-day-names';
-
-      var renderProps = {
-        className: className,
-        names: names
-      };
-
-      if (renderWeekDayNames) {
-        return renderWeekDayNames(renderProps);
-      }
-
-      return _react2.default.createElement(
-        'div',
-        { className: className },
-        names.map(function (name, index) {
-          var props = {
-            weekStartDay: weekStartDay,
-            index: index,
-            name: name,
-
-            key: index,
-            className: _this3.bem('cell') + ' ' + _this3.bem('week-day-name') + ' dp-week-day-name',
-            children: name
-          };
-
-          if (renderWeekDayName) {
-            return renderWeekDayName(props);
-          }
-
-          var divProps = (0, _objectAssign2.default)({}, props);
-
-          delete divProps.index;
-          delete divProps.weekStartDay;
-          delete divProps.name;
-
-          return _react2.default.createElement('div', divProps);
-        })
-      );
-    }
-  }]);
-
-  return BasicMonthView;
-}(_reactClass2.default);
-
-BasicMonthView.propTypes = {
-  viewDate: _react.PropTypes.any,
-  viewMoment: _react.PropTypes.any,
-
-  locale: _react.PropTypes.string,
-  weekStartDay: _react.PropTypes.number, // 0 is Sunday in the English locale
-
-  // boolean prop to show/hide week numbers
-  weekNumbers: _react.PropTypes.bool,
-
-  // the name to give to the week number column
-  weekNumberName: _react.PropTypes.string,
-
-  weekDayNames: function weekDayNames(props, propName) {
-    var value = props[propName];
-
-    if (typeof value != 'function' && value !== false && !Array.isArray(value)) {
-      return new Error('"weekDayNames" should be a function, an array or the boolean "false"');
-    }
-
-    return undefined;
-  },
-
-
-  renderWeekDayNames: _react.PropTypes.func,
-  renderWeekDayName: _react.PropTypes.func,
-
-  renderWeekNumber: _react.PropTypes.func,
-  renderDay: _react.PropTypes.func,
-  onRenderDay: _react.PropTypes.func,
-
-  alwaysShowPrevWeek: _react.PropTypes.bool
-};
-
-BasicMonthView.defaultProps = {
-
-  defaultClassName: CLASS_NAME,
-
-  dateFormat: 'YYYY-MM-DD',
-  alwaysShowPrevWeek: false,
-  weekNumbers: true,
-  weekNumberName: null,
-
-  weekDayNames: _getWeekDayNames2.default
-};
-
-exports.default = BasicMonthView;
-exports.getWeekStartDay = getWeekStartDay;
-exports.getWeekStartMoment = getWeekStartMoment;
-exports.getWeekendStartDay = getWeekendStartDay;
-exports.getDaysInMonthView = getDaysInMonthView;
-},{"./bemFactory":86,"./join":90,"./toMoment":92,"./utils/format":94,"./utils/getWeekDayNames":96,"moment":52,"object-assign":100,"react":263,"react-class":56,"react-flex":107}],59:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.NAV_KEYS = undefined;
-
-var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactClass = require('react-class');
-
-var _reactClass2 = _interopRequireDefault(_reactClass);
-
-var _objectAssign = require('object-assign');
-
-var _objectAssign2 = _interopRequireDefault(_objectAssign);
-
-var _assignDefined = require('./assignDefined');
-
-var _assignDefined2 = _interopRequireDefault(_assignDefined);
-
-var _MonthView = require('./MonthView');
-
-var _MonthView2 = _interopRequireDefault(_MonthView);
-
-var _toMoment = require('./toMoment');
-
-var _toMoment2 = _interopRequireDefault(_toMoment);
-
-var _join = require('./join');
-
-var _join2 = _interopRequireDefault(_join);
-
-var _ClockInput = require('./ClockInput');
-
-var _ClockInput2 = _interopRequireDefault(_ClockInput);
-
-var _forwardTime = require('./utils/forwardTime');
-
-var _forwardTime2 = _interopRequireDefault(_forwardTime);
-
-var _reactFlex = require('react-flex');
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Calendar = function (_Component) {
-  _inherits(Calendar, _Component);
-
-  function Calendar(props) {
-    _classCallCheck(this, Calendar);
-
-    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Calendar).call(this, props));
-
-    _this.state = {
-      timeFocused: false
-    };
-    return _this;
-  }
-
-  _createClass(Calendar, [{
-    key: 'prepareDate',
-    value: function prepareDate(props) {
-      return (0, _toMoment2.default)(props.date, props);
-    }
-  }, {
-    key: 'render',
-    value: function render() {
-      var _this2 = this;
-
-      var props = this.p = (0, _objectAssign2.default)({}, this.props);
-      var dateFormat = props.dateFormat.toLowerCase();
-
-      props.date = this.prepareDate(props);
-      if (props.showClock === undefined) {
-        props.showClock = dateFormat.indexOf('k') != -1 || dateFormat.indexOf('h') != -1;
-      }
-
-      var timeFormat = dateFormat.substring(dateFormat.toLowerCase().indexOf('hh'));
-
-      props.timeFormat = timeFormat;
-
-      var className = (0, _join2.default)(props.className, 'react-date-picker__calendar', props.theme && 'react-date-picker__calendar--theme-' + props.theme);
-
-      var monthViewProps = (0, _objectAssign2.default)({}, this.props);
-
-      delete monthViewProps.onTimeChange;
-      delete monthViewProps.showClock;
-      delete monthViewProps.updateOnWheel;
-      delete monthViewProps.wrapTime;
-
-      if (typeof this.props.cleanup == 'function') {
-        this.props.cleanup(monthViewProps);
-      }
-
-      var monthView = _react2.default.createElement(_MonthView2.default, _extends({}, monthViewProps, {
-        onChange: this.onChange,
-        className: null,
-        style: null,
-        ref: function ref(view) {
-          _this2.view = view;
-        },
-        renderChildren: this.renderChildren
-      }));
-
-      return _react2.default.createElement(
-        _reactFlex.Flex,
-        { inline: true, row: true, wrap: false, className: className, style: props.style },
-        monthView
-      );
-    }
-  }, {
-    key: 'isHistoryViewVisible',
-    value: function isHistoryViewVisible() {
-      if (this.view && this.view.isHistoryViewVisible) {
-        return this.view.isHistoryViewVisible();
-      }
-
-      return false;
-    }
-  }, {
-    key: 'renderChildren',
-    value: function renderChildren(_ref) {
-      var _ref2 = _slicedToArray(_ref, 3);
-
-      var navBar = _ref2[0];
-      var inner = _ref2[1];
-      var footer = _ref2[2];
-
-      var props = this.p;
-      var clockInput = props.showClock && this.renderClockInput();
-
-      var children = [navBar, _react2.default.createElement(
-        _reactFlex.Flex,
-        { justifyContent: 'center', wrap: this.props.wrap || this.props.wrapTime },
-        _react2.default.createElement(_reactFlex.Flex, {
-          flexGrow: '1',
-          flexShrink: '0',
-          flexBasis: 'auto',
-          column: true,
-          wrap: false,
-          alignItems: 'stretch',
-          children: inner
-        }),
-        clockInput
-      ), footer];
-
-      return _react2.default.createElement(_reactFlex.Flex, {
-        column: true,
-        wrap: false,
-        alignItems: 'stretch',
-        children: children
-      });
-    }
-  }, {
-    key: 'focus',
-    value: function focus() {
-      if (this.view) {
-        this.view.focus();
-      }
-    }
-  }, {
-    key: 'isFocused',
-    value: function isFocused() {
-      if (this.view) {
-        return this.view.isFocused();
-      }
-
-      return false;
-    }
-  }, {
-    key: 'onViewKeyDown',
-    value: function onViewKeyDown() {
-      if (this.view) {
-        var _view;
-
-        (_view = this.view).onViewKeyDown.apply(_view, arguments);
-      }
-    }
-  }, {
-    key: 'isTimeInputFocused',
-    value: function isTimeInputFocused() {
-      return this.state.timeFocused;
-    }
-  }, {
-    key: 'renderClockInput',
-    value: function renderClockInput() {
-      var _this3 = this,
-          _clockInputProps;
-
-      var clockInput = null;
-
-      var readOnly = this.props.readOnly;
-
-      var clockInputProps = (_clockInputProps = {
-        ref: function ref(clkInput) {
-          _this3.clockInput = clkInput;
-        },
-        viewIndex: this.props.viewIndex,
-        dateFormat: this.p.dateFormat
-      }, _defineProperty(_clockInputProps, readOnly ? 'value' : 'defaultValue', this.p.date), _defineProperty(_clockInputProps, 'onFocus', this.onClockInputFocus), _defineProperty(_clockInputProps, 'onBlur', this.onClockInputBlur), _defineProperty(_clockInputProps, 'onChange', this.onTimeChange), _defineProperty(_clockInputProps, 'onMouseDown', this.onClockInputMouseDown), _clockInputProps);
-
-      (0, _assignDefined2.default)(clockInputProps, {
-        onEnterKey: this.props.onClockEnterKey,
-        onEscapeKey: this.props.onClockEscapeKey,
-        readOnly: readOnly,
-        tabIndex: readOnly ? null : this.props.clockTabIndex,
-        theme: this.props.theme,
-        updateOnWheel: this.props.updateOnWheel
-      });
-
-      if (clockInput) {
-        return _react2.default.cloneElement(clockInput, clockInputProps);
-      }
-
-      return _react2.default.createElement(_ClockInput2.default, clockInputProps);
-    }
-  }, {
-    key: 'onClockInputFocus',
-    value: function onClockInputFocus() {
-      this.setState({
-        timeFocused: true
-      });
-
-      this.props.onClockInputFocus();
-    }
-  }, {
-    key: 'onClockInputBlur',
-    value: function onClockInputBlur() {
-      this.setState({
-        timeFocused: false
-      });
-
-      this.props.onClockInputBlur();
-    }
-  }, {
-    key: 'onClockInputMouseDown',
-    value: function onClockInputMouseDown(event) {
-      event.stopPropagation();
-      if (event.target && event.target.type != 'text') {
-        // in order not to blur - in case we're in a date field
-        event.preventDefault();
-      }
-
-      this.clockInput.focus();
-    }
-  }, {
-    key: 'onTimeChange',
-    value: function onTimeChange(value, timeFormat) {
-      this.time = value;
-      this.props.onTimeChange(value, timeFormat);
-
-      var view = this.view;
-      var moment = view.p.moment;
-
-      if (moment == null) {
-        return;
-      }
-
-      view.onChange({
-        dateMoment: moment,
-        timestamp: +moment
-      });
-    }
-  }, {
-    key: 'onChange',
-    value: function onChange(dateString, _ref3, event) {
-      var dateMoment = _ref3.dateMoment;
-      var timestamp = _ref3.timestamp;
-
-      var props = this.p;
-
-      if (props.showClock) {
-        var time = (0, _toMoment2.default)(this.time || this.clockInput.getValue(), {
-          dateFormat: props.timeFormat,
-          locale: props.locale
-        });
-
-        (0, _forwardTime2.default)(time, dateMoment);
-        timestamp = +dateMoment;
-        dateString = this.view.format(dateMoment);
-      }
-
-      if (this.props.onChange) {
-        this.props.onChange(dateString, { dateMoment: dateMoment, timestamp: timestamp, dateString: dateString }, event);
-      }
-    }
-  }]);
-
-  return Calendar;
-}(_reactClass2.default);
-
-exports.default = Calendar;
-
-
-Calendar.defaultProps = {
-  dateFormat: 'YYYY-MM-DD',
-
-  theme: 'default',
-
-  isDatePicker: true,
-  wrapTime: false,
-
-  onTimeChange: function onTimeChange() {},
-
-  onClockEnterKey: function onClockEnterKey() {},
-  onClockInputBlur: function onClockInputBlur() {},
-  onClockInputFocus: function onClockInputFocus() {},
-
-  onFooterTodayClick: function onFooterTodayClick() {},
-  onFooterCancelClick: function onFooterCancelClick() {},
-  onFooterClearClick: function onFooterClearClick() {},
-  onFooterOkClick: function onFooterOkClick() {}
-};
-
-Calendar.propTypes = {};
-
-exports.NAV_KEYS = _MonthView.NAV_KEYS;
-},{"./ClockInput":61,"./MonthView":71,"./assignDefined":85,"./join":90,"./toMoment":92,"./utils/forwardTime":95,"object-assign":100,"react":263,"react-class":56,"react-flex":107}],60:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactClass = require('react-class');
-
-var _reactClass2 = _interopRequireDefault(_reactClass);
-
-var _objectAssign = require('object-assign');
-
-var _objectAssign2 = _interopRequireDefault(_objectAssign);
-
-var _reactNotifyResize = require('react-notify-resize');
-
-var _join = require('./join');
-
-var _join2 = _interopRequireDefault(_join);
-
-var _toMoment = require('./toMoment');
-
-var _toMoment2 = _interopRequireDefault(_toMoment);
-
-var _reactStyleNormalizer = require('react-style-normalizer');
-
-var _reactStyleNormalizer2 = _interopRequireDefault(_reactStyleNormalizer);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var MINUTES = Array.apply(null, new Array(60)).map(function (_, index) {
-  return index;
-});
-
-var toUpperFirst = function toUpperFirst(str) {
-  return str ? str.charAt(0).toUpperCase() + str.substr(1) : '';
-};
-
-var transformStyle = (0, _reactStyleNormalizer2.default)({ transform: '' });
-
-var rotateTickStyle = function rotateTickStyle(tick, _ref, totalSize, offset) {
-  var width = _ref.width;
-  var height = _ref.height;
-
-  var result = (0, _objectAssign2.default)({}, transformStyle);
-  var deg = tick * 6;
-
-  var transform = 'translate3d(' + -width / 2 + 'px, ' + -height / 2 + 'px, 0px) ' + ('rotate(' + deg + 'deg) translate3d(0px, -' + offset + 'px, 0px)');
-
-  Object.keys(result).forEach(function (name) {
-    result[name] = transform;
-  });
-
-  return result;
-};
-
-var Clock = function (_Component) {
-  _inherits(Clock, _Component);
-
-  function Clock(props) {
-    _classCallCheck(this, Clock);
-
-    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Clock).call(this, props));
-
-    var time = void 0;
-    var seconds = void 0;
-
-    if (props.defaultSeconds) {
-      seconds = props.defaultSeconds == true ? Date.now() / 1000 : +props.defaultSeconds;
-    }
-
-    if (props.defaultTime) {
-      time = props.defaultTime == true ? Date.now() : +props.defaultTime;
-    }
-
-    // if (time === undefined) {
-    //   seconds = 0
-    // }
-
-    _this.state = {};
-
-    if (seconds !== undefined) {
-      _this.state.seconds = seconds;
-      _this.state.defaultSeconds = seconds;
-    }
-
-    if (time !== undefined) {
-      _this.state.time = time;
-      _this.state.defaultTime = time;
-    }
-    return _this;
-  }
-
-  _createClass(Clock, [{
-    key: 'shouldRun',
-    value: function shouldRun(props) {
-      props = props || this.props;
-
-      if (props.run === false) {
-        return false;
-      }
-
-      return !!(props.defaultSeconds || props.defaultTime);
-    }
-  }, {
-    key: 'componentDidMount',
-    value: function componentDidMount() {
-      if (this.shouldRun(this.props)) {
-        this.start();
-      }
-
-      if (this.props.size == 'auto') {
-        this.setState({
-          rendered: true
-        });
-      }
-    }
-  }, {
-    key: 'componentWillReceiveProps',
-    value: function componentWillReceiveProps(nextProps) {
-      var currentRun = this.shouldRun(this.props);
-      var nextRun = this.shouldRun(nextProps);
-
-      if (!currentRun && nextRun) {
-        this.start();
-      } else if (currentRun && !nextRun) {
-        this.stop();
-      }
-    }
-  }, {
-    key: 'start',
-    value: function start() {
-      this.startTime = Date.now ? Date.now() : +new Date();
-
-      this.run();
-    }
-  }, {
-    key: 'stop',
-    value: function stop() {
-      if (this.timeoutId) {
-        clearTimeout(this.timeoutId);
-      }
-    }
-  }, {
-    key: 'run',
-    value: function run() {
-      var _this2 = this;
-
-      this.timeoutId = setTimeout(function () {
-        _this2.update();
-        _this2.run();
-      }, this.props.updateInterval || 1000);
-    }
-  }, {
-    key: 'update',
-    value: function update() {
-      var now = Date.now ? Date.now() : +new Date();
-      var diff = now - this.startTime;
-
-      var seconds = this.getPropsSeconds();
-
-      if (seconds !== undefined) {
-        this.setSeconds(seconds + diff / 1000);
-        return;
-      }
-
-      var time = this.getPropsTime();
-
-      this.setTime(time + diff);
-    }
-  }, {
-    key: 'setSeconds',
-    value: function setSeconds(seconds) {
-      this.setState({
-        seconds: seconds
-      });
-
-      if (this.props.onSecondsChange) {
-        this.props.onSecondsChange(seconds);
-      }
-    }
-  }, {
-    key: 'setTime',
-    value: function setTime(time) {
-      this.setState({
-        time: time
-      });
-
-      if (this.props.onTimeChange) {
-        this.props.onTimeChange(time);
-      }
-    }
-  }, {
-    key: 'getPropsTime',
-    value: function getPropsTime() {
-      return this.props.time || this.state.defaultTime || 0;
-    }
-  }, {
-    key: 'getPropsSeconds',
-    value: function getPropsSeconds() {
-      return this.props.seconds || this.state.defaultSeconds;
-    }
-  }, {
-    key: 'getSeconds',
-    value: function getSeconds() {
-      return this.state.seconds || this.getPropsSeconds();
-    }
-  }, {
-    key: 'getTime',
-    value: function getTime() {
-      return this.state.time || this.getPropsTime();
-    }
-  }, {
-    key: 'render',
-    value: function render() {
-      var props = this.p = (0, _objectAssign2.default)({}, this.props);
-      var size = props.size;
-
-      if (size == 'auto') {
-        this.ignoreRender = false;
-        if (!this.state.rendered) {
-          this.ignoreRender = true;
-        }
-
-        size = props.size = this.state.size;
-      }
-
-      var valueSeconds = this.getSeconds();
-      var valueTime = this.getTime();
-
-      var width = size;
-      var height = size;
-
-      var className = (0, _join2.default)(props.className, 'react-date-picker__clock', 'react-date-picker__clock--theme-' + props.theme);
-
-      var seconds = void 0;
-      var minutes = void 0;
-      var hours = void 0;
-
-      if (valueSeconds != undefined) {
-        seconds = Math.floor(valueSeconds % 60);
-        minutes = valueSeconds / 60 % 60;
-        hours = valueSeconds / 3600 % 24;
-      } else {
-        var mom = (0, _toMoment2.default)(valueTime);
-
-        seconds = mom.seconds();
-        minutes = mom.minutes() + seconds / 60;
-        hours = mom.hours() + minutes / 60;
-      }
-
-      hours *= 5;
-
-      var defaultStyle = {};
-
-      if (props.color) {
-        defaultStyle.borderColor = props.color;
-      }
-
-      var style = (0, _objectAssign2.default)(defaultStyle, props.style, {
-        width: width, height: height, borderWidth: props.borderWidth
-      });
-
-      var divProps = (0, _objectAssign2.default)({}, props);
-
-      delete divProps.bigTickHeight;
-      delete divProps.bigTickOffset;
-      delete divProps.bigTickWidth;
-      delete divProps.borderColor;
-      delete divProps.borderWidth;
-      delete divProps.centerOverlaySize;
-      delete divProps.centerSize;
-      delete divProps.cleanup;
-      delete divProps.defaultSeconds;
-      delete divProps.defaultTime;
-      delete divProps.handHeight;
-      delete divProps.handOffset;
-      delete divProps.handWidth;
-      delete divProps.hourHandDiff;
-      delete divProps.isDatePickerClock;
-      delete divProps.minuteHandDiff;
-      delete divProps.seconds;
-      delete divProps.secondHandDiff;
-      delete divProps.secondHandWidth;
-      delete divProps.showHoursHand;
-      delete divProps.showMinutesHand;
-      delete divProps.showSecondsHand;
-      delete divProps.showSmallTicks;
-      delete divProps.smallTickHeight;
-      delete divProps.smallTickOffset;
-      delete divProps.smallTickWidth;
-      delete divProps.theme;
-      delete divProps.time;
-      delete divProps.tickHeight;
-      delete divProps.tickOffset;
-      delete divProps.tickWidth;
-
-      if (typeof props.cleanup == 'function') {
-        props.cleanup(divProps);
-      }
-
-      return _react2.default.createElement(
-        'div',
-        _extends({}, divProps, {
-          className: className,
-          style: style
-        }),
-        this.renderCenter(),
-        this.renderHourHand(hours),
-        this.renderMinuteHand(minutes),
-        this.renderSecondHand(seconds),
-        this.renderCenterOverlay(),
-        MINUTES.map(this.renderTick),
-        this.props.size == 'auto' && _react2.default.createElement(_reactNotifyResize.NotifyResize, { notifyOnMount: true, onResize: this.onResize })
-      );
-    }
-  }, {
-    key: 'renderCenter',
-    value: function renderCenter() {
-      var props = this.props;
-      var centerSize = props.centerSize || (props.bigTickHeight || props.tickHeight) * 3;
-
-      return _react2.default.createElement('div', {
-        className: 'react-date-picker__clock-center',
-        style: { width: centerSize, height: centerSize }
-      });
-    }
-  }, {
-    key: 'renderCenterOverlay',
-    value: function renderCenterOverlay() {
-      var props = this.props;
-      var centerOverlaySize = props.centerOverlaySize || props.handWidth * 4;
-
-      return _react2.default.createElement('div', {
-        className: 'react-date-picker__clock-overlay',
-        style: {
-          width: centerOverlaySize,
-          height: centerOverlaySize,
-          borderWidth: props.handWidth
-        }
-      });
-    }
-  }, {
-    key: 'onResize',
-    value: function onResize(_ref2) {
-      var width = _ref2.width;
-      var height = _ref2.height;
-
-      if (width != height) {
-        console.warn('Clock width != height. Please make sure it\'s a square.');
-      }
-
-      this.setState({
-        size: width
-      });
-    }
-  }, {
-    key: 'renderSecondHand',
-    value: function renderSecondHand(value) {
-      return this.props.showSecondsHand && this.renderHand('second', value);
-    }
-  }, {
-    key: 'renderMinuteHand',
-    value: function renderMinuteHand(value) {
-      return this.props.showMinutesHand && this.renderHand('minute', value);
-    }
-  }, {
-    key: 'renderHourHand',
-    value: function renderHourHand(value) {
-      return this.props.showHoursHand && this.renderHand('hour', value);
-    }
-  }, {
-    key: 'renderHand',
-    value: function renderHand(name, value) {
-      if (this.ignoreRender) {
-        return null;
-      }
-
-      var props = this.p;
-      var size = props.size;
-      var borderWidth = props.borderWidth;
-
-
-      var height = props[name + 'HandHeight'] || props.handHeight || size / 2 - props[name + 'HandDiff'];
-
-      var width = props[name + 'HandWidth'] || props.handWidth || props.tickWidth;
-      var offset = props[name + 'HandOffset'] || props.handOffset;
-
-      if (!offset && offset != 0) {
-        offset = 5;
-      }
-
-      var style = rotateTickStyle(value, { width: width, height: height }, size - borderWidth, height / 2 - offset);
-      style.width = width;
-      style.height = height;
-
-      if (props.color) {
-        style.background = props.color;
-      }
-
-      var className = (0, _join2.default)('react-date-picker__clock-hand', 'react-date-picker__clock-hand-' + name);
-
-      var renderName = 'render' + toUpperFirst(name) + 'Hand';
-
-      if (props[renderName]) {
-        return props[renderName]({
-          key: name,
-          className: className,
-          style: style
-        });
-      }
-
-      return _react2.default.createElement('div', { key: name, className: className, style: style });
-    }
-  }, {
-    key: 'renderTick',
-    value: function renderTick(tick) {
-      if (this.ignoreRender) {
-        return null;
-      }
-
-      var _p = this.p;
-      var size = _p.size;
-      var borderWidth = _p.borderWidth;
-      var tickWidth = _p.tickWidth;
-      var smallTickWidth = _p.smallTickWidth;
-      var bigTickWidth = _p.bigTickWidth;
-      var tickHeight = _p.tickHeight;
-      var smallTickHeight = _p.smallTickHeight;
-      var bigTickHeight = _p.bigTickHeight;
-      var tickOffset = _p.tickOffset;
-      var smallTickOffset = _p.smallTickOffset;
-      var bigTickOffset = _p.bigTickOffset;
-
-
-      var small = !!(tick % 5);
-      var sizeName = small ? 'small' : 'big';
-
-      if (small && !this.props.showSmallTicks) {
-        return false;
-      }
-
-      var className = (0, _join2.default)('react-date-picker__clock-tick', 'react-date-picker__clock-tick--' + sizeName);
-
-      var offset = small ? smallTickOffset || tickOffset : bigTickOffset || tickOffset;
-
-      var tWidth = small ? smallTickWidth || tickWidth : bigTickWidth || tickWidth;
-
-      var tHeight = small ? smallTickHeight || tickHeight : bigTickHeight || tickHeight;
-
-      var totalSize = size - borderWidth;
-      var style = rotateTickStyle(tick, {
-        width: tWidth,
-        height: tHeight
-      }, totalSize, totalSize / 2 - (tHeight / 2 + offset));
-
-      style.height = tHeight;
-      style.width = tWidth;
-
-      if (this.props.color) {
-        style.background = this.props.color;
-      }
-
-      if (this.props.renderTick) {
-        return this.props.renderTick({
-          tick: tick,
-          className: className,
-          style: style
-        });
-      }
-
-      return _react2.default.createElement('div', { key: tick, className: className, style: style });
-    }
-  }]);
-
-  return Clock;
-}(_reactClass2.default);
-
-exports.default = Clock;
-
-
-Clock.defaultProps = {
-
-  centerSize: null,
-  centerOverlaySize: null,
-
-  size: 150,
-  theme: 'default',
-
-  showSecondsHand: true,
-  showHoursHand: true,
-  showMinutesHand: true,
-
-  handWidth: 2,
-  secondHandWidth: 1,
-  handOffset: 10,
-
-  hourHandDiff: 35,
-  minuteHandDiff: 25,
-  secondHandDiff: 10,
-
-  tickWidth: 1,
-  bigTickWidth: 2,
-  tickOffset: 2,
-
-  smallTickHeight: 6,
-  bigTickHeight: 10,
-
-  color: '',
-  borderWidth: 0,
-  showSmallTicks: true,
-  isDatePickerClock: true
-};
-},{"./join":90,"./toMoment":92,"object-assign":100,"react":263,"react-class":56,"react-notify-resize":115,"react-style-normalizer":130}],61:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactClass = require('react-class');
-
-var _reactClass2 = _interopRequireDefault(_reactClass);
-
-var _lodash = require('lodash.throttle');
-
-var _lodash2 = _interopRequireDefault(_lodash);
-
-var _objectAssign = require('object-assign');
-
-var _objectAssign2 = _interopRequireDefault(_objectAssign);
-
-var _reactFlex = require('react-flex');
-
-var _join = require('./join');
-
-var _join2 = _interopRequireDefault(_join);
-
-var _toMoment = require('./toMoment');
-
-var _toMoment2 = _interopRequireDefault(_toMoment);
-
-var _Clock = require('./Clock');
-
-var _Clock2 = _interopRequireDefault(_Clock);
-
-var _DateFormatSpinnerInput = require('./DateFormatSpinnerInput');
-
-var _DateFormatSpinnerInput2 = _interopRequireDefault(_DateFormatSpinnerInput);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var ClockInput = function (_Component) {
-  _inherits(ClockInput, _Component);
-
-  function ClockInput(props) {
-    _classCallCheck(this, ClockInput);
-
-    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(ClockInput).call(this, props));
-
-    var delay = props.changeDelay;
-    _this.throttleSetValue = delay == -1 ? _this.setValue : (0, _lodash2.default)(_this.setValue, delay);
-
-    _this.state = {
-      value: props.defaultValue || Date.now()
-    };
-    return _this;
-  }
-
-  _createClass(ClockInput, [{
-    key: 'getValue',
-    value: function getValue() {
-      return this.value;
-    }
-  }, {
-    key: 'render',
-    value: function render() {
-      var props = this.props;
-      var format = props.dateFormat || props.format;
-
-      var dateFormat = format.substring(format.toLowerCase().indexOf('hh'));
-
-      this.dateFormat = dateFormat;
-
-      this.value = props.value !== undefined ? props.value : this.state.value;
-
-      var className = (0, _join2.default)(props.className, 'react-date-picker__clock-input', props.theme && 'react-date-picker__clock-input--theme-' + props.theme);
-
-      var flexProps = (0, _objectAssign2.default)({}, this.props);
-
-      delete flexProps.changeDelay;
-      delete flexProps.cleanup;
-      delete flexProps.dateFormat;
-      delete flexProps.isClockInput;
-      delete flexProps.onEnterKey;
-      delete flexProps.onEscapeKey;
-      delete flexProps.onTimeChange;
-      delete flexProps.updateOnWheel;
-      delete flexProps.theme;
-      delete flexProps.viewIndex;
-      delete flexProps.wrapTime;
-
-      if (typeof this.props.cleanup == 'function') {
-        this.props.cleanup(flexProps);
-      }
-
-      return _react2.default.createElement(
-        _reactFlex.Flex,
-        _extends({
-          column: true
-        }, flexProps, {
-          value: null,
-          defaultValue: null,
-          className: className
-        }),
-        this.renderClock(),
-        this.renderTimeInput()
-      );
-    }
-  }, {
-    key: 'renderTimeInput',
-    value: function renderTimeInput() {
-      var _this2 = this;
-
-      var props = this.props;
-      var dateInput = _react2.default.Children.toArray(props.children).filter(function (child) {
-        return child && child.props && child.props.isDateInput;
-      })[0];
-
-      var dateInputProps = (0, _objectAssign2.default)({}, this.props, {
-        ref: function ref(field) {
-          _this2.field = field;
-        },
-        tabIndex: props.readOnly ? -1 : props.tabIndex || 0,
-        readOnly: props.readOnly,
-        value: this.value,
-        dateFormat: this.dateFormat,
-        onChange: this.onChange,
-        onKeyDown: this.onKeyDown,
-        size: props.size || this.dateFormat.length + 2
-      });
-
-      if (dateInput) {
-        return _react2.default.cloneElement(dateInput, dateInputProps);
-      }
-
-      return _react2.default.createElement(_DateFormatSpinnerInput2.default, _extends({}, dateInputProps, { style: null }));
-    }
-  }, {
-    key: 'focus',
-    value: function focus() {
-      if (this.field) {
-        this.field.focus();
-      }
-    }
-  }, {
-    key: 'onKeyDown',
-    value: function onKeyDown(event) {
-      if (this.props.onEnterKey && event.key == 'Enter') {
-        this.props.onEnterKey(event);
-      }
-
-      if (this.props.onEscapeKey && event.key == 'Escape') {
-        this.props.onEscapeKey(event);
-      }
-    }
-  }, {
-    key: 'onChange',
-    value: function onChange(value) {
-      if (this.props.value === undefined) {
-        this.setState({
-          value: value
-        });
-      }
-
-      if (this.props.onChange) {
-        this.throttleSetValue(value);
-      }
-    }
-  }, {
-    key: 'setValue',
-    value: function setValue(value) {
-      if (this.props.value === undefined) {
-        this.setState({
-          value: value
-        });
-      }
-
-      if (this.props.onChange) {
-        this.props.onChange(value, this.dateFormat);
-      }
-    }
-  }, {
-    key: 'renderClock',
-    value: function renderClock() {
-      var props = this.props;
-      var clock = _react2.default.Children.toArray(props.children).filter(function (child) {
-        return child && child.props && child.props.isDatePickerClock;
-      })[0];
-
-      var dateFormat = this.dateFormat;
-      var time = (0, _toMoment2.default)(this.value, { dateFormat: dateFormat });
-
-      var clockProps = {
-        time: time,
-        theme: props.theme,
-        showMinutesHand: dateFormat.indexOf('mm') != -1,
-        showSecondsHand: dateFormat.indexOf('ss') != -1
-      };
-
-      if (clock) {
-        return _react2.default.cloneElement(clock, clockProps);
-      }
-
-      return _react2.default.createElement(_Clock2.default, clockProps);
-    }
-  }]);
-
-  return ClockInput;
-}(_reactClass2.default);
-
-exports.default = ClockInput;
-
-
-ClockInput.defaultProps = {
-  changeDelay: 50,
-
-  dateFormat: 'YYYY-MM-DD',
-  updateOnWheel: true,
-
-  theme: 'default',
-
-  wrapTime: false,
-  isClockInput: true,
-
-  onTimeChange: function onTimeChange() {}
-};
-
-ClockInput.propTypes = {};
-},{"./Clock":60,"./DateFormatSpinnerInput":67,"./join":90,"./toMoment":92,"lodash.throttle":47,"object-assign":100,"react":263,"react-class":56,"react-flex":107}],62:[function(require,module,exports){
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.CLEAR_ICON = undefined;
-
-var _react = require("react");
-
-var _react2 = _interopRequireDefault(_react);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var CLEAR_ICON = exports.CLEAR_ICON = _react2.default.createElement(
-  "svg",
-  { height: "20", width: "20", viewBox: "0 0 24 24" },
-  _react2.default.createElement("path", { d: "M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" }),
-  _react2.default.createElement("path", { d: "M0 0h24v24H0z", fill: "none" })
-);
-},{"react":263}],63:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactDom = require('react-dom');
-
-var _reactClass = require('react-class');
-
-var _reactClass2 = _interopRequireDefault(_reactClass);
-
-var _objectAssign = require('object-assign');
-
-var _objectAssign2 = _interopRequireDefault(_objectAssign);
-
-var _reactFlex = require('react-flex');
-
-var _reactField = require('react-field');
-
-var _reactField2 = _interopRequireDefault(_reactField);
-
-var _DateFormatInput = require('../DateFormatInput');
-
-var _DateFormatInput2 = _interopRequireDefault(_DateFormatInput);
-
-var _reactInlineBlock = require('react-inline-block');
-
-var _reactInlineBlock2 = _interopRequireDefault(_reactInlineBlock);
-
-var _icons = require('./icons');
-
-var _moment = require('moment');
-
-var _moment2 = _interopRequireDefault(_moment);
-
-var _join = require('../join');
-
-var _join2 = _interopRequireDefault(_join);
-
-var _toMoment2 = require('../toMoment');
-
-var _toMoment3 = _interopRequireDefault(_toMoment2);
-
-var _Calendar = require('../Calendar');
-
-var _Calendar2 = _interopRequireDefault(_Calendar);
-
-var _joinFunctions = require('../joinFunctions');
-
-var _joinFunctions2 = _interopRequireDefault(_joinFunctions);
-
-var _assignDefined = require('../assignDefined');
-
-var _assignDefined2 = _interopRequireDefault(_assignDefined);
-
-var _forwardTime = require('../utils/forwardTime');
-
-var _forwardTime2 = _interopRequireDefault(_forwardTime);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var POSITIONS = { top: 'top', bottom: 'bottom' };
-
-var getPicker = function getPicker(props) {
-  return _react2.default.Children.toArray(props.children).filter(function (c) {
-    return c && c.props && c.props.isDatePicker;
-  })[0] || _react2.default.createElement(_Calendar2.default, null);
-};
-
-var FIND_INPUT = function FIND_INPUT(c) {
-  return c && (c.type === 'input' || c.props && c.isDateInput);
-};
-
-var preventDefault = function preventDefault(event) {
-  event.preventDefault();
-};
-
-var DateField = function (_Component) {
-  _inherits(DateField, _Component);
-
-  function DateField(props) {
-    _classCallCheck(this, DateField);
-
-    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(DateField).call(this, props));
-
-    _this.state = {
-      value: props.defaultValue === undefined ? '' : props.defaultValue,
-      expanded: props.defaultExpanded || false,
-      focused: false
-    };
-    return _this;
-  }
-
-  _createClass(DateField, [{
-    key: 'componentWillUnmount',
-    value: function componentWillUnmount() {
-      this.unmounted = true;
-    }
-  }, {
-    key: 'render',
-    value: function render() {
-      var props = this.prepareProps(this.props);
-
-      var flexProps = (0, _objectAssign2.default)({}, props);
-
-      delete flexProps.activeDate;
-      delete flexProps.cleanup;
-      delete flexProps.clearIcon;
-      delete flexProps.collapseOnDateClick;
-      delete flexProps.date;
-      delete flexProps.dateFormat;
-      delete flexProps.expanded;
-      delete flexProps.expandOnFocus;
-      delete flexProps.footer;
-      delete flexProps.forceValidDate;
-      delete flexProps.locale;
-      delete flexProps.onExpand;
-      delete flexProps.onExpandChange;
-      delete flexProps.onCollapse;
-      delete flexProps.minDate;
-      delete flexProps.maxDate;
-      delete flexProps.pickerProps;
-      delete flexProps.position;
-      delete flexProps.showClock;
-      delete flexProps.skipTodayTime;
-      delete flexProps.strict;
-      delete flexProps.valid;
-      delete flexProps.validateOnBlur;
-      delete flexProps.viewDate;
-      delete flexProps.value;
-      delete flexProps.text;
-      delete flexProps.theme;
-      delete flexProps.updateOnDateClick;
-
-      if (typeof props.cleanup == 'function') {
-        props.cleanup(flexProps);
-      }
-
-      return _react2.default.createElement(
-        _reactFlex.Flex,
-        _extends({
-          inline: true,
-          row: true,
-          wrap: false
-        }, flexProps),
-        this.renderInput(),
-        this.renderClearIcon(),
-        this.renderCalendarIcon(),
-        this.renderPicker()
-      );
-    }
-  }, {
-    key: 'renderInput',
-    value: function renderInput() {
-      var props = this.p;
-      var inputProps = this.prepareInputProps(props);
-
-      var input = void 0;
-
-      if (props.renderInput) {
-        input = props.renderInput(inputProps);
-      }
-
-      if (input === undefined) {
-        input = props.children.filter(FIND_INPUT)[0];
-
-        var FieldInput = props.forceValidDate ? _DateFormatInput2.default : _reactField2.default;
-
-        var propsForInput = (0, _objectAssign2.default)({}, inputProps);
-
-        if (!props.forceValidDate) {
-          delete propsForInput.date;
-          delete propsForInput.maxDate;
-          delete propsForInput.minDate;
-          delete propsForInput.dateFormat;
-        }
-
-        input = input ? _react2.default.cloneElement(input, propsForInput) : _react2.default.createElement(FieldInput, propsForInput);
-      }
-
-      return input;
-    }
-  }, {
-    key: 'renderClearIcon',
-    value: function renderClearIcon() {
-      var props = this.p;
-
-      if (!props.clearIcon || props.forceValidDate || props.disabled) {
-        return undefined;
-      }
-
-      var clearIcon = props.clearIcon === true ? _icons.CLEAR_ICON : props.clearIcon;
-
-      var clearIconProps = {
-        style: {
-          visibility: props.text ? 'visible' : 'hidden'
-        },
-        className: 'react-date-field__clear-icon',
-        onMouseDown: this.onClearMouseDown,
-        children: clearIcon
-      };
-
-      var result = void 0;
-
-      if (props.renderClearIcon) {
-        result = props.renderClearIcon(clearIconProps);
-      }
-
-      if (result === undefined) {
-        result = _react2.default.createElement(_reactInlineBlock2.default, clearIconProps);
-      }
-
-      return result;
-    }
-  }, {
-    key: 'onClearMouseDown',
-    value: function onClearMouseDown(event) {
-      event.preventDefault();
-      this.onFieldChange('');
-
-      if (!this.isFocused()) {
-        this.focus();
-      }
-    }
-  }, {
-    key: 'renderCalendarIcon',
-    value: function renderCalendarIcon() {
-      var result = void 0;
-      var renderIcon = this.props.renderCalendarIcon;
-
-      var calendarIconProps = {
-        className: 'react-date-field__calendar-icon',
-        onMouseDown: this.onCalendarIconMouseDown,
-        children: _react2.default.createElement('div', { className: 'react-date-field__calendar-icon-inner' })
-      };
-
-      if (renderIcon) {
-        result = renderIcon(calendarIconProps);
-      }
-
-      if (result === undefined) {
-        result = _react2.default.createElement('div', calendarIconProps);
-      }
-
-      return result;
-    }
-  }, {
-    key: 'onCalendarIconMouseDown',
-    value: function onCalendarIconMouseDown(event) {
-      if (this.props.disabled) {
-        return;
-      }
-      event.preventDefault();
-
-      if (!this.isFocused()) {
-        this.focus();
-      }
-
-      this.toggleExpand();
-    }
-  }, {
-    key: 'prepareExpanded',
-    value: function prepareExpanded(props) {
-      return props.expanded === undefined ? this.state.expanded : props.expanded;
-    }
-  }, {
-    key: 'prepareDate',
-    value: function prepareDate(props, pickerProps) {
-      props = props || this.p;
-      pickerProps = pickerProps || props.pickerProps;
-
-      var locale = props.locale || pickerProps.locale;
-      var dateFormat = props.dateFormat || pickerProps.dateFormat;
-
-      var value = props.value === undefined ? this.state.value : props.value;
-
-      var date = this.toMoment(value);
-      var valid = date.isValid();
-
-      if (value && typeof value != 'string' && valid) {
-        value = this.format(date);
-      }
-
-      if (date && valid) {
-        this.lastValidDate = date;
-      } else {
-        value = this.state.value;
-      }
-
-      var viewDate = this.state.viewDate || this.lastValidDate || new Date();
-      var activeDate = this.state.activeDate || this.lastValidDate || new Date();
-
-      return {
-        viewDate: viewDate,
-        activeDate: activeDate,
-        dateFormat: dateFormat,
-        locale: locale,
-        valid: valid,
-        date: date,
-        value: value
-      };
-    }
-  }, {
-    key: 'preparePickerProps',
-    value: function preparePickerProps(props) {
-      var picker = getPicker(props, this);
-
-      if (!picker) {
-        return null;
-      }
-
-      return picker.props || {};
-    }
-  }, {
-    key: 'prepareProps',
-    value: function prepareProps(thisProps) {
-      var props = this.p = (0, _objectAssign2.default)({}, thisProps);
-
-      props.children = _react2.default.Children.toArray(props.children);
-
-      props.expanded = this.prepareExpanded(props);
-      props.pickerProps = this.preparePickerProps(props);
-
-      var input = props.children.filter(FIND_INPUT)[0];
-
-      if (input && input.type == 'input') {
-        props.rawInput = true;
-        props.forceValidDate = false;
-      }
-
-      var dateInfo = this.prepareDate(props, props.pickerProps);
-
-      (0, _objectAssign2.default)(props, dateInfo);
-
-      if (props.text === undefined) {
-        props.text = this.state.text;
-
-        if (props.text == null) {
-          props.text = props.valid && props.date ? props.value : this.props.value;
-        }
-      }
-
-      if (props.text === undefined) {
-        props.text = '';
-      }
-
-      props.className = this.prepareClassName(props);
-
-      return props;
-    }
-  }, {
-    key: 'prepareClassName',
-    value: function prepareClassName(props) {
-      var position = POSITIONS[props.pickerProps.position || props.pickerPosition] || 'bottom';
-
-      return (0, _join2.default)(['react-date-field', props.className, props.disabled && 'react-date-field--disabled', props.theme && 'react-date-field--theme-' + props.theme, 'react-date-field--picker-position-' + position, this.isLazyFocused() && (0, _join2.default)('react-date-field--focused', props.focusedClassName), this.isExpanded() && (0, _join2.default)('react-date-field--expanded', props.expandedClassName), !props.valid && (0, _join2.default)(props.invalidClassName, 'react-date-field--invalid')]);
-    }
-  }, {
-    key: 'prepareInputProps',
-    value: function prepareInputProps(props) {
-      var _this2 = this;
-
-      var input = props.children.filter(FIND_INPUT)[0];
-      var inputProps = input && input.props || {};
-
-      var onBlur = (0, _joinFunctions2.default)(inputProps.onBlur, this.onFieldBlur);
-      var onFocus = (0, _joinFunctions2.default)(inputProps.onFocus, this.onFieldFocus);
-      var onChange = (0, _joinFunctions2.default)(inputProps.onChange, this.onFieldChange);
-      var onKeyDown = (0, _joinFunctions2.default)(inputProps.onKeyDown, this.onFieldKeyDown);
-
-      var newInputProps = (0, _objectAssign2.default)({}, inputProps, {
-
-        ref: function ref(f) {
-          _this2.field = f;
-        },
-        date: props.date,
-
-        onFocus: onFocus,
-        onBlur: onBlur,
-        onChange: onChange,
-
-        dateFormat: props.dateFormat,
-        value: props.text || '',
-
-        onKeyDown: onKeyDown,
-
-        className: (0, _join2.default)('react-date-field__input', inputProps.className)
-      });
-
-      (0, _assignDefined2.default)(newInputProps, {
-        placeholder: props.placeholder,
-        disabled: props.disabled,
-        minDate: props.minDate,
-        maxDate: props.maxDate
-      });
-
-      return newInputProps;
-    }
-  }, {
-    key: 'renderPicker',
-    value: function renderPicker() {
-      var _this3 = this;
-
-      var props = this.p;
-
-      if (this.isExpanded()) {
-        var newExpand = !this.picker;
-        var picker = getPicker(props, this);
-
-        var pickerProps = props.pickerProps;
-
-        var onMouseDown = (0, _joinFunctions2.default)(pickerProps.onMouseDown, this.onPickerMouseDown);
-        var onChange = (0, _joinFunctions2.default)(pickerProps.onChange, this.onPickerChange);
-
-        var date = props.valid && props.date;
-        var footer = pickerProps.footer !== undefined ? pickerProps.footer : props.footer;
-
-        var viewDate = newExpand && date ? date : props.viewDate;
-        var activeDate = newExpand && date ? date : props.activeDate;
-
-        return _react2.default.cloneElement(picker, (0, _assignDefined2.default)({
-          ref: function ref(p) {
-            _this3.picker = _this3.pickerView = p;
-
-            if (p && p.getView) {
-              _this3.pickerView = p.getView();
-            }
-
-            if (!_this3.state.viewDate) {
-              _this3.onViewDateChange(props.viewDate);
-            }
-          },
-
-          footer: footer,
-
-          focusOnNavMouseDown: false,
-          focusOnFooterMouseDown: false,
-
-          insideField: true,
-          showClock: props.showClock,
-
-          getTransitionTime: this.getTime,
-
-          updateOnWheel: props.updateOnWheel,
-
-          onClockInputBlur: this.onClockInputBlur,
-          onClockEnterKey: this.onClockEnterKey,
-          onClockEscapeKey: this.onClockEscapeKey,
-
-          footerClearDate: props.clearDate || props.minDate,
-
-          onFooterCancelClick: this.onFooterCancelClick,
-          onFooterTodayClick: this.onFooterTodayClick,
-          onFooterOkClick: this.onFooterOkClick,
-          onFooterClearClick: this.onFooterClearClick,
-
-          dateFormat: props.dateFormat,
-          theme: props.theme || pickerProps.theme,
-          arrows: props.navBarArrows,
-
-          className: (0, _join2.default)(pickerProps.className, 'react-date-field__picker'),
-
-          date: date || null,
-
-          tabIndex: -1,
-
-          viewDate: viewDate,
-          activeDate: activeDate,
-          locale: props.locale,
-
-          onViewDateChange: this.onViewDateChange,
-          onActiveDateChange: this.onActiveDateChange,
-          onTimeChange: this.onTimeChange,
-
-          onTransitionStart: this.onTransitionStart,
-
-          onMouseDown: onMouseDown,
-          onChange: onChange
-        }, {
-          minDate: props.minDate,
-          maxDate: props.maxDate
-        }));
-      }
-
-      this.time = null;
-
-      return null;
-    }
-  }, {
-    key: 'onTimeChange',
-    value: function onTimeChange(value, timeFormat) {
-      var timeMoment = this.toMoment(value, { dateFormat: timeFormat });
-
-      var time = ['hour', 'minute', 'second', 'millisecond'].reduce(function (acc, part) {
-        acc[part] = timeMoment.get(part);
-        return acc;
-      }, {});
-
-      this.time = time;
-    }
-  }, {
-    key: 'getTime',
-    value: function getTime() {
-      return this.time;
-    }
-  }, {
-    key: 'setValue',
-    value: function setValue(value) {
-      var config = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
-
-      var dateMoment = this.toMoment(value);
-      var dateString = this.format(dateMoment);
-
-      this.setDate(dateString, (0, _objectAssign2.default)(config, { dateMoment: dateMoment }));
-    }
-  }, {
-    key: 'onFooterOkClick',
-    value: function onFooterOkClick() {
-      var activeDate = this.p.activeDate;
-
-      if (activeDate) {
-        var date = this.toMoment(activeDate);
-
-        (0, _forwardTime2.default)(this.time, date);
-
-        this.setValue(date, { skipTime: !!this.time });
-      }
-
-      this.setExpanded(false);
-    }
-  }, {
-    key: 'onFooterCancelClick',
-    value: function onFooterCancelClick() {
-      this.setExpanded(false);
-    }
-  }, {
-    key: 'onFooterTodayClick',
-    value: function onFooterTodayClick() {
-      var today = this.toMoment(new Date()).startOf('day');
-
-      this.onPickerChange(this.format(today), { dateMoment: today });
-      this.onViewDateChange(today);
-      this.onActiveDateChange(today);
-
-      return false;
-    }
-  }, {
-    key: 'onFooterClearClick',
-    value: function onFooterClearClick() {
-      var clearDate = this.props.clearDate === undefined ? this.props.minDate : this.props.clearDate;
-
-      if (clearDate !== undefined) {
-        this.setValue(clearDate, {
-          skipTime: true
-        });
-      }
-
-      this.setExpanded(false);
-
-      return false;
-    }
-  }, {
-    key: 'toMoment',
-    value: function toMoment(value, props) {
-      if (_moment2.default.isMoment(value)) {
-        return value;
-      }
-
-      props = props || this.p;
-
-      var date = (0, _toMoment3.default)(value, {
-        strict: props.strict,
-        locale: props.locale,
-        dateFormat: props.displayFormat || props.dateFormat || this.p.dateFormat
-      });
-
-      if (!date.isValid() && props.displayFormat) {
-        date = (0, _toMoment3.default)(value, {
-          strict: props.strict,
-          locale: props.locale,
-          dateFormat: props.dateFormat || this.p.dateFormat
-        });
-      }
-
-      return date;
-    }
-  }, {
-    key: 'isValid',
-    value: function isValid(text) {
-      if (text === undefined) {
-        text = this.p.text;
-      }
-
-      return this.toMoment(text).isValid();
-    }
-  }, {
-    key: 'onViewDateChange',
-    value: function onViewDateChange(viewDate) {
-      this.setState({
-        viewDate: viewDate
-      });
-    }
-  }, {
-    key: 'onActiveDateChange',
-    value: function onActiveDateChange(activeDate) {
-      this.setState({
-        activeDate: activeDate
-      });
-    }
-  }, {
-    key: 'onViewKeyDown',
-    value: function onViewKeyDown(event) {
-      var key = event.key;
-
-      if (this.pickerView) {
-        // } && (key == 'Escape' || key == 'Enter' || (key in NAV_KEYS))) {
-        this.pickerView.onViewKeyDown(event);
-      }
-    }
-  }, {
-    key: 'onPickerMouseDown',
-    value: function onPickerMouseDown(event) {
-      preventDefault(event);
-
-      if (!this.isFocused()) {
-        this.focus();
-      }
-    }
-  }, {
-    key: 'isHistoryViewVisible',
-    value: function isHistoryViewVisible() {
-      if (this.picker && this.picker.isHistoryViewVisible) {
-        return this.picker.isHistoryViewVisible();
-      }
-
-      return false;
-    }
-  }, {
-    key: 'onFieldKeyDown',
-    value: function onFieldKeyDown(event) {
-      var key = event.key;
-      var expanded = this.isExpanded();
-      var historyVisible = this.isHistoryViewVisible();
-
-      if (key == 'Enter' && !historyVisible) {
-        this.onViewKeyDown(event);
-        this.toggleExpand();
-        return false;
-      }
-
-      if (historyVisible && (key == 'Escape' || key == 'Enter')) {
-        this.onViewKeyDown(event);
-        return false;
-      }
-
-      if (key == 'Escape') {
-        if (expanded) {
-          this.setExpanded(false);
-          return false;
-        }
-      }
-
-      if (expanded) {
-        if (key in _Calendar.NAV_KEYS) {
-          this.onViewKeyDown(event);
-          return false;
-        }
-        // if (!currentPosition || !currentPosition.time) {
-        //   // the time has not changed, so it's safe to forward the event
-        //   this.onViewKeyDown(event)
-        //   return false
-        // }
-      }
-
+(function(root) {
+
+  // administrative
+  var registeredComponents = [];
+  var handlers = [];
+  var IGNORE_CLASS = 'ignore-react-onclickoutside';
+  var DEFAULT_EVENTS = ['mousedown', 'touchstart'];
+
+  /**
+   * Check whether some DOM node is our Component's node.
+   */
+  var isNodeFound = function(current, componentNode, ignoreClass) {
+    if (current === componentNode) {
       return true;
     }
-  }, {
-    key: 'getInput',
-    value: function getInput() {
-      return (0, _reactDom.findDOMNode)(this.field);
+    // SVG <use/> elements do not technically reside in the rendered DOM, so
+    // they do not have classList directly, but they offer a link to their
+    // corresponding element, which can have classList. This extra check is for
+    // that case.
+    // See: http://www.w3.org/TR/SVG11/struct.html#InterfaceSVGUseElement
+    // Discussion: https://github.com/Pomax/react-onclickoutside/pull/17
+    if (current.correspondingElement) {
+      return current.correspondingElement.classList.contains(ignoreClass);
     }
-  }, {
-    key: 'isFocused',
-    value: function isFocused() {
-      return this.state.focused;
-    }
-  }, {
-    key: 'isLazyFocused',
-    value: function isLazyFocused() {
-      return this.isFocused() || this.isTimeInputFocused();
-    }
-  }, {
-    key: 'isTimeInputFocused',
-    value: function isTimeInputFocused() {
-      if (this.pickerView && this.pickerView.isTimeInputFocused) {
-        return this.pickerView.isTimeInputFocused();
-      }
-
-      return false;
-    }
-  }, {
-    key: 'onFieldFocus',
-    value: function onFieldFocus(event) {
-      if (this.state.focused) {
-        return;
-      }
-
-      this.setState({
-        focused: true
-      });
-
-      if (this.props.expandOnFocus) {
-        this.setExpanded(true);
-      }
-
-      this.props.onFocus(event);
-    }
-  }, {
-    key: 'onFieldBlur',
-    value: function onFieldBlur(event) {
-      var _this4 = this;
-
-      if (!this.isFocused()) {
-        return;
-      }
-
-      this.setState({
-        focused: false
-      });
-
-      this.props.onBlur(event);
-
-      if (!this.pickerView || !this.pickerView.isTimeInputFocused) {
-        this.onLazyBlur();
-        return;
-      }
-
-      setTimeout(function () {
-        return _this4.onLazyBlur();
-      }, 0);
-    }
-  }, {
-    key: 'onClockEnterKey',
-    value: function onClockEnterKey() {
-      if (!this.isFocused()) {
-        this.focus();
-      }
-
-      this.onFooterOkClick();
-    }
-  }, {
-    key: 'onClockEscapeKey',
-    value: function onClockEscapeKey() {
-      if (!this.isFocused()) {
-        this.focus();
-      }
-
-      this.onFooterCancelClick();
-    }
-  }, {
-    key: 'onClockInputBlur',
-    value: function onClockInputBlur() {
-      var _this5 = this;
-
-      setTimeout(function () {
-        if (!_this5.isFocused()) {
-          _this5.onLazyBlur();
-        }
-      }, 0);
-    }
-  }, {
-    key: 'onLazyBlur',
-    value: function onLazyBlur() {
-      var _this6 = this;
-
-      if (this.unmounted) {
-        return;
-      }
-
-      if (this.isTimeInputFocused()) {
-        return;
-      }
-
-      this.setExpanded(false);
-
-      if (!this.isValid() && this.props.validateOnBlur) {
-        (function () {
-          var value = _this6.lastValidDate && _this6.p.text != '' ? _this6.format(_this6.lastValidDate) : '';
-
-          setTimeout(function () {
-            _this6.onFieldChange(value);
-          }, 0);
-        })();
-      }
-    }
-  }, {
-    key: 'onInputChange',
-    value: function onInputChange() {}
-  }, {
-    key: 'isExpanded',
-    value: function isExpanded() {
-      return this.p.expanded;
-    }
-  }, {
-    key: 'toggleExpand',
-    value: function toggleExpand() {
-      this.setExpanded(!this.p.expanded);
-    }
-  }, {
-    key: 'setExpanded',
-    value: function setExpanded(bool) {
-      var _this7 = this;
-
-      var props = this.p;
-
-      if (bool === props.expanded) {
-        return;
-      }
-
-      if (!bool) {
-        this.onCollapse();
-      } else {
-        this.setState({}, function () {
-          _this7.onExpand();
-        });
-      }
-
-      if (bool && props.valid) {
-        this.setState({
-          // viewDate: props.date,
-          activeDate: props.date
-        });
-      }
-
-      if (this.props.expanded === undefined) {
-        this.setState({
-          expanded: bool
-        });
-      }
-
-      this.props.onExpandChange(bool);
-    }
-  }, {
-    key: 'onCollapse',
-    value: function onCollapse() {
-      this.props.onCollapse();
-    }
-  }, {
-    key: 'onExpand',
-    value: function onExpand() {
-      this.props.onExpand();
-    }
-  }, {
-    key: 'onFieldChange',
-    value: function onFieldChange(value) {
-      if (this.p.rawInput && typeof value != 'string') {
-        var event = value;
-        value = event.target.value;
-      }
-
-      var dateMoment = value == '' ? null : this.toMoment(value);
-
-      if (dateMoment === null || dateMoment.isValid()) {
-        this.onChange(dateMoment);
-      }
-
-      this.onTextChange(value);
-    }
-  }, {
-    key: 'onTextChange',
-    value: function onTextChange(text) {
-      if (this.props.text === undefined && this.props.value === undefined) {
-        this.setState({
-          text: text
-        });
-      }
-
-      if (this.props.onTextChange) {
-        this.props.onTextChange(text);
-      }
-    }
-  }, {
-    key: 'onPickerChange',
-    value: function onPickerChange(dateString, _ref, event) {
-      var dateMoment = _ref.dateMoment;
-      var forceUpdate = _ref.forceUpdate;
-
-      var isEnter = event && event.key == 'Enter';
-      var updateOnDateClick = forceUpdate ? true : this.props.updateOnDateClick || isEnter;
-
-      if (updateOnDateClick) {
-        (0, _forwardTime2.default)(this.time, dateMoment);
-
-        this.setDate(dateString, { dateMoment: dateMoment });
-
-        if (this.props.collapseOnDateClick || isEnter) {
-          this.setExpanded(false);
-        }
-      }
-    }
-  }, {
-    key: 'setDate',
-    value: function setDate(dateString, _ref2) {
-      var dateMoment = _ref2.dateMoment;
-      var _ref2$skipTime = _ref2.skipTime;
-      var skipTime = _ref2$skipTime === undefined ? false : _ref2$skipTime;
-
-      var props = this.p;
-
-      var currentDate = props.date;
-
-      if (props.valid && currentDate) {
-        var dateFormat = props.dateFormat.toLowerCase();
-
-        var hasTime = dateFormat.indexOf('k') != -1 || dateFormat.indexOf('h') != -1;
-
-        if (hasTime && !skipTime) {
-          ['hour', 'minute', 'second', 'millisecond'].forEach(function (part) {
-            dateMoment.set(part, currentDate.get(part));
-          });
-        }
-      }
-
-      this.onTextChange(this.format(dateMoment));
-      this.onChange(dateMoment);
-    }
-  }, {
-    key: 'onChange',
-    value: function onChange(dateMoment) {
-      if (dateMoment != null && !_moment2.default.isMoment(dateMoment)) {
-        dateMoment = this.toMoment(dateMoment);
-      }
-
-      (0, _forwardTime2.default)(this.time, dateMoment);
-
-      var newState = {};
-
-      if (this.props.value === undefined) {
-        (0, _objectAssign2.default)(newState, {
-          text: null,
-          value: dateMoment
-        });
-      }
-
-      newState.activeDate = dateMoment;
-
-      if (!this.pickerView || !this.pickerView.isInView || !this.pickerView.isInView(dateMoment)) {
-        newState.viewDate = dateMoment;
-      }
-
-      if (this.props.onChange) {
-        this.props.onChange(this.format(dateMoment), { dateMoment: dateMoment });
-      }
-
-      this.setState(newState);
-    }
-  }, {
-    key: 'format',
-    value: function format(mom, _format) {
-      return mom == null ? '' : mom.format(_format || this.p.displayFormat || this.p.dateFormat);
-    }
-  }, {
-    key: 'focusField',
-    value: function focusField() {
-      var input = (0, _reactDom.findDOMNode)(this.field);
-
-      if (input) {
-        input.focus();
-      }
-    }
-  }, {
-    key: 'focus',
-    value: function focus() {
-      this.focusField();
-    }
-  }]);
-
-  return DateField;
-}(_reactClass2.default);
-
-exports.default = DateField;
-
-
-DateField.defaultProps = {
-  showClock: undefined,
-
-  forceValidDate: false,
-  strict: true,
-
-  expandOnFocus: true,
-
-  updateOnDateClick: false,
-  collapseOnDateClick: false,
-
-  theme: 'default',
-
-  footer: true,
-
-  onBlur: function onBlur() {},
-  onFocus: function onFocus() {},
-
-  clearIcon: true,
-  validateOnBlur: true,
-
-  onExpandChange: function onExpandChange() {},
-  onCollapse: function onCollapse() {},
-  onExpand: function onExpand() {},
-
-  minDate: (0, _moment2.default)('1000-01-01', 'YYYY-MM-DD'),
-  maxDate: (0, _moment2.default)('9999-12-31 HH:mm:ss', 'YYYY-MM-DD 23:59:59'),
-
-  skipTodayTime: false
-};
-
-DateField.propTypes = {
-  dateFormat: _react.PropTypes.string.isRequired
-};
-},{"../Calendar":59,"../DateFormatInput":65,"../assignDefined":85,"../join":90,"../joinFunctions":91,"../toMoment":92,"../utils/forwardTime":95,"./icons":62,"moment":52,"object-assign":100,"react":263,"react-class":56,"react-dom":101,"react-field":102,"react-flex":107,"react-inline-block":113}],64:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.getFormats = undefined;
-
-var _leftPad = require('../utils/leftPad');
-
-var _leftPad2 = _interopRequireDefault(_leftPad);
-
-var _clamp = require('../utils/clamp');
-
-var _clamp2 = _interopRequireDefault(_clamp);
-
-var _times = require('../utils/times');
-
-var _times2 = _interopRequireDefault(_times);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var isValid = function isValid(value, format) {
-  value *= 1;
-  return value >= format.min && value <= format.max;
-};
-
-var replaceAt = function replaceAt(_ref) {
-  var value = _ref.value;
-  var index = _ref.index;
-  var _ref$len = _ref.len;
-  var len = _ref$len === undefined ? 1 : _ref$len;
-  var str = _ref.str;
-
-  return value.substring(0, index) + str + value.substring(index + len);
-};
-
-var handleArrow = function handleArrow(format, _ref2) {
-  var currentValue = _ref2.currentValue;
-  var key = _ref2.key;
-  var dir = _ref2.dir;
-
-  dir = dir || (key == 'ArrowUp' ? 1 : -1);
-
-  return {
-    value: (0, _clamp2.default)(currentValue * 1 + dir, {
-      min: format.min,
-      max: format.max,
-      circular: true
-    }),
-    caretPos: true
+    return current.classList.contains(ignoreClass);
   };
-};
 
-var handleArrowLeftPad = function handleArrowLeftPad(format, config) {
-  var _handleArrow = handleArrow(format, config);
-
-  var value = _handleArrow.value;
-  var caretPos = _handleArrow.caretPos;
-
-
-  return {
-    value: (0, _leftPad2.default)(value),
-    caretPos: caretPos
-  };
-};
-
-var handlePage = function handlePage(format, config) {
-  config.dir = config.dir || (config.key == 'PageUp' ? 10 : -10);
-
-  return handleArrow(format, config);
-};
-
-var handlePageLeftPad = function handlePageLeftPad(format, config) {
-  config.dir = config.dir || (config.key == 'PageUp' ? 10 : -10);
-
-  return handleArrowLeftPad(format, config);
-};
-
-var handleUpdate = function handleUpdate(value, format, _ref3) {
-  var range = _ref3.range;
-
-  value *= 1;
-
-  var len = range.end - range.start + 1;
-  var pow10 = ('1' + (0, _times2.default)(3 - len).map(function () {
-    return '0';
-  }).join('')) * 1;
-  var modLen = value % pow10;
-
-  var newValue = (0, _clamp2.default)(value, { min: format.min, max: format.max, circular: false });
-
-  if (pow10 > 1 && value % pow10 == 0) {
-    // the user is modifying the millenium or century
-    newValue += modLen;
-    // so we try to keep the century
-    newValue = (0, _clamp2.default)(newValue, { min: format.min, max: format.max, circular: false });
-  }
-
-  return newValue;
-};
-
-var handleUnidentified = function handleUnidentified(format, _ref4) {
-  var event = _ref4.event;
-  var currentValue = _ref4.currentValue;
-  var range = _ref4.range;
-
-  var newChar = String.fromCharCode(event.which);
-  var index = range.start - format.start;
-
-  var caretPos = { start: range.start + 1 };
-
-  if (newChar * 1 != newChar) {
-    return {
-      preventDefault: false,
-      value: currentValue
+  /**
+   * Generate the event handler that checks whether a clicked DOM node
+   * is inside of, or lives outside of, our Component's node tree.
+   */
+  var generateOutsideCheck = function(componentNode, componentInstance, eventHandler, ignoreClass, preventDefault, stopPropagation) {
+    return function(evt) {
+      if (preventDefault) {
+        evt.preventDefault();
+      }
+      if (stopPropagation) {
+        evt.stopPropagation();
+      }
+      var current = evt.target;
+      var found = false;
+      // If source=local then this event came from 'somewhere'
+      // inside and should be ignored. We could handle this with
+      // a layered approach, too, but that requires going back to
+      // thinking in terms of Dom node nesting, running counter
+      // to React's 'you shouldn't care about the DOM' philosophy.
+      while(current.parentNode) {
+        found = isNodeFound(current, componentNode, ignoreClass);
+        if(found) return;
+        current = current.parentNode;
+      }
+      // If element is in a detached DOM, consider it 'not clicked
+      // outside', as it cannot be known whether it was outside.
+      if(current !== document) return;
+      eventHandler(evt);
     };
-  }
-
-  // caretPos
-  var value = void 0;
-  var valid = void 0;
-
-  value = replaceAt({ value: currentValue, index: index, str: newChar });
-  valid = isValid(value, format);
-
-  if (!valid && index == 0 && newChar == ('' + format.max)[0]) {
-    valid = true;
-    value = format.max;
-    caretPos.start++;
-  }
-
-  if (!valid) {
-    do {
-      value = (0, _times2.default)(index).map(function () {
-        return '0';
-      }).join('') + replaceAt({ value: currentValue, index: index, str: newChar }).substring(index);
-
-      valid = isValid(value, format);
-      index++;
-
-      if (!valid) {
-        caretPos.start++;
-      }
-    } while (!valid && index <= format.end);
-  }
-
-  if (valid) {
-    value = handleUpdate(value, format, { range: range });
-  } else {
-    var defaultValue = format.default;
-    value = 1 * replaceAt({ value: defaultValue, index: defaultValue.length - 1, str: newChar });
-
-    if (isValid(value, format)) {
-      caretPos.start = format.start + defaultValue.length;
-    } else {
-      caretPos.start = range.start + 1;
-      value = currentValue;
-    }
-  }
-
-  return {
-    value: value,
-    caretPos: caretPos
   };
-};
 
-var handleUnidentifiedLeftPad = function handleUnidentifiedLeftPad(format, config) {
-  var _handleUnidentified = handleUnidentified(format, config);
 
-  var value = _handleUnidentified.value;
-  var caretPos = _handleUnidentified.caretPos;
-  var preventDefault = _handleUnidentified.preventDefault;
-
-
-  return {
-    value: (0, _leftPad2.default)(value),
-    caretPos: caretPos,
-    preventDefault: preventDefault
-  };
-};
-
-var handleYearUnidentified = handleUnidentified;
-
-var handleDelete = function handleDelete(format, _ref5) {
-  var range = _ref5.range;
-  var currentValue = _ref5.currentValue;
-  var dir = _ref5.dir;
-
-  dir = dir || 0;
-
-  if (range.start <= format.start && range.end >= format.end) {
-    return {
-      value: format.default,
-      caretPos: true
-    };
-  }
-
-  var len = range.end - range.start + 1;
-  var str = (0, _times2.default)(len).map(function () {
-    return '0';
-  }).join('');
-  var index = range.start - format.start + dir;
-
-  var value = replaceAt({ value: currentValue, index: index, str: str, len: len }) * 1;
-
-  value = (0, _leftPad2.default)(handleUpdate(value, format, { range: range }));
-
-  return {
-    value: value,
-    caretPos: { start: range.start + (dir < 0 ? -1 : 1) }
-  };
-};
-
-var handleBackspace = function handleBackspace(format, config) {
-  config.dir = -1;
-  return handleDelete(format, config);
-};
-
-var toggleMeridiem = function toggleMeridiem(_ref6) {
-  var upper = _ref6.upper;
-  var value = _ref6.value;
-
-  if (upper) {
-    return value == 'AM' ? 'PM' : 'AM';
-  }
-
-  return value == 'am' ? 'pm' : 'am';
-};
-
-var handleMeridiemArrow = function handleMeridiemArrow(format, _ref7) {
-  var currentValue = _ref7.currentValue;
-
-  return {
-    value: toggleMeridiem({ upper: format.upper, value: currentValue }),
-    caretPos: true
-  };
-};
-
-var handleMeridiemDelete = function handleMeridiemDelete(format, _ref8) {
-  var dir = _ref8.dir;
-  var range = _ref8.range;
-
-  dir = dir || 0;
-
-  if (range.start <= format.start && range.end >= format.end) {
-    return {
-      value: format.default,
-      caretPos: true
-    };
-  }
-
-  return {
-    value: format.upper ? 'AM' : 'am',
-    caretPos: { start: range.start + (dir < 0 ? -1 : 1) }
-  };
-};
-
-var handleMeridiemBackspace = function handleMeridiemBackspace(format, config) {
-  config.dir = -1;
-  return handleMeridiemDelete(format, config);
-};
-
-var getFormats = function getFormats() {
-  return {
-    YYYY: {
-      min: 100,
-      max: 9999,
-      default: '0100',
-      handleDelete: handleDelete,
-      handleBackspace: handleBackspace,
-      handleArrow: handleArrow,
-      handlePageUp: handlePage,
-      handlePageDown: handlePage,
-      handleUnidentified: handleYearUnidentified
-    },
-
-    // YY: {
-    //   default: '00'
-    // },
-
-    // M: { min: 1, max: 12, default: '1', maxLen: 2 },
-    MM: {
-      min: 1,
-      max: 12,
-      default: '01',
-      handleDelete: handleDelete,
-      handleBackspace: handleBackspace,
-      handlePageUp: handlePageLeftPad,
-      handlePageDown: handlePageLeftPad,
-      handleUnidentified: handleUnidentifiedLeftPad,
-      handleArrow: handleArrowLeftPad
-    },
-
-    // D: { min: 1, max: 31, default: '1', maxLen: 2 },
-    DD: {
-      min: 1,
-      max: 31,
-      default: '01',
-      handlePageUp: handlePageLeftPad,
-      handlePageDown: handlePageLeftPad,
-      handleDelete: handleDelete,
-      handleBackspace: handleBackspace,
-      handleUnidentified: handleUnidentifiedLeftPad,
-      handleArrow: handleArrowLeftPad
-    },
-
-    // H: {
-    //   min: 0, max: 23, default: '0', maxLen: 2,
-    //   handleDelete,
-    //   handleBackspace,
-    //   handleArrow: handleArrowLeftPad,
-    //   handlePageUp: handlePageLeftPad,
-    //   handlePageDown: handlePageLeftPad
-    // },
-    HH: {
-      time: true,
-      min: 0, max: 23, default: '00',
-      handleDelete: handleDelete,
-      handleBackspace: handleBackspace,
-      handleUnidentified: handleUnidentifiedLeftPad,
-      handleArrow: handleArrowLeftPad,
-      handlePageUp: handlePageLeftPad,
-      handlePageDown: handlePageLeftPad
-    },
-
-    // h: { min: 1, max: 12, default: '1', maxLen: 2,
-    //   handleArrow: handleArrowLeftPad,
-    //   handlePageUp: handlePageLeftPad,
-    //   handlePageDown: handlePageLeftPad
-    // },
-    hh: { min: 1, max: 12, default: '01',
-      time: true,
-      handleDelete: handleDelete,
-      handleBackspace: handleBackspace,
-      handleUnidentified: handleUnidentifiedLeftPad,
-      handleArrow: handleArrowLeftPad,
-      handlePageUp: handlePageLeftPad,
-      handlePageDown: handlePageLeftPad
-    },
-
-    a: {
-      time: true,
-      length: 2,
-      default: 'am',
-      handleArrow: handleMeridiemArrow,
-      handlePageUp: handleMeridiemArrow,
-      handlePageDown: handleMeridiemArrow,
-      handleDelete: handleMeridiemDelete,
-      handleBackspace: handleMeridiemBackspace
-    },
-    A: {
-      length: 2,
-      time: true,
-      default: 'AM', upper: true,
-      handleArrow: handleMeridiemArrow,
-      handlePageUp: handleMeridiemArrow,
-      handlePageDown: handleMeridiemArrow,
-      handleDelete: handleMeridiemDelete,
-      handleBackspace: handleMeridiemBackspace
-    },
-
-    // m: { min: 0, max: 59, default: '0', maxLen: 2 },
-    mm: { min: 0, max: 59, default: '00',
-      time: true,
-      handleDelete: handleDelete,
-      handleBackspace: handleBackspace,
-      handleUnidentified: handleUnidentifiedLeftPad,
-      handleArrow: handleArrowLeftPad,
-      handlePageUp: handlePageLeftPad,
-      handlePageDown: handlePageLeftPad
-    },
-
-    // s: { min: 0, max: 59, default: '0' },
-    ss: {
-      time: true,
-      min: 0, max: 59, default: '00',
-      handleDelete: handleDelete,
-      handleBackspace: handleBackspace,
-      handleUnidentified: handleUnidentifiedLeftPad,
-      handleArrow: handleArrowLeftPad,
-      handlePageUp: handlePageLeftPad,
-      handlePageDown: handlePageLeftPad
-    }
-  };
-};
-
-exports.getFormats = getFormats;
-exports.default = getFormats();
-},{"../utils/clamp":93,"../utils/leftPad":98,"../utils/times":99}],65:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactDom = require('react-dom');
-
-var _reactClass = require('react-class');
-
-var _reactClass2 = _interopRequireDefault(_reactClass);
-
-var _lodash = require('lodash.throttle');
-
-var _lodash2 = _interopRequireDefault(_lodash);
-
-var _objectAssign = require('object-assign');
-
-var _objectAssign2 = _interopRequireDefault(_objectAssign);
-
-var _TimeInput = require('../TimeInput');
-
-var _toMoment2 = require('../toMoment');
-
-var _toMoment3 = _interopRequireDefault(_toMoment2);
-
-var _parseFormat2 = require('./parseFormat');
-
-var _parseFormat3 = _interopRequireDefault(_parseFormat2);
-
-var _forwardTime = require('../utils/forwardTime');
-
-var _forwardTime2 = _interopRequireDefault(_forwardTime);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var emptyFn = function emptyFn() {};
-
-var BACKWARDS = {
-  Backspace: 1,
-  ArrowUp: 1,
-  ArrowDown: 1,
-  PageUp: 1,
-  PageDown: 1
-};
-
-var DateFormatInput = function (_Component) {
-  _inherits(DateFormatInput, _Component);
-
-  function DateFormatInput(props) {
-    _classCallCheck(this, DateFormatInput);
-
-    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(DateFormatInput).call(this, props));
-
-    var _parseFormat = (0, _parseFormat3.default)(props.dateFormat);
-
-    var positions = _parseFormat.positions;
-    var matches = _parseFormat.matches;
-
-    var defaultValue = props.defaultValue || Date.now();
-
-    var delay = props.changeDelay;
-    _this.throttleSetValue = delay == -1 ? _this.setValue : (0, _lodash2.default)(_this.setValue, delay);
-
-    var _this$getMinMax = _this.getMinMax(props);
-
-    var minDate = _this$getMinMax.minDate;
-    var maxDate = _this$getMinMax.maxDate;
-
-
-    _this.state = {
-      positions: positions,
-      matches: matches,
-      propsValue: props.value !== undefined,
-      value: defaultValue,
-      minDate: minDate,
-      maxDate: maxDate
-    };
-    return _this;
-  }
-
-  _createClass(DateFormatInput, [{
-    key: 'getMinMax',
-    value: function getMinMax(props) {
-      props = props || this.props;
-
-      var minDate = null;
-
-      if (props.minDate) {
-        minDate = this.toMoment(props.minDate, props);
-      }
-
-      var maxDate = null;
-
-      if (props.maxDate) {
-        maxDate = this.toMoment(props.maxDate, props);
-      }
-
-      return {
-        minDate: minDate, maxDate: maxDate
-      };
-    }
-  }, {
-    key: 'componentWillReceiveProps',
-    value: function componentWillReceiveProps(nextProps) {
-      var _getMinMax = this.getMinMax(nextProps);
-
-      var minDate = _getMinMax.minDate;
-      var maxDate = _getMinMax.maxDate;
-
-
-      this.setState({
-        minDate: minDate, maxDate: maxDate
-      });
-    }
-  }, {
-    key: 'componentDidUpdate',
-    value: function componentDidUpdate() {
-      if (this.props.value !== undefined && this.caretPos && this.isFocused()) {
-        this.setCaretPosition(this.caretPos);
-      }
-    }
-  }, {
-    key: 'toMoment',
-    value: function toMoment(value, props) {
-      props = props || this.props;
-
-      return (0, _toMoment3.default)(value, {
-        locale: props.locale,
-        dateFormat: props.dateFormat || this.props.dateFormat
-      });
-    }
-  }, {
-    key: 'render',
-    value: function render() {
-      var props = this.props;
-
-
-      var value = this.state.propsValue ? props.value : this.state.value;
-
-      var displayValue = this.displayValue = this.toMoment(value).format(props.dateFormat);
-
-      var inputProps = (0, _objectAssign2.default)({}, props);
-
-      delete inputProps.changeDelay;
-      delete inputProps.date;
-      delete inputProps.dateFormat;
-      delete inputProps.isDateInput;
-      delete inputProps.maxDate;
-      delete inputProps.minDate;
-      delete inputProps.stopPropagation;
-      delete inputProps.updateOnWheel;
-
-      if (typeof props.cleanup == 'function') {
-        props.cleanup(inputProps);
-      }
-
-      return _react2.default.createElement('input', _extends({}, inputProps, {
-        defaultValue: undefined,
-        onFocus: this.onFocus,
-        onBlur: this.onBlur,
-        value: displayValue,
-        onKeyDown: this.onKeyDown,
-        onWheel: this.onWheel,
-        onChange: this.onChange
-      }));
-    }
-  }, {
-    key: 'focus',
-    value: function focus() {
-      (0, _reactDom.findDOMNode)(this).focus();
-    }
-  }, {
-    key: 'onFocus',
-    value: function onFocus(event) {
-      if (this.props.onFocus) {
-        this.props.onFocus(event);
-      }
-
-      this.setState({
-        focused: true
-      });
-    }
-  }, {
-    key: 'onBlur',
-    value: function onBlur(event) {
-      if (this.props.onBlur) {
-        this.props.onBlur(event);
-      }
-
-      this.setState({
-        focused: false
-      });
-    }
-  }, {
-    key: 'isFocused',
-    value: function isFocused() {
-      return this.state.focused;
-    }
-  }, {
-    key: 'onChange',
-    value: function onChange(event) {
-      event.stopPropagation();
-    }
-  }, {
-    key: 'onDirection',
-    value: function onDirection(dir) {
-      var event = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
-
-      this.onKeyDown({
-        key: dir > 0 ? 'ArrowUp' : 'ArrowDown',
-        type: event.type || 'unknown',
-        stopPropagation: typeof event.stopPropagation == 'function' ? function () {
-          return event.stopPropagation();
-        } : emptyFn,
-        preventDefault: typeof event.preventDefault == 'function' ? function () {
-          return event.preventDefault();
-        } : emptyFn
-      });
-    }
-  }, {
-    key: 'onWheel',
-    value: function onWheel(event) {
-      if (this.props.updateOnWheel && this.isFocused()) {
-        this.onDirection(-event.deltaY, event);
-        // this.onKeyDown({
-        //   key: event.deltaY < 0 ? 'ArrowUp' : 'ArrowDown',
-        //   type: event.type,
-        //   stopPropagation: () => event.stopPropagation(),
-        //   preventDefault: () => event.preventDefault()
-        // })
-      }
-
-      if (this.props.onWheel) {
-        this.props.onWheel(event);
-      }
-    }
-  }, {
-    key: 'onKeyDown',
-    value: function onKeyDown(event) {
-      var _this2 = this;
-
-      var props = this.props;
-      var key = event.key;
-      var type = event.type;
-      var which = event.which;
-
-
-      if (key !== 'Unidentified' && which && which >= 65 && which <= 90) {
-        key = ' ';
-      }
-
-      if (key != ' ' && key * 1 == key) {
-        key = 'Unidentified';
-      }
-
-      if (props.stopPropagation) {
-        event.stopPropagation();
-      }
-
-      var range = this.getSelectedRange();
-      var selectedValue = this.getSelectedValue(range);
-      var value = this.displayValue;
-
-      var _state = this.state;
-      var positions = _state.positions;
-      var matches = _state.matches;
-
-      var valueStr = '' + value;
-
-      var currentPosition = positions[range.start];
-
-      if (typeof currentPosition == 'string') {
-        currentPosition = positions[range.start + (key in BACKWARDS ? -1 : 1)];
-      }
-
-      if (!currentPosition) {
-        currentPosition = positions[range.start - 1];
-      }
-
-      if (props.onKeyDown && type == 'keydown') {
-        if (props.onKeyDown(event, currentPosition) === false) {
-          this.caretPos = range;
-          return;
-        }
-      }
-
-      var keyName = key;
-
-      if (key == 'ArrowUp' || key == 'ArrowDown') {
-        keyName = 'Arrow';
-      }
-
-      var handlerName = 'handle' + keyName;
-
-      var preventDefault = void 0;
-      var newValue = void 0;
-      var newCaretPos = void 0;
-
-      if (currentPosition && currentPosition[handlerName]) {
-        var returnValue = currentPosition[handlerName](currentPosition, {
-          range: range,
-          selectedValue: selectedValue,
-          value: value,
-          positions: positions,
-          currentValue: valueStr.substring(currentPosition.start, currentPosition.end + 1),
-          matches: matches,
-          event: event,
-          key: key,
-          input: this.getInput(),
-          setCaretPosition: function setCaretPosition() {
-            return _this2.setCaretPosition.apply(_this2, arguments);
-          }
-        });
-
-        this.caretPos = range;
-
-        if (returnValue && returnValue.value !== undefined) {
-          newValue = valueStr.substring(0, currentPosition.start) + returnValue.value + valueStr.substring(currentPosition.end + 1);
-
-          newCaretPos = returnValue.caretPos || range;
-          if (newCaretPos === true) {
-            newCaretPos = { start: currentPosition.start, end: currentPosition.end + 1 };
-          }
-          preventDefault = returnValue.preventDefault !== false;
-        }
-      }
-
-      if (preventDefault || key == 'Backspace' || key == 'Delete' || key == ' ') {
-        if (!preventDefault) {
-          this.setCaretPosition(this.caretPos = {
-            start: range.start + (key == 'Backspace' ? -1 : 1)
-          });
-        }
-        preventDefault = true;
-      }
-
-      var config = {
-        currentPosition: currentPosition,
-        preventDefault: preventDefault,
-        event: event,
-        value: newValue,
-        stop: false
-      };
-
-      if (this.props.afterKeyDown && type == 'keydown') {
-        this.props.afterKeyDown(config);
-      }
-
-      if (!config.stop && newCaretPos !== undefined) {
-        var updateCaretPos = function updateCaretPos() {
-          return _this2.setCaretPosition(newCaretPos);
-        };
-        this.caretPos = newCaretPos;
-        this.setStateValue(newValue, updateCaretPos, { key: key, oldValue: valueStr, currentPosition: currentPosition });
-      }
-
-      if (config.preventDefault) {
-        event.preventDefault();
-      }
-    }
-  }, {
-    key: 'getInput',
-    value: function getInput() {
-      return (0, _reactDom.findDOMNode)(this);
-    }
-  }, {
-    key: 'setCaretPosition',
-    value: function setCaretPosition(pos) {
-      var dom = this.getInput();
-      if (dom) {
-        (0, _TimeInput.setCaretPosition)(dom, pos);
-      }
-    }
-  }, {
-    key: 'format',
-    value: function format(mom, _format) {
-      return mom.format(_format || this.props.dateFormat);
-    }
-  }, {
-    key: 'setStateValue',
-    value: function setStateValue(value, callback, _ref) {
-      var key = _ref.key;
-      var oldValue = _ref.oldValue;
-      var currentPosition = _ref.currentPosition;
-
-      var dateMoment = this.toMoment(value);
-
-      if (!dateMoment.isValid()) {
-        var dir = key == 'ArrowUp' || key == 'PageUp' ? 1 : -1;
-
-        if (currentPosition.format == 'MM') {
-          // updating the month
-          dateMoment = this.toMoment(oldValue).add(dir, 'month');
-        } else {
-          // updating the day
-          dateMoment = dir > 0 ?
-          // we've gone with +1 beyond max, so reset to 1
-          this.toMoment(oldValue).date(1) :
-
-          // we've gone with -1 beyond max, so reset to max of month
-          this.toMoment(oldValue).endOf('month');
-        }
-
-        if (!dateMoment.isValid()) {
-          return;
-        }
-
-        value = this.format(dateMoment);
-      }
-
-      var _state2 = this.state;
-      var minDate = _state2.minDate;
-      var maxDate = _state2.maxDate;
-
-
-      if (minDate && dateMoment.isBefore(minDate)) {
-        var clone = this.toMoment(dateMoment);
-
-        // try with time
-        dateMoment = (0, _forwardTime2.default)(clone, this.toMoment(minDate));
-
-        if (dateMoment.isBefore(minDate)) {
-          // try without time
-          dateMoment = this.toMoment(minDate);
-        }
-
-        value = this.format(dateMoment);
-      }
-
-      if (maxDate && dateMoment.isAfter(maxDate)) {
-        var _clone = this.toMoment(dateMoment);
-        dateMoment = (0, _forwardTime2.default)(_clone, this.toMoment(maxDate));
-
-        if (dateMoment.isAfter(maxDate)) {
-          dateMoment = this.toMoment(maxDate);
-        }
-
-        value = this.format(dateMoment);
-      }
-
-      this.setState({
-        value: value,
-        propsValue: false
-      }, typeof callback == 'function' && callback);
-
-      // if (this.props.value !== undefined) {
-      if (this.props.onChange) {
-        this.throttleSetValue(value, dateMoment);
-      }
-    }
-  }, {
-    key: 'setValue',
-    value: function setValue(value, dateMoment) {
-      if (this.props.value === undefined) {
-        this.setState({
-          value: value,
-          propsValue: false
-        });
-      } else {
-        this.setState({
-          propsValue: true,
-          value: undefined
-        });
-      }
-
-      if (this.props.onChange) {
-        this.props.onChange(value, { dateMoment: dateMoment || this.toMoment(value) });
-      }
-    }
-  }, {
-    key: 'getSelectedRange',
-    value: function getSelectedRange() {
-      var dom = this.getInput();
-
-      return {
-        start: (0, _TimeInput.getSelectionStart)(dom),
-        end: (0, _TimeInput.getSelectionEnd)(dom)
-      };
-    }
-  }, {
-    key: 'getSelectedValue',
-    value: function getSelectedValue(range) {
-      range = range || this.getSelectedRange();
-      var value = this.displayValue;
-
-      return value.substring(range.start, range.end);
-    }
-  }]);
-
-  return DateFormatInput;
-}(_reactClass2.default);
-
-exports.default = DateFormatInput;
-
-
-DateFormatInput.defaultProps = {
-  isDateInput: true,
-  stopPropagation: true,
-  updateOnWheel: true,
-  changeDelay: 100
-};
-
-DateFormatInput.propTypes = {
-  dateFormat: _react.PropTypes.string.isRequired,
-  value: function value(props, propName) {
-    if (props[propName] !== undefined) {
-      // console.warn('Due to performance considerations, TimeInput will only be uncontrolled.')
-    }
-  }
-};
-},{"../TimeInput":79,"../toMoment":92,"../utils/forwardTime":95,"./parseFormat":66,"lodash.throttle":47,"object-assign":100,"react":263,"react-class":56,"react-dom":101}],66:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _objectAssign = require('object-assign');
-
-var _objectAssign2 = _interopRequireDefault(_objectAssign);
-
-var _formats = require('./formats');
-
-var _formats2 = _interopRequireDefault(_formats);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var SUGGESTIONS = {
-  Y: ['YYYY', 'YY'],
-  M: ['MM'],
-  D: ['DD'],
-  H: ['HH'],
-  h: ['hh'],
-  m: ['mm'],
-  s: ['ss']
-};
-
-exports.default = function (format) {
-  var index = 0;
-  var positionIndex = 0;
-
-  var suggestions = void 0;
-  var suggestionMatch = void 0;
-
-  var positions = [];
-  var matches = [];
-
-  while (index < format.length) {
-    var char = format[index];
-    var match = _formats2.default[char];
-    var matchObject = void 0;
-
-    suggestionMatch = null;
-    suggestions = SUGGESTIONS[char];
-
-    if (!match && !suggestions) {
-      positions[positionIndex] = char;
-      matches.push(char);
-    } else {
-      if (suggestions && suggestions.length) {
-        // it might be a longer match
-        suggestionMatch = suggestions.filter(function (s) {
-          return format.substr(index, s.length) == s;
-        })[0];
-      }
-
-      if (!suggestionMatch) {
-        if (!_formats2.default[char]) {
-          console.warn('Format ' + char + ' is not supported yet!');
-          if (suggestions) {
-            console.warn('Use one of ["' + suggestions.join(',') + '"]');
-          }
-          positions[positionIndex] = char;
-          matches.push(char);
-        } else {
-          // we found a match, with no other suggestion
-
-          var currentFormat = _formats2.default[char];
-          var start = positionIndex;
-          var end = positionIndex + (currentFormat.length || 1) - 1;
-
-          matchObject = (0, _objectAssign2.default)({}, currentFormat, { format: char, start: start, end: end });
-
-          for (; start <= end; start++) {
-            positions[positionIndex] = matchObject;
-            positionIndex++;
-          }
-          index++;
-          matches.push(matchObject);
-          continue; // to skip incrementing twice
-        }
-      } else {
-          matchObject = (0, _objectAssign2.default)({}, _formats2.default[suggestionMatch], {
-            format: suggestionMatch, start: positionIndex
-          });
-          matches.push(matchObject);
-
-          var endIndex = positionIndex + suggestionMatch.length;
-
-          matchObject.end = endIndex - 1;
-          while (positionIndex < endIndex) {
-            positions[positionIndex] = matchObject;
-            positionIndex++;
-            index++;
-          }
-          continue; // to skip incrementing index once more
-        }
-    }
-
-    positionIndex++;
-    index++;
-  }
-
-  return { positions: positions, matches: matches };
-};
-},{"./formats":64,"object-assign":100}],67:[function(require,module,exports){
-(function (global){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactClass = require('react-class');
-
-var _reactClass2 = _interopRequireDefault(_reactClass);
-
-var _reactFlex = require('react-flex');
-
-var _DateFormatInput = require('../DateFormatInput');
-
-var _DateFormatInput2 = _interopRequireDefault(_DateFormatInput);
-
-var _objectAssign = require('object-assign');
-
-var _objectAssign2 = _interopRequireDefault(_objectAssign);
-
-var _joinFunctions = require('../joinFunctions');
-
-var _joinFunctions2 = _interopRequireDefault(_joinFunctions);
-
-var _assignDefined = require('../assignDefined');
-
-var _assignDefined2 = _interopRequireDefault(_assignDefined);
-
-var _join = require('../join');
-
-var _join2 = _interopRequireDefault(_join);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var DateFormatSpinnerInput = function (_Component) {
-  _inherits(DateFormatSpinnerInput, _Component);
-
-  function DateFormatSpinnerInput(props) {
-    _classCallCheck(this, DateFormatSpinnerInput);
-
-    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(DateFormatSpinnerInput).call(this, props));
-
-    _this.state = {
-      focused: false
-    };
-    return _this;
-  }
-
-  _createClass(DateFormatSpinnerInput, [{
-    key: 'componentWillUnmount',
-    value: function componentWillUnmount() {
-      this.started = false;
-    }
-  }, {
-    key: 'render',
-    value: function render() {
-      var _this2 = this;
-
-      var props = this.props;
-      var children = _react2.default.Children.toArray(props.children);
-
-      var input = this.inputChild = children.filter(function (c) {
-        return c && c.type == 'input';
-      })[0];
-      var inputProps = input ? (0, _objectAssign2.default)({}, input.props) : {};
-
-      var onKeyDown = (0, _joinFunctions2.default)(props.onKeyDown, inputProps.onKeyDown);
-      var onChange = (0, _joinFunctions2.default)(props.onChange, inputProps.onChange);
-      var disabled = props.disabled || inputProps.disabled;
-
-      (0, _assignDefined2.default)(inputProps, {
-        size: props.size || inputProps.size,
-        minDate: props.minDate || inputProps.minDate,
-        maxDate: props.maxDate || inputProps.maxDate,
-
-        changeDelay: props.changeDelay === undefined ? inputProps.changeDelay : props.changeDelay,
-
-        tabIndex: props.tabIndex,
-
-        onKeyDown: onKeyDown,
-        onChange: onChange,
-        disabled: disabled,
-
-        dateFormat: props.dateFormat === undefined ? inputProps.dateFormat : props.dateFormat,
-        stopPropagation: props.stopPropagation,
-        updateOnWheel: props.updateOnWheel,
-
-        onBlur: this.onBlur,
-        onFocus: this.onFocus
-      });
-
-      this.inputProps = inputProps;
-
-      var arrowSize = this.props.arrowSize;
-
-      this.arrows = {
-        1: _react2.default.createElement(
-          'svg',
-          { height: arrowSize, viewBox: '0 0 24 24', width: arrowSize },
-          _react2.default.createElement('path', { d: 'M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z' })
-        ),
-
-        '-1': _react2.default.createElement(
-          'svg',
-          { height: arrowSize, viewBox: '0 0 24 24', width: arrowSize },
-          _react2.default.createElement('path', { d: 'M7.41 7.84L12 12.42l4.59-4.58L18 9.25l-6 6-6-6z' })
-        )
-      };
-
-      var className = (0, _join2.default)(props.className, 'react-date-picker__date-format-spinner', disabled && 'react-date-picker__date-format-spinner--disabled', this.isFocused() && 'react-date-picker__date-format-spinner--focused', 'react-date-picker__date-format-spinner--theme-' + props.theme);
-
-      return _react2.default.createElement(
-        _reactFlex.Flex,
-        {
-          inline: true,
-          row: true,
-          className: className,
-          disabled: props.disabled
-        },
-        _react2.default.createElement(_DateFormatInput2.default, _extends({
-          ref: function ref(inputDOM) {
-            _this2.input = inputDOM;
-          },
-          value: props.value
-        }, inputProps)),
-        this.renderArrows()
-      );
-    }
-  }, {
-    key: 'renderArrows',
-    value: function renderArrows() {
-      if (this.props.renderArrows) {
-        return this.props.renderArrows(this.props);
-      }
-
-      return _react2.default.createElement(
-        _reactFlex.Flex,
-        {
-          column: true,
-          inline: true
-        },
-        this.renderArrow(1),
-        this.renderArrow(-1)
-      );
-    }
-  }, {
-    key: 'renderArrow',
-    value: function renderArrow(dir) {
-      return _react2.default.createElement(
-        _reactFlex.Item,
-        {
-          flexShrink: 1,
-          className: 'react-date-picker__date-format-spinner-arrow',
-          style: { overflow: 'hidden', height: this.props.arrowSize },
-          onMouseDown: this.onMouseDown.bind(this, dir),
-          onMouseUp: this.stop,
-          onMouseLeave: this.stop
-        },
-        this.arrows[dir]
-      );
-    }
-  }, {
-    key: 'onMouseDown',
-    value: function onMouseDown(dir, event) {
-      var _this3 = this;
-
-      if (this.props.disabled) {
-        event.preventDefault();
-        return;
-      }
-
-      event.preventDefault();
-      if (this.isFocused()) {
-        this.start(dir);
-      } else {
-        this.focus();
-
-        setTimeout(function () {
-          _this3.increment(dir);
-        }, 1);
-      }
-    }
-  }, {
-    key: 'start',
-    value: function start(dir) {
-      var _this4 = this;
-
-      this.started = true;
-      this.startTime = Date.now();
-
-      this.step(dir);
-
-      this.timeoutId = setTimeout(function () {
-        _this4.step(dir);
-
-        _this4.timeoutId = setTimeout(function () {
-          var lazyStep = function lazyStep() {
-            var delay = _this4.props.stepDelay - (Date.now() - _this4.startTime) / 500;
-            _this4.step(dir, lazyStep, delay);
-          };
-
-          lazyStep();
-        }, _this4.props.secondStepDelay);
-      }, this.props.firstStepDelay);
-    }
-  }, {
-    key: 'isStarted',
-    value: function isStarted() {
-      return !!(this.started && this.input);
-    }
-  }, {
-    key: 'increment',
-    value: function increment(dir) {
-      this.input.onDirection(dir);
-    }
-  }, {
-    key: 'step',
-    value: function step(dir, callback, delay) {
-      var _this5 = this;
-
-      if (this.isStarted()) {
-        this.increment(dir);
-
-        if (typeof callback == 'function') {
-          this.timeoutId = setTimeout(function () {
-            if (_this5.isStarted()) {
-              callback();
+  /**
+   * This function generates the HOC function that you'll use
+   * in order to impart onOutsideClick listening to an
+   * arbitrary component. It gets called at the end of the
+   * bootstrapping code to yield an instance of the
+   * onClickOutsideHOC function defined inside setupHOC().
+   */
+  function setupHOC(root, React, ReactDOM) {
+
+    // The actual Component-wrapping HOC:
+    return function onClickOutsideHOC(Component, config) {
+      var wrapComponentWithOnClickOutsideHandling = React.createClass({
+        statics: {
+          /**
+           * Access the wrapped Component's class.
+           */
+          getClass: function() {
+            if (Component.getClass) {
+              return Component.getClass();
             }
-          }, delay === undefined ? this.props.stepDelay : delay);
-        }
-      }
-    }
-  }, {
-    key: 'stop',
-    value: function stop() {
-      this.started = false;
-      if (this.timeoutId) {
-        global.clearTimeout(this.timeoutId);
-      }
-    }
-  }, {
-    key: 'focus',
-    value: function focus() {
-      if (this.input) {
-        this.input.focus();
-      }
-    }
-  }, {
-    key: 'isFocused',
-    value: function isFocused() {
-      return this.state.focused;
-    }
-  }, {
-    key: 'onBlur',
-    value: function onBlur(event) {
-      var props = this.props;
-
-      var onBlur = (0, _joinFunctions2.default)(props.onBlur, this.inputChild && this.inputChild.props && this.inputChild.props.onBlur);
-
-      if (onBlur) {
-        onBlur(event);
-      }
-
-      this.setState({
-        focused: false
-      });
-    }
-  }, {
-    key: 'onFocus',
-    value: function onFocus(event) {
-      var props = this.props;
-
-      var onFocus = (0, _joinFunctions2.default)(props.onFocus, this.inputChild && this.inputChild.props && this.inputChild.props.onFocus);
-
-      if (onFocus) {
-        onFocus(event);
-      }
-
-      this.setState({
-        focused: true
-      });
-    }
-  }]);
-
-  return DateFormatSpinnerInput;
-}(_reactClass2.default);
-
-exports.default = DateFormatSpinnerInput;
-
-
-DateFormatSpinnerInput.defaultProps = {
-  firstStepDelay: 150,
-  secondStepDelay: 100,
-  stepDelay: 50,
-
-  changeDelay: undefined,
-
-  theme: 'default',
-
-  disabled: false,
-  arrowSize: 15,
-  isDateInput: true,
-  stopPropagation: true,
-  updateOnWheel: true
-};
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../DateFormatInput":65,"../assignDefined":85,"../join":90,"../joinFunctions":91,"object-assign":100,"react":263,"react-class":56,"react-flex":107}],68:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.getInitialState = exports.isValidActiveDate = exports.isDateInMinMax = exports.prepareDate = exports.prepareDateProps = exports.prepareMinMax = exports.prepareViewDate = exports.prepareActiveDate = exports.onKeyDown = exports.navigate = exports.gotoViewDate = exports.confirm = exports.select = exports.onActiveDateChange = exports.onViewDateChange = exports.onChange = undefined;
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactDom = require('react-dom');
-
-var _reactClass = require('react-class');
-
-var _reactClass2 = _interopRequireDefault(_reactClass);
-
-var _objectAssign = require('object-assign');
-
-var _objectAssign2 = _interopRequireDefault(_objectAssign);
-
-var _reactFlex = require('react-flex');
-
-var _moment = require('moment');
-
-var _moment2 = _interopRequireDefault(_moment);
-
-var _times = require('./utils/times');
-
-var _times2 = _interopRequireDefault(_times);
-
-var _toMoment2 = require('./toMoment');
-
-var _toMoment3 = _interopRequireDefault(_toMoment2);
-
-var _join = require('./join');
-
-var _join2 = _interopRequireDefault(_join);
-
-var _bemFactory = require('./bemFactory');
-
-var _bemFactory2 = _interopRequireDefault(_bemFactory);
-
-var _onKeyDown = require('./MonthView/onKeyDown');
-
-var _onKeyDown2 = _interopRequireDefault(_onKeyDown);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var bem = (0, _bemFactory2.default)('react-date-picker__decade-view');
-
-var ARROWS = {
-  prev: _react2.default.createElement(
-    'svg',
-    { height: '24', viewBox: '0 0 24 24', width: '24' },
-    _react2.default.createElement('path', { d: 'M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z' }),
-    _react2.default.createElement('path', { d: 'M0 0h24v24H0z', fill: 'none' })
-  ),
-
-  next: _react2.default.createElement(
-    'svg',
-    { height: '24', viewBox: '0 0 24 24', width: '24' },
-    _react2.default.createElement('path', { d: 'M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z' }),
-    _react2.default.createElement('path', { d: 'M0 0h24v24H0z', fill: 'none' })
-  )
-};
-
-var getDecadeStartYear = function getDecadeStartYear(mom) {
-  var year = mom.get('year');
-
-  return year - year % 10;
-};
-
-var getDecadeEndYear = function getDecadeEndYear(mom) {
-  return getDecadeStartYear(mom) + 9;
-};
-
-var NAV_KEYS = {
-  ArrowUp: function ArrowUp(mom) {
-    return mom.add(-5, 'year');
-  },
-  ArrowDown: function ArrowDown(mom) {
-    return mom.add(5, 'year');
-  },
-  ArrowLeft: function ArrowLeft(mom) {
-    return mom.add(-1, 'year');
-  },
-  ArrowRight: function ArrowRight(mom) {
-    return mom.add(1, 'year');
-  },
-  Home: function Home(mom) {
-    return mom.set('year', getDecadeStartYear(mom));
-  },
-  End: function End(mom) {
-    return mom.set('year', getDecadeEndYear(mom));
-  },
-  PageUp: function PageUp(mom) {
-    return mom.add(-10, 'year');
-  },
-  PageDown: function PageDown(mom) {
-    return mom.add(10, 'year');
-  }
-};
-
-var isDateInMinMax = function isDateInMinMax(timestamp, props) {
-  if (props.minDate && timestamp < props.minDate) {
-    return false;
-  }
-
-  if (props.maxDate && timestamp > props.maxDate) {
-    return false;
-  }
-
-  return true;
-};
-
-var isValidActiveDate = function isValidActiveDate(timestamp, props) {
-  if (!props) {
-    throw new Error('props is mandatory in isValidActiveDate');
-  }
-
-  return isDateInMinMax(timestamp, props);
-};
-
-var _select = function _select(_ref, event) {
-  var dateMoment = _ref.dateMoment;
-  var timestamp = _ref.timestamp;
-
-  if (this.props.select) {
-    return this.props.select({ dateMoment: dateMoment, timestamp: timestamp }, event);
-  }
-
-  if (!timestamp) {
-    timestamp = +dateMoment;
-  }
-
-  this.gotoViewDate({ dateMoment: dateMoment, timestamp: timestamp });
-  this.onChange({ dateMoment: dateMoment, timestamp: timestamp }, event);
-
-  return undefined;
-};
-
-var _confirm = function _confirm(date, event) {
-  event.preventDefault();
-
-  if (this.props.confirm) {
-    return this.props.confirm(date, event);
-  }
-
-  var dateMoment = this.toMoment(date);
-  var timestamp = +dateMoment;
-
-  this.select({ dateMoment: dateMoment, timestamp: timestamp }, event);
-
-  if (this.props.onConfirm) {
-    this.props.onConfirm({ dateMoment: dateMoment, timestamp: timestamp });
-  }
-
-  return undefined;
-};
-
-var _onActiveDateChange = function _onActiveDateChange(_ref2) {
-  var dateMoment = _ref2.dateMoment;
-  var timestamp = _ref2.timestamp;
-
-  if (!isValidActiveDate(timestamp, this.p)) {
-    return;
-  }
-
-  if (this.props.activeDate === undefined) {
-    this.setState({
-      activeDate: timestamp
-    });
-  }
-
-  if (this.props.onActiveDateChange) {
-    var dateString = this.format(dateMoment);
-    this.props.onActiveDateChange(dateString, { dateMoment: dateMoment, timestamp: timestamp, dateString: dateString });
-  }
-};
-
-var _onViewDateChange = function _onViewDateChange(_ref3) {
-  var dateMoment = _ref3.dateMoment;
-  var timestamp = _ref3.timestamp;
-
-  if (dateMoment && timestamp === undefined) {
-    timestamp = +dateMoment;
-  }
-
-  if (this.props.constrainViewDate && !isDateInMinMax(timestamp, this.p)) {
-    return;
-  }
-
-  if (this.props.viewDate === undefined) {
-    this.setState({
-      viewDate: timestamp
-    });
-  }
-
-  if (this.props.onViewDateChange) {
-    var dateString = this.format(dateMoment);
-    this.props.onViewDateChange(dateString, { dateMoment: dateMoment, dateString: dateString, timestamp: timestamp });
-  }
-};
-
-var _onChange = function _onChange(_ref4, event) {
-  var dateMoment = _ref4.dateMoment;
-  var timestamp = _ref4.timestamp;
-
-  if (this.props.date === undefined) {
-    this.setState({
-      date: timestamp
-    });
-  }
-
-  if (this.props.onChange) {
-    var dateString = this.format(dateMoment);
-    this.props.onChange(dateString, { dateMoment: dateMoment, timestamp: timestamp, dateString: dateString }, event);
-  }
-};
-
-var _navigate = function _navigate(direction, event) {
-  var _this = this;
-
-  var props = this.p;
-
-  var getNavigationDate = function getNavigationDate(dir, date, dateFormat) {
-    var mom = _moment2.default.isMoment(date) ? date : _this.toMoment(date, dateFormat);
-
-    if (typeof dir == 'function') {
-      return dir(mom);
-    }
-
-    return mom;
-  };
-
-  if (props.navigate) {
-    return props.navigate(direction, event, getNavigationDate);
-  }
-
-  event.preventDefault();
-
-  if (props.activeDate) {
-    var nextMoment = getNavigationDate(direction, props.activeDate);
-
-    this.gotoViewDate({ dateMoment: nextMoment });
-  }
-
-  return undefined;
-};
-
-var _gotoViewDate = function _gotoViewDate(_ref5) {
-  var dateMoment = _ref5.dateMoment;
-  var timestamp = _ref5.timestamp;
-
-  if (!timestamp) {
-    timestamp = dateMoment == null ? null : +dateMoment;
-  }
-
-  this.onViewDateChange({ dateMoment: dateMoment, timestamp: timestamp });
-  this.onActiveDateChange({ dateMoment: dateMoment, timestamp: timestamp });
-};
-
-var prepareDate = function prepareDate(props, state) {
-  return props.date === undefined ? state.date : props.date;
-};
-
-var prepareViewDate = function prepareViewDate(props, state) {
-  var viewDate = props.viewDate === undefined ? state.viewDate : props.viewDate;
-
-  if (!viewDate && props.date) {
-    return props.date;
-  }
-
-  return viewDate;
-};
-
-var prepareActiveDate = function prepareActiveDate(props, state) {
-  var activeDate = props.activeDate === undefined ? state.activeDate || prepareDate(props, state) : props.activeDate;
-
-  return activeDate;
-};
-
-var prepareMinMax = function prepareMinMax(props) {
-  var minDate = props.minDate;
-  var maxDate = props.maxDate;
-
-
-  var result = {};
-
-  if (minDate != null) {
-    result.minDateMoment = (0, _toMoment3.default)(props.minDate, props).startOf(props.adjustMinDateStartOf);
-
-    result.minDate = +result.minDateMoment;
-  }
-
-  if (maxDate != null) {
-    result.maxDateMoment = (0, _toMoment3.default)(props.maxDate, props).endOf(props.adjustMaxDateStartOf);
-
-    result.maxDate = +result.maxDateMoment;
-  }
-
-  return result;
-};
-
-var prepareDateProps = function prepareDateProps(props, state) {
-  var result = {};
-
-  (0, _objectAssign2.default)(result, prepareMinMax(props));
-
-  result.date = prepareDate(props, state);
-  result.viewDate = prepareViewDate(props, state);
-
-  var activeDate = prepareActiveDate(props, state);
-
-  if (result.date != null) {
-    result.moment = (0, _toMoment3.default)(result.date, props);
-    if (props.adjustDateStartOf) {
-      result.moment.startOf(props.adjustDateStartOf);
-    }
-    result.timestamp = +result.moment;
-  }
-
-  if (activeDate) {
-    result.activeMoment = (0, _toMoment3.default)(activeDate, props);
-    if (props.adjustDateStartOf) {
-      result.activeMoment.startOf(props.adjustDateStartOf);
-    }
-    result.activeDate = +result.activeMoment;
-  }
-
-  var viewMoment = (0, _toMoment3.default)(result.viewDate, props);
-
-  if (props.constrainViewDate && result.minDate != null && viewMoment.isBefore(result.minDate)) {
-    result.minConstrained = true;
-    viewMoment = (0, _toMoment3.default)(result.minDate, props);
-  }
-
-  if (props.constrainViewDate && result.maxDate != null && viewMoment.isAfter(result.maxDate)) {
-    result.maxConstrained = true;
-    viewMoment = (0, _toMoment3.default)(result.maxDate, props);
-  }
-
-  if (props.adjustDateStartOf) {
-    viewMoment.startOf(props.adjustDateStartOf);
-  }
-
-  result.viewMoment = viewMoment;
-
-  return result;
-};
-
-var getInitialState = function getInitialState(props) {
-  return {
-    date: props.defaultDate,
-    activeDate: props.defaultActiveDate,
-    viewDate: props.defaultViewDate
-  };
-};
-
-var DecadeView = function (_Component) {
-  _inherits(DecadeView, _Component);
-
-  function DecadeView(props) {
-    _classCallCheck(this, DecadeView);
-
-    var _this2 = _possibleConstructorReturn(this, Object.getPrototypeOf(DecadeView).call(this, props));
-
-    _this2.state = getInitialState(props);
-    return _this2;
-  }
-
-  _createClass(DecadeView, [{
-    key: 'getYearsInDecade',
-    value: function getYearsInDecade(value) {
-      var _this3 = this;
-
-      var year = getDecadeStartYear(this.toMoment(value));
-
-      var start = this.toMoment('' + year, 'YYYY').startOf('year');
-
-      return (0, _times2.default)(10).map(function (i) {
-        return _this3.toMoment(start).add(i, 'year');
-      });
-    }
-  }, {
-    key: 'toMoment',
-    value: function toMoment(date, format) {
-      return (0, _toMoment3.default)(date, format, this.props);
-    }
-  }, {
-    key: 'render',
-    value: function render() {
-      var props = this.p = (0, _objectAssign2.default)({}, this.props);
-
-      if (props.onlyCompareYear) {
-        // props.adjustDateStartOf = null
-      }
-
-      var dateProps = prepareDateProps(props, this.state);
-
-      (0, _objectAssign2.default)(props, dateProps);
-
-      var yearsInView = this.getYearsInDecade(props.viewMoment);
-
-      var className = (0, _join2.default)(props.className, bem(), props.theme && bem(null, 'theme-' + props.theme));
-
-      var children = this.renderYears(props, yearsInView);
-      var align = 'stretch';
-      var column = true;
-
-      if (props.navigation) {
-        column = false;
-        align = 'center';
-
-        children = [this.renderNav(-1), _react2.default.createElement(_reactFlex.Flex, { inline: true, flex: true, column: true, alignItems: 'stretch', children: children }), this.renderNav(1)];
-      }
-
-      var flexProps = (0, _objectAssign2.default)({}, this.props);
-
-      delete flexProps.activeDate;
-      delete flexProps.adjustDateStartOf;
-      delete flexProps.adjustMaxDateStartOf;
-      delete flexProps.adjustMinDateStartOf;
-      delete flexProps.arrows;
-      delete flexProps.cleanup;
-      delete flexProps.constrainViewDate;
-      delete flexProps.date;
-      delete flexProps.dateFormat;
-      delete flexProps.isDecadeView;
-      delete flexProps.navigation;
-      delete flexProps.navKeys;
-      delete flexProps.onActiveDateChange;
-      delete flexProps.onConfirm;
-      delete flexProps.onlyCompareYear;
-      delete flexProps.onViewDateChange;
-      delete flexProps.perRow;
-      delete flexProps.theme;
-      delete flexProps.viewDate;
-      delete flexProps.yearFormat;
-
-      if (typeof props.cleanup == 'function') {
-        props.cleanup(flexProps);
-      }
-
-      return _react2.default.createElement(_reactFlex.Flex, _extends({
-        inline: true,
-        column: column,
-        alignItems: align,
-        tabIndex: 0
-      }, flexProps, {
-        onKeyDown: this.onKeyDown,
-        className: className,
-        children: children
-      }));
-    }
-  }, {
-    key: 'renderNav',
-    value: function renderNav(dir) {
-      var _this4 = this;
-
-      var props = this.p;
-
-      var name = dir == -1 ? 'prev' : 'next';
-      var navMoment = this.toMoment(props.viewMoment).add(dir * 10, 'year');
-
-      var disabled = dir == -1 ? props.minDateMoment && getDecadeEndYear(navMoment) < getDecadeEndYear(props.minDateMoment) : props.maxDateMoment && getDecadeEndYear(navMoment) < getDecadeEndYear(props.maxDateMoment);
-
-      var className = (0, _join2.default)(bem('arrow'), bem('arrow--' + name), disabled && bem('arrow--disabled'));
-
-      var arrow = props.arrows[name] || ARROWS[name];
-
-      var arrowProps = {
-        className: className,
-        onClick: !disabled ? function () {
-          return _this4.onViewDateChange({ dateMoment: navMoment });
-        } : null,
-        children: arrow,
-        disabled: disabled
-      };
-
-      if (props.renderNavigation) {
-        return props.renderNavigation(arrowProps, props);
-      }
-
-      return _react2.default.createElement('div', arrowProps);
-    }
-  }, {
-    key: 'renderYears',
-    value: function renderYears(props, years) {
-      var nodes = years.map(this.renderYear);
-
-      var perRow = props.perRow;
-      var buckets = (0, _times2.default)(Math.ceil(nodes.length / perRow)).map(function (i) {
-        return nodes.slice(i * perRow, (i + 1) * perRow);
-      });
-
-      return buckets.map(function (bucket, i) {
-        return _react2.default.createElement(
-          _reactFlex.Flex,
-          {
-            alignItems: 'center',
-            flex: true,
-            row: true,
-            inline: true,
-            key: 'row_' + i,
-            className: 'dp-row'
-          },
-          bucket
-        );
-      });
-    }
-  }, {
-    key: 'renderYear',
-    value: function renderYear(dateMoment) {
-      var props = this.p;
-      var yearText = this.format(dateMoment);
-
-      var timestamp = +dateMoment;
-
-      var isActiveDate = props.onlyCompareYear && props.activeMoment ? dateMoment.get('year') == props.activeMoment.get('year') : timestamp === props.activeDate;
-
-      var isValue = props.onlyCompareYear && props.moment ? dateMoment.get('year') == props.moment.get('year') : timestamp === props.timestamp;
-
-      var className = (0, _join2.default)(bem('year'), isActiveDate && bem('year', 'active'), isValue && bem('year', 'value'), props.minDate != null && timestamp < props.minDate && bem('year', 'disabled'), props.maxDate != null && timestamp > props.maxDate && bem('year', 'disabled'));
-
-      var onClick = this.handleClick.bind(this, {
-        dateMoment: dateMoment,
-        timestamp: timestamp
-      });
-
-      return _react2.default.createElement(
-        _reactFlex.Item,
-        {
-          key: yearText,
-          className: className,
-          onClick: onClick
-        },
-        yearText
-      );
-    }
-  }, {
-    key: 'format',
-    value: function format(mom, _format) {
-      _format = _format || this.props.yearFormat;
-
-      return mom.format(_format);
-    }
-  }, {
-    key: 'handleClick',
-    value: function handleClick(_ref6, event) {
-      var timestamp = _ref6.timestamp;
-      var dateMoment = _ref6.dateMoment;
-
-      event.target.value = timestamp;
-
-      this.select({ dateMoment: dateMoment, timestamp: timestamp }, event);
-    }
-  }, {
-    key: 'onKeyDown',
-    value: function onKeyDown(event) {
-      return _onKeyDown2.default.call(this, event);
-    }
-  }, {
-    key: 'confirm',
-    value: function confirm(date, event) {
-      return _confirm.call(this, date, event);
-    }
-  }, {
-    key: 'navigate',
-    value: function navigate(direction, event) {
-      return _navigate.call(this, direction, event);
-    }
-  }, {
-    key: 'select',
-    value: function select(_ref7, event) {
-      var dateMoment = _ref7.dateMoment;
-      var timestamp = _ref7.timestamp;
-
-      return _select.call(this, { dateMoment: dateMoment, timestamp: timestamp }, event);
-    }
-  }, {
-    key: 'onViewDateChange',
-    value: function onViewDateChange(_ref8) {
-      var dateMoment = _ref8.dateMoment;
-      var timestamp = _ref8.timestamp;
-
-      return _onViewDateChange.call(this, { dateMoment: dateMoment, timestamp: timestamp });
-    }
-  }, {
-    key: 'gotoViewDate',
-    value: function gotoViewDate(_ref9) {
-      var dateMoment = _ref9.dateMoment;
-      var timestamp = _ref9.timestamp;
-
-      return _gotoViewDate.call(this, { dateMoment: dateMoment, timestamp: timestamp });
-    }
-  }, {
-    key: 'onActiveDateChange',
-    value: function onActiveDateChange(_ref10) {
-      var dateMoment = _ref10.dateMoment;
-      var timestamp = _ref10.timestamp;
-
-      return _onActiveDateChange.call(this, { dateMoment: dateMoment, timestamp: timestamp });
-    }
-  }, {
-    key: 'onChange',
-    value: function onChange(_ref11, event) {
-      var dateMoment = _ref11.dateMoment;
-      var timestamp = _ref11.timestamp;
-
-      return _onChange.call(this, { dateMoment: dateMoment, timestamp: timestamp }, event);
-    }
-  }, {
-    key: 'focus',
-    value: function focus() {
-      (0, _reactDom.findDOMNode)(this).focus();
-    }
-  }]);
-
-  return DecadeView;
-}(_reactClass2.default);
-
-exports.default = DecadeView;
-
-
-DecadeView.defaultProps = {
-  isDecadeView: true,
-  arrows: {},
-  navigation: true,
-  constrainViewDate: true,
-  navKeys: NAV_KEYS,
-  theme: 'default',
-  yearFormat: 'YYYY',
-  dateFormat: 'YYYY-MM-DD',
-  perRow: 5,
-
-  onlyCompareYear: true,
-
-  adjustDateStartOf: 'year',
-  adjustMinDateStartOf: 'year',
-  adjustMaxDateStartOf: 'year'
-};
-
-exports.onChange = _onChange;
-exports.onViewDateChange = _onViewDateChange;
-exports.onActiveDateChange = _onActiveDateChange;
-exports.select = _select;
-exports.confirm = _confirm;
-exports.gotoViewDate = _gotoViewDate;
-exports.navigate = _navigate;
-exports.onKeyDown = _onKeyDown2.default;
-exports.prepareActiveDate = prepareActiveDate;
-exports.prepareViewDate = prepareViewDate;
-exports.prepareMinMax = prepareMinMax;
-exports.prepareDateProps = prepareDateProps;
-exports.prepareDate = prepareDate;
-exports.isDateInMinMax = isDateInMinMax;
-exports.isValidActiveDate = isValidActiveDate;
-exports.getInitialState = getInitialState;
-},{"./MonthView/onKeyDown":73,"./bemFactory":86,"./join":90,"./toMoment":92,"./utils/times":99,"moment":52,"object-assign":100,"react":263,"react-class":56,"react-dom":101,"react-flex":107}],69:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Button = undefined;
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactClass = require('react-class');
-
-var _reactClass2 = _interopRequireDefault(_reactClass);
-
-var _reactFlex = require('react-flex');
-
-var _reactInlineBlock = require('react-inline-block');
-
-var _reactInlineBlock2 = _interopRequireDefault(_reactInlineBlock);
-
-var _objectAssign = require('object-assign');
-
-var _objectAssign2 = _interopRequireDefault(_objectAssign);
-
-var _joinFunctions = require('./joinFunctions');
-
-var _joinFunctions2 = _interopRequireDefault(_joinFunctions);
-
-var _join = require('./join');
-
-var _join2 = _interopRequireDefault(_join);
-
-var _bemFactory = require('./bemFactory');
-
-var _bemFactory2 = _interopRequireDefault(_bemFactory);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var bem = (0, _bemFactory2.default)('react-date-picker__footer');
-
-var SPACER = _react2.default.createElement(_reactFlex.Item, null);
-
-var buttonClassName = 'react-date-picker__footer-button';
-
-var preventDefault = function preventDefault(e) {
-  return e.preventDefault();
-};
-
-var Button = exports.Button = function Button(props) {
-  var disabledClassName = props.disabled ? buttonClassName + '--disabled' : '';
-
-  var className = (props.className || '') + ' ' + buttonClassName + ' ' + disabledClassName;
-  return _react2.default.createElement('button', _extends({
-    tabIndex: -1
-  }, props, {
-    className: className
-  }));
-};
-
-var Footer = function (_Component) {
-  _inherits(Footer, _Component);
-
-  function Footer() {
-    _classCallCheck(this, Footer);
-
-    return _possibleConstructorReturn(this, Object.getPrototypeOf(Footer).apply(this, arguments));
-  }
-
-  _createClass(Footer, [{
-    key: 'render',
-    value: function render() {
-      var props = this.p = (0, _objectAssign2.default)({}, this.props);
-
-      var className = (0, _join2.default)(props.className, bem(), bem(null, 'theme-' + props.theme));
-
-      var todayButton = this.renderTodayButton();
-      var clearButton = this.renderClearButton();
-
-      var okButton = this.renderOkButton();
-      var cancelButton = this.renderCancelButton();
-
-      if (!todayButton && !clearButton && !okButton && !cancelButton) {
-        return null;
-      }
-
-      var middleSpacer = okButton || cancelButton ? SPACER : null;
-
-      var spacer = !props.centerButtons ? middleSpacer : null;
-
-      var children = [props.centerButtons && SPACER, todayButton, clearButton, spacer, okButton, cancelButton, props.centerButtons && SPACER];
-
-      if (props.renderChildren) {
-        children = props.renderChildren(children, props);
-      }
-
-      var flexProps = (0, _objectAssign2.default)({}, props);
-
-      delete flexProps.actionEvent;
-      delete flexProps.buttonFactory;
-      delete flexProps.cancelButton;
-      delete flexProps.cancelButtonText;
-      delete flexProps.centerButtons;
-      delete flexProps.clearDate;
-      delete flexProps.cleanup;
-      delete flexProps.clearButton;
-      delete flexProps.clearButtonText;
-      delete flexProps.isDatePickerFooter;
-      delete flexProps.onCancelClick;
-      delete flexProps.onClearClick;
-      delete flexProps.onOkClick;
-      delete flexProps.onTodayClick;
-      delete flexProps.okButton;
-      delete flexProps.okButtonText;
-      delete flexProps.selectDate;
-      delete flexProps.theme;
-      delete flexProps.todayButton;
-      delete flexProps.todayButtonText;
-
-      if (typeof props.cleanup == 'function') {
-        props.cleanup(flexProps);
-      }
-
-      return _react2.default.createElement(_reactFlex.Flex, _extends({
-        inline: true,
-        row: true
-      }, flexProps, {
-        justifyContent: 'center',
-        className: className,
-        children: children
-      }));
-    }
-  }, {
-    key: 'renderTodayButton',
-    value: function renderTodayButton() {
-      if (!this.props.todayButton) {
-        return null;
-      }
-      return this.renderButton(this.props.todayButtonText, this.props.onTodayClick);
-    }
-  }, {
-    key: 'renderClearButton',
-    value: function renderClearButton() {
-      if (!this.props.clearButton) {
-        return null;
-      }
-
-      return this.renderButton({
-        children: this.props.clearButtonText,
-        disabled: this.props.clearDate === undefined
-      }, this.props.onClearClick);
-    }
-  }, {
-    key: 'renderOkButton',
-    value: function renderOkButton() {
-      if (!this.props.okButton) {
-        return null;
-      }
-      return this.renderButton(this.props.okButtonText, this.props.onOkClick);
-    }
-  }, {
-    key: 'renderCancelButton',
-    value: function renderCancelButton() {
-      if (!this.props.cancelButton) {
-        return null;
-      }
-      return this.renderButton(this.props.cancelButtonText, this.props.onCancelClick);
-    }
-  }, {
-    key: 'renderButton',
-    value: function renderButton(props, fn) {
-      var text = props.children;
-      var p = props;
-
-      if (typeof props == 'string') {
-        p = {};
-        text = props;
-      }
-
-      if (typeof fn == 'function' && !p.onClick && !p.disabled) {
-        p.onClick = fn;
-      }
-
-      var Factory = this.props.buttonFactory;
-
-      var onMouseDown = p.onMouseDown ? (0, _joinFunctions2.default)(p.onMouseDown, preventDefault) : preventDefault;
-
-      return _react2.default.createElement(
-        Factory,
-        _extends({ tabIndex: 0 }, p, { onMouseDown: onMouseDown }),
-        text
-      );
-    }
-  }]);
-
-  return Footer;
-}(_reactClass2.default);
-
-exports.default = Footer;
-
-
-Footer.defaultProps = {
-  actionEvent: 'onClick',
-  theme: 'default',
-
-  buttonFactory: Button,
-
-  todayButton: true,
-  clearButton: true,
-  okButton: true,
-  cancelButton: true,
-
-  todayButtonText: 'Today',
-  clearButtonText: 'Clear',
-  okButtonText: 'OK',
-  cancelButtonText: 'Cancel',
-
-  isDatePickerFooter: true
-};
-
-Footer.propTypes = {
-  theme: _react.PropTypes.string,
-  centerButtons: _react.PropTypes.bool,
-
-  cokButtonText: _react.PropTypes.node,
-  clearButtonText: _react.PropTypes.node,
-  cancelButtonText: _react.PropTypes.node,
-  todayButtonText: _react.PropTypes.node,
-
-  onTodayClick: _react.PropTypes.func,
-  onClearClick: _react.PropTypes.func,
-  onOkClick: _react.PropTypes.func,
-  onCancelClick: _react.PropTypes.func
-};
-},{"./bemFactory":86,"./join":90,"./joinFunctions":91,"object-assign":100,"react":263,"react-class":56,"react-flex":107,"react-inline-block":113}],70:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactClass = require('react-class');
-
-var _reactClass2 = _interopRequireDefault(_reactClass);
-
-var _objectAssign = require('object-assign');
-
-var _objectAssign2 = _interopRequireDefault(_objectAssign);
-
-var _reactFlex = require('react-flex');
-
-var _toMoment2 = require('./toMoment');
-
-var _toMoment3 = _interopRequireDefault(_toMoment2);
-
-var _join = require('./join');
-
-var _join2 = _interopRequireDefault(_join);
-
-var _joinFunctions = require('./joinFunctions');
-
-var _joinFunctions2 = _interopRequireDefault(_joinFunctions);
-
-var _bemFactory = require('./bemFactory');
-
-var _bemFactory2 = _interopRequireDefault(_bemFactory);
-
-var _Footer = require('./Footer');
-
-var _Footer2 = _interopRequireDefault(_Footer);
-
-var _YearView = require('./YearView');
-
-var _YearView2 = _interopRequireDefault(_YearView);
-
-var _assignDefined = require('./assignDefined');
-
-var _assignDefined2 = _interopRequireDefault(_assignDefined);
-
-var _DecadeView = require('./DecadeView');
-
-var _DecadeView2 = _interopRequireDefault(_DecadeView);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var bem = (0, _bemFactory2.default)('react-date-picker__history-view');
-
-var preventDefault = function preventDefault(e) {
-  e.preventDefault();
-};
-
-var HistoryView = function (_Component) {
-  _inherits(HistoryView, _Component);
-
-  function HistoryView(props) {
-    _classCallCheck(this, HistoryView);
-
-    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(HistoryView).call(this, props));
-
-    _this.state = (0, _DecadeView.getInitialState)(props);
-    return _this;
-  }
-
-  _createClass(HistoryView, [{
-    key: 'componentWillUnmount',
-    value: function componentWillUnmount() {
-      this.unmounted = true;
-    }
-  }, {
-    key: 'toMoment',
-    value: function toMoment(date, format) {
-      return (0, _toMoment3.default)(date, format, this.props);
-    }
-  }, {
-    key: 'render',
-    value: function render() {
-      var _this2 = this;
-
-      var dateProps = (0, _DecadeView.prepareDateProps)(this.props, this.state);
-
-      var props = this.p = (0, _objectAssign2.default)({}, this.props, dateProps);
-
-      props.children = _react2.default.Children.toArray(props.children);
-
-      var className = (0, _join2.default)(props.className, bem(), props.theme && bem(null, 'theme-' + props.theme));
-
-      var commonProps = (0, _assignDefined2.default)({}, {
-        locale: props.locale,
-        theme: props.theme,
-        minDate: props.minDate,
-        maxDate: props.maxDate,
-
-        viewDate: props.viewMoment,
-        activeDate: props.activeDate,
-        date: props.date,
-
-        dateFormat: props.dateFormat
-      });
-
-      var yearViewProps = (0, _objectAssign2.default)({}, commonProps);
-
-      var decadeViewProps = (0, _objectAssign2.default)({}, commonProps, {
-        ref: function ref(view) {
-          _this2.decadeView = view;
-        }
-      });
-
-      var flexProps = (0, _objectAssign2.default)({}, this.props);
-
-      delete flexProps.activeDate;
-      delete flexProps.adjustDateStartOf;
-      delete flexProps.adjustMaxDateStartOf;
-      delete flexProps.adjustMinDateStartOf;
-
-      delete flexProps.cleanup;
-
-      delete flexProps.date;
-      delete flexProps.dateFormat;
-      delete flexProps.defaultDate;
-      delete flexProps.defaultViewDate;
-
-      delete flexProps.focusDecadeView;
-      delete flexProps.focusYearView;
-      delete flexProps.footer;
-
-      delete flexProps.locale;
-
-      delete flexProps.maxDate;
-      delete flexProps.minDate;
-
-      delete flexProps.onOkClick;
-      delete flexProps.onCancelClick;
-      delete flexProps.okOnEnter;
-
-      delete flexProps.navigation;
-
-      delete flexProps.theme;
-
-      delete flexProps.viewMoment;
-
-      if (typeof props.cleanup == 'function') {
-        props.cleanup(flexProps);
-      }
-
-      return _react2.default.createElement(
-        _reactFlex.Flex,
-        _extends({
-          inline: true,
-          column: true,
-          alignItems: 'stretch'
-        }, flexProps, {
-          className: className
-        }),
-        this.renderYearView(yearViewProps),
-        this.renderDecadeView(decadeViewProps),
-        this.renderFooter()
-      );
-    }
-  }, {
-    key: 'renderFooter',
-    value: function renderFooter() {
-      var props = this.p;
-      var children = props.children;
-
-      if (!props.footer) {
-        return null;
-      }
-
-      var footerChild = children.filter(function (c) {
-        return c && c.props && c.props.isDatePickerFooter;
-      })[0];
-
-      if (footerChild) {
-        var newFooterProps = {
-          onOkClick: (0, _joinFunctions2.default)(this.onOkClick, footerChild.props.onOkClick),
-          onCancelClick: (0, _joinFunctions2.default)(this.onCancelClick, footerChild.props.onCancelClick)
-        };
-
-        if (footerChild.props.centerButtons === undefined) {
-          newFooterProps.centerButtons = true;
-        }
-        if (footerChild.props.todayButton === undefined) {
-          newFooterProps.todayButton = false;
-        }
-        if (footerChild.props.clearButton === undefined) {
-          newFooterProps.clearButton = false;
-        }
-
-        return _react2.default.cloneElement(footerChild, newFooterProps);
-      }
-
-      return _react2.default.createElement(_Footer2.default, {
-        todayButton: false,
-        clearButton: false,
-        onOkClick: this.onOkClick,
-        onCancelClick: this.onCancelClick,
-        centerButtons: true
-      });
-    }
-  }, {
-    key: 'onOkClick',
-    value: function onOkClick() {
-      if (this.props.onOkClick) {
-        var dateMoment = this.p.activeMoment;
-        var dateString = this.format(dateMoment);
-        var timestamp = +dateMoment;
-
-        this.props.onOkClick(dateString, { dateMoment: dateMoment, timestamp: timestamp });
-      }
-    }
-  }, {
-    key: 'onCancelClick',
-    value: function onCancelClick() {
-      if (this.props.onCancelClick) {
-        this.props.onCancelClick();
-      }
-    }
-  }, {
-    key: 'renderYearView',
-    value: function renderYearView(yearViewProps) {
-      var props = this.p;
-      var children = props.children;
-
-      var yearViewChild = children.filter(function (c) {
-        return c && c.props && c.props.isYearView;
-      })[0];
-      var yearViewChildProps = yearViewChild ? yearViewChild.props : {};
-
-      var tabIndex = yearViewChildProps.tabIndex == null ? null : yearViewChildProps.tabIndex;
-
-      yearViewProps.tabIndex = tabIndex;
-
-      if (props.focusYearView === false || tabIndex == null) {
-        yearViewProps.tabIndex = null;
-        yearViewProps.onFocus = this.onYearViewFocus;
-        yearViewProps.onMouseDown = this.onYearViewMouseDown;
-      }
-
-      (0, _objectAssign2.default)(yearViewProps, {
-        // viewDate: props.moment || props.viewDate,
-        onViewDateChange: (0, _joinFunctions2.default)(this.onViewDateChange, yearViewChildProps.onViewDateChange),
-        onActiveDateChange: (0, _joinFunctions2.default)(this.onActiveDateChange, yearViewChildProps.onActiveDateChange),
-        onChange: (0, _joinFunctions2.default)(this.handleYearViewOnChange, yearViewChildProps.onChange)
-      });
-
-      if (yearViewChild) {
-        return _react2.default.cloneElement(yearViewChild, yearViewProps);
-      }
-
-      return _react2.default.createElement(_YearView2.default, yearViewProps);
-    }
-  }, {
-    key: 'renderDecadeView',
-    value: function renderDecadeView(decadeViewProps) {
-      var props = this.p;
-      var children = props.children;
-      var decadeViewChild = children.filter(function (c) {
-        return c && c.props && c.props.isDecadeView;
-      })[0];
-
-      var decadeViewChildProps = decadeViewChild ? decadeViewChild.props : {};
-
-      var tabIndex = decadeViewChildProps.tabIndex == null ? null : decadeViewChildProps.tabIndex;
-
-      decadeViewProps.tabIndex = tabIndex;
-
-      if (props.focusDecadeView === false || tabIndex == null) {
-        decadeViewProps.tabIndex = null;
-        decadeViewProps.onMouseDown = this.onDecadeViewMouseDown;
-      }
-
-      (0, _objectAssign2.default)(decadeViewProps, {
-        onConfirm: (0, _joinFunctions2.default)(this.handleDecadeViewOnConfirm, decadeViewChildProps.onConfirm),
-        onViewDateChange: (0, _joinFunctions2.default)(this.handleDecadeOnViewDateChange, decadeViewChildProps.onViewDateChange),
-        onActiveDateChange: (0, _joinFunctions2.default)(this.handleDecadeOnActiveDateChange, decadeViewChildProps.onActiveDateChange),
-        onChange: (0, _joinFunctions2.default)(this.handleDecadeOnChange, decadeViewChildProps.onChange)
-      });
-
-      if (decadeViewChild) {
-        return _react2.default.cloneElement(decadeViewChild, decadeViewProps);
-      }
-
-      return _react2.default.createElement(_DecadeView2.default, decadeViewProps);
-    }
-  }, {
-    key: 'onYearViewFocus',
-    value: function onYearViewFocus() {
-      if (this.props.focusYearView === false) {
-        this.focus();
-      }
-    }
-  }, {
-    key: 'focus',
-    value: function focus() {
-      if (this.decadeView && this.props.focusDecadeView) {
-        this.decadeView.focus();
-      }
-    }
-  }, {
-    key: 'onYearViewMouseDown',
-    value: function onYearViewMouseDown(e) {
-      preventDefault(e);
-
-      this.focus();
-    }
-  }, {
-    key: 'onDecadeViewMouseDown',
-    value: function onDecadeViewMouseDown(e) {
-      preventDefault(e);
-    }
-  }, {
-    key: 'format',
-    value: function format(mom, _format) {
-      _format = _format || this.props.dateFormat;
-
-      return mom.format(_format);
-    }
-  }, {
-    key: 'handleDecadeViewOnConfirm',
-    value: function handleDecadeViewOnConfirm() {
-      if (this.props.okOnEnter) {
-        this.onOkClick();
-      }
-    }
-  }, {
-    key: 'onKeyDown',
-    value: function onKeyDown(event) {
-      if (event.key == 'Escape') {
-        return this.onCancelClick();
-      }
-
-      if (this.decadeView) {
-        this.decadeView.onKeyDown(event);
-      }
-
-      return undefined;
-    }
-  }, {
-    key: 'confirm',
-    value: function confirm(date, event) {
-      return _DecadeView.confirm.call(this, date, event);
-    }
-  }, {
-    key: 'navigate',
-    value: function navigate(direction, event) {
-      return _DecadeView.navigate.call(this, direction, event);
-    }
-  }, {
-    key: 'select',
-    value: function select(_ref, event) {
-      var dateMoment = _ref.dateMoment;
-      var timestamp = _ref.timestamp;
-
-      return _DecadeView.select.call(this, { dateMoment: dateMoment, timestamp: timestamp }, event);
-    }
-  }, {
-    key: 'handleDecadeOnViewDateChange',
-    value: function handleDecadeOnViewDateChange(dateString, _ref2) {
-      var dateMoment = _ref2.dateMoment;
-      var timestamp = _ref2.timestamp;
-
-      var props = this.p;
-      var currentViewMoment = props.viewMoment;
-
-      if (currentViewMoment) {
-        dateMoment.set('month', currentViewMoment.get('month'));
-        dateString = this.format(dateMoment);
-        timestamp = +dateMoment;
-      }
-
-      this.onViewDateChange(dateString, { dateMoment: dateMoment, timestamp: timestamp });
-    }
-  }, {
-    key: 'handleDecadeOnActiveDateChange',
-    value: function handleDecadeOnActiveDateChange(dateString, _ref3) {
-      var dateMoment = _ref3.dateMoment;
-      var timestamp = _ref3.timestamp;
-
-      var props = this.p;
-      var currentViewMoment = props.viewMoment;
-
-      if (currentViewMoment) {
-        dateMoment.set('month', currentViewMoment.get('month'));
-        dateString = this.format(dateMoment);
-        timestamp = +dateMoment;
-      }
-
-      this.onActiveDateChange(dateString, { dateMoment: dateMoment, timestamp: timestamp });
-    }
-  }, {
-    key: 'handleDecadeOnChange',
-    value: function handleDecadeOnChange(dateString, _ref4, event) {
-      var dateMoment = _ref4.dateMoment;
-      var timestamp = _ref4.timestamp;
-
-      var props = this.p;
-      var currentViewMoment = props.viewMoment;
-
-      if (currentViewMoment) {
-        dateMoment.set('month', currentViewMoment.get('month'));
-        dateString = this.format(dateMoment);
-        timestamp = +dateMoment;
-      }
-
-      this.onChange(dateString, { dateMoment: dateMoment, timestamp: timestamp }, event);
-    }
-  }, {
-    key: 'handleYearViewOnChange',
-    value: function handleYearViewOnChange(dateString, _ref5, event) {
-      var dateMoment = _ref5.dateMoment;
-      var timestamp = _ref5.timestamp;
-
-      var props = this.p;
-      var currentMoment = props.moment;
-
-      if (currentMoment) {
-        dateMoment.set('year', currentMoment.get('year'));
-        dateString = this.format(dateMoment);
-        timestamp = +dateMoment;
-      }
-
-      this.onChange(dateString, { dateMoment: dateMoment, timestamp: timestamp }, event);
-    }
-  }, {
-    key: 'onViewDateChange',
-    value: function onViewDateChange(dateString, _ref6) {
-      var dateMoment = _ref6.dateMoment;
-      var timestamp = _ref6.timestamp;
-
-      return _DecadeView.onViewDateChange.call(this, { dateMoment: dateMoment, timestamp: timestamp });
-    }
-  }, {
-    key: 'gotoViewDate',
-    value: function gotoViewDate(_ref7) {
-      var dateMoment = _ref7.dateMoment;
-      var timestamp = _ref7.timestamp;
-
-      return _DecadeView.gotoViewDate.call(this, { dateMoment: dateMoment, timestamp: timestamp });
-    }
-  }, {
-    key: 'onActiveDateChange',
-    value: function onActiveDateChange(dateString, _ref8) {
-      var dateMoment = _ref8.dateMoment;
-      var timestamp = _ref8.timestamp;
-
-      return _DecadeView.onActiveDateChange.call(this, { dateMoment: dateMoment, timestamp: timestamp });
-    }
-  }, {
-    key: 'onChange',
-    value: function onChange(dateString, _ref9, event) {
-      var dateMoment = _ref9.dateMoment;
-      var timestamp = _ref9.timestamp;
-
-      return _DecadeView.onChange.call(this, { dateMoment: dateMoment, timestamp: timestamp }, event);
-    }
-  }]);
-
-  return HistoryView;
-}(_reactClass2.default);
-
-exports.default = HistoryView;
-
-
-HistoryView.defaultProps = {
-  okOnEnter: true,
-
-  footer: true,
-  theme: 'default',
-  navigation: true,
-
-  focusYearView: false,
-  focusDecadeView: true,
-
-  dateFormat: 'YYYY-MM-DD',
-
-  adjustDateStartOf: 'month',
-  adjustMinDateStartOf: 'month',
-  adjustMaxDateStartOf: 'month'
-};
-},{"./DecadeView":68,"./Footer":69,"./YearView":84,"./assignDefined":85,"./bemFactory":86,"./join":90,"./joinFunctions":91,"./toMoment":92,"object-assign":100,"react":263,"react-class":56,"react-flex":107}],71:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.renderFooter = exports.NAV_KEYS = undefined;
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactDom = require('react-dom');
-
-var _reactClass = require('react-class');
-
-var _reactClass2 = _interopRequireDefault(_reactClass);
-
-var _moment = require('moment');
-
-var _moment2 = _interopRequireDefault(_moment);
-
-var _objectAssign = require('object-assign');
-
-var _objectAssign2 = _interopRequireDefault(_objectAssign);
-
-var _clampRange = require('../clampRange');
-
-var _clampRange2 = _interopRequireDefault(_clampRange);
-
-var _toMoment = require('../toMoment');
-
-var _toMoment2 = _interopRequireDefault(_toMoment);
-
-var _join = require('../join');
-
-var _join2 = _interopRequireDefault(_join);
-
-var _isInRange = require('../utils/isInRange');
-
-var _isInRange2 = _interopRequireDefault(_isInRange);
-
-var _NavBar = require('../NavBar');
-
-var _NavBar2 = _interopRequireDefault(_NavBar);
-
-var _Footer = require('../Footer');
-
-var _Footer2 = _interopRequireDefault(_Footer);
-
-var _bemFactory = require('../bemFactory');
-
-var _bemFactory2 = _interopRequireDefault(_bemFactory);
-
-var _joinFunctions = require('../joinFunctions');
-
-var _joinFunctions2 = _interopRequireDefault(_joinFunctions);
-
-var _assignDefined = require('../assignDefined');
-
-var _assignDefined2 = _interopRequireDefault(_assignDefined);
-
-var _BasicMonthView = require('../BasicMonthView');
-
-var _BasicMonthView2 = _interopRequireDefault(_BasicMonthView);
-
-var _onKeyDown = require('./onKeyDown');
-
-var _onKeyDown2 = _interopRequireDefault(_onKeyDown);
-
-var _navKeys = require('./navKeys');
-
-var _navKeys2 = _interopRequireDefault(_navKeys);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var TODAY = void 0;
-
-var RENDER_DAY = function RENDER_DAY(props) {
-  var divProps = (0, _objectAssign2.default)({}, props);
-
-  delete divProps.date;
-  delete divProps.dateMoment;
-  delete divProps.day;
-  delete divProps.isAfterMaxDate;
-  delete divProps.isBeforeMinDate;
-  delete divProps.inRange;
-  delete divProps.timestamp;
-
-  return _react2.default.createElement('div', divProps);
-};
-
-var isDateInMinMax = function isDateInMinMax(timestamp, props) {
-  if (props.minDate && timestamp < props.minDate) {
-    return false;
-  }
-
-  if (props.maxDate && timestamp > props.maxDate) {
-    return false;
-  }
-
-  return true;
-};
-
-var _isValidActiveDate = function _isValidActiveDate(timestamp, props) {
-  if (!props) {
-    throw new Error('props is mandatory in isValidActiveDate');
-  }
-
-  var dayProps = props.dayPropsMap[timestamp];
-
-  if (dayProps && dayProps.disabled) {
-    return false;
-  }
-
-  return isDateInMinMax(timestamp, props);
-};
-
-var _isInView = function _isInView(mom, props) {
-  if (!props) {
-    throw new Error('props is mandatory in isInView');
-  }
-
-  var daysInView = props.daysInView;
-
-  return (0, _isInRange2.default)(mom, { range: daysInView, inclusive: true });
-};
-
-var prepareViewDate = function prepareViewDate(props, state) {
-  var viewDate = props.viewDate === undefined ? state.viewDate : props.viewDate;
-
-  if (!viewDate && props.moment) {
-    return (0, _toMoment2.default)(props.moment);
-  }
-
-  return viewDate;
-};
-
-var prepareDate = function prepareDate(props, state) {
-  if (props.range) {
-    return null;
-  }
-
-  return props.date === undefined ? state.date : props.date;
-};
-
-var prepareRange = function prepareRange(props, state) {
-  if (props.moment) {
-    return null;
-  }
-
-  return props.partialRange ? props.range || state.range : state.range || props.range;
-};
-
-var prepareActiveDate = function prepareActiveDate(props, state) {
-  var fallbackDate = prepareDate(props, state) || (prepareRange(props, state) || [])[0];
-
-  var activeDate = props.activeDate === undefined ?
-  // only fallback to date if activeDate not specified
-  state.activeDate || fallbackDate : props.activeDate;
-
-  var daysInView = props.daysInView;
-
-  if (activeDate && daysInView && props.constrainActiveInView) {
-    var activeMoment = this.toMoment(activeDate);
-
-    if (!_isInView(activeMoment, props)) {
-      var date = fallbackDate;
-      var dateMoment = this.toMoment(date);
-
-      if (date && _isInView(dateMoment, props) && _isValidActiveDate(+dateMoment, props)) {
-        return date;
-      }
-
-      return null;
-    }
-  }
-
-  return _isValidActiveDate(+activeDate, props) ? activeDate : null;
-};
-
-var _renderFooter = function renderFooter(props, buttonHandlers) {
-  if (!props.footer) {
-    return null;
-  }
-
-  buttonHandlers = buttonHandlers || props;
-
-  var renderFooter = props.renderFooter;
-
-  var footerFnProps = {
-    onTodayClick: buttonHandlers.onFooterTodayClick,
-    onClearClick: buttonHandlers.onFooterClearClick,
-    onOkClick: buttonHandlers.onFooterOkClick,
-    onCancelClick: buttonHandlers.onFooterCancelClick
-  };
-
-  var childFooter = _react2.default.Children.toArray(props.children).filter(function (c) {
-    return c && c.props && c.props.isDatePickerFooter;
-  })[0];
-
-  var childFooterProps = childFooter ? childFooter.props : null;
-
-  if (childFooterProps) {
-    // also take into account the props on childFooter
-    // so we merge those with the other props already built
-    Object.keys(footerFnProps).forEach(function (key) {
-      if (childFooter.props[key]) {
-        footerFnProps[key] = (0, _joinFunctions2.default)(footerFnProps[key], childFooter.props[key]);
-      }
-    });
-  }
-
-  var footerProps = (0, _assignDefined2.default)({}, footerFnProps, {
-    todayButton: props.todayButton,
-    todayButtonText: props.todayButtonText,
-    clearButton: props.clearButton,
-    clearButtonText: props.clearButtonText,
-
-    okButton: props.okButton === undefined && !props.insideField ? false : props.okButton,
-
-    okButtonText: props.okButtonText,
-
-    cancelButton: props.cancelButton === undefined && !props.insideField ? false : props.cancelButton,
-
-    cancelButtonText: props.cancelButtonText,
-
-    clearDate: props.clearDate || props.footerClearDate,
-
-    selectDate: props.selectDate
-  });
-
-  if (childFooter) {
-    if (renderFooter) {
-      return renderFooter((0, _objectAssign2.default)({}, childFooter.props, footerProps));
-    }
-
-    return _react2.default.cloneElement(childFooter, footerProps);
-  }
-
-  if (renderFooter) {
-    return renderFooter(footerProps);
-  }
-
-  return _react2.default.createElement(_Footer2.default, footerProps);
-};
-
-var MonthView = function (_Component) {
-  _inherits(MonthView, _Component);
-
-  _createClass(MonthView, [{
-    key: 'isInView',
-    value: function isInView(mom, props) {
-      return _isInView(mom, props || this.p);
-    }
-  }]);
-
-  function MonthView(props) {
-    _classCallCheck(this, MonthView);
-
-    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(MonthView).call(this, props));
-
-    _this.state = {
-      range: props.defaultRange,
-      date: props.defaultDate,
-      hoverRange: props.defaultHoverRange,
-      activeDate: props.defaultActiveDate,
-      viewDate: props.defaultViewDate
-    };
-    return _this;
-  }
-
-  _createClass(MonthView, [{
-    key: 'componentWillMount',
-    value: function componentWillMount() {
-      this.updateBem(this.props);
-      this.updateToMoment(this.props);
-    }
-  }, {
-    key: 'componentWillReceiveProps',
-    value: function componentWillReceiveProps(nextProps) {
-      if (nextProps.defaultClassName != this.props.defaultClassName) {
-        this.updateBem(nextProps);
-      }
-
-      this.updateToMoment(nextProps);
-    }
-  }, {
-    key: 'updateBem',
-    value: function updateBem(props) {
-      this.bem = (0, _bemFactory2.default)(props.defaultClassName);
-    }
-  }, {
-    key: 'updateToMoment',
-    value: function updateToMoment(props) {
-      this.toMoment = function (value, dateFormat) {
-        return (0, _toMoment2.default)(value, {
-          locale: props.locale,
-          dateFormat: dateFormat || props.dateFormat
-        });
-      };
-
-      TODAY = +this.toMoment().startOf('day');
-    }
-  }, {
-    key: 'prepareClassName',
-    value: function prepareClassName(props) {
-      return (0, _join2.default)(props.className, this.bem(), this.bem(null, 'theme-' + props.theme));
-    }
-  }, {
-    key: 'prepareProps',
-    value: function prepareProps(thisProps, state) {
-      var _this2 = this;
-
-      var props = this.p = (0, _objectAssign2.default)({}, thisProps);
-
-      state = state || this.state;
-
-      props.hoverRange = props.hoverRange === undefined ? this.state.hoverRange : props.hoverRange;
-
-      props.dayPropsMap = {};
-      props.className = this.prepareClassName && this.prepareClassName(props);
-
-      var minDate = props.minDate;
-      var maxDate = props.maxDate;
-
-
-      if (minDate) {
-        props.minDateMoment = this.toMoment(props.minDate).startOf('day');
-        props.minDate = +props.minDateMoment;
-      }
-
-      if (maxDate) {
-        props.maxDateMoment = this.toMoment(props.maxDate);
-        props.maxDate = +props.maxDateMoment;
-      }
-
-      var date = prepareDate(props, state);
-
-      if (date) {
-        props.moment = props.moment || (props.range ? null : this.toMoment(date).startOf('day'));
-        props.timestamp = props.moment ? +props.moment : null;
-      }
-
-      props.viewMoment = props.viewMoment || this.toMoment(prepareViewDate(props, state));
-
-      if (props.constrainViewDate && props.minDate && props.viewMoment.isBefore(props.minDate)) {
-        props.minConstrained = true;
-        props.viewMoment = this.toMoment(props.minDate);
-      }
-
-      if (props.constrainViewDate && props.maxDate && props.viewMoment.isAfter(props.maxDate)) {
-        props.maxConstrained = true;
-        props.viewMoment = this.toMoment(props.maxDate);
-      }
-
-      props.viewMonthStart = this.toMoment(props.viewMoment).startOf('month');
-      props.viewMonthEnd = this.toMoment(props.viewMoment).endOf('month');
-
-      var range = prepareRange(props, state);
-
-      if (range) {
-        props.range = range.map(function (d) {
-          return _this2.toMoment(d).startOf('day');
-        });
-        props.rangeStart = state.rangeStart || (props.range.length == 1 ? props.range[0] : null);
-      }
-
-      props.daysInView = (0, _BasicMonthView.getDaysInMonthView)(props.viewMoment, props);
-
-      var activeDate = prepareActiveDate.call(this, props, state);
-
-      if (activeDate) {
-        props.activeDate = +this.toMoment(activeDate).startOf('day');
-      }
-
-      return props;
-    }
-  }, {
-    key: 'getViewMoment',
-    value: function getViewMoment() {
-      return this.p.viewMoment;
-    }
-  }, {
-    key: 'getViewSize',
-    value: function getViewSize() {
-      return 1;
-    }
-
-    // handleViewMouseLeave(){
-    //   this.state.range && this.setState({ range: null })
-    // }
-
-  }, {
-    key: 'preparePrevNextClassName',
-    value: function preparePrevNextClassName(timestamp, props) {
-      var viewMonthStart = props.viewMonthStart;
-      var viewMonthEnd = props.viewMonthEnd;
-
-
-      var before = timestamp < viewMonthStart;
-      var after = timestamp > viewMonthEnd;
-
-      var thisMonth = !before && !after;
-
-      return (0, _join2.default)(timestamp == TODAY && this.bem('day--today'), props.highlightToday && timestamp == TODAY && this.bem('day--today-highlight'), before && this.bem('day--prev-month'), before && !props.showDaysBeforeMonth && this.bem('day--hidden'), after && this.bem('day--next-month'), after && !props.showDaysAfterMonth && this.bem('day--hidden'), thisMonth && this.bem('day--this-month'));
-    }
-  }, {
-    key: 'prepareMinMaxProps',
-    value: function prepareMinMaxProps(timestamp, props) {
-      var classes = [];
-
-      var isBeforeMinDate = false;
-      var isAfterMaxDate = false;
-
-      var minDate = props.minDate;
-      var maxDate = props.maxDate;
-
-
-      if (minDate && timestamp < minDate) {
-        classes.push(this.bem('day--disabled-min'));
-        isBeforeMinDate = true;
-      }
-
-      if (maxDate && timestamp > maxDate) {
-        classes.push(this.bem('day--disabled-max'));
-        isAfterMaxDate = true;
-      }
-
-      return {
-        className: (0, _join2.default)(classes),
-        isBeforeMinDate: isBeforeMinDate,
-        isAfterMaxDate: isAfterMaxDate,
-        disabled: isBeforeMinDate || isAfterMaxDate
-      };
-    }
-  }, {
-    key: 'prepareWeekendClassName',
-    value: function prepareWeekendClassName(dateMoment, _ref) {
-      var highlightWeekends = _ref.highlightWeekends;
-
-      // const props = this.p
-      var weekDay = dateMoment.day();
-
-      // const weekendStartDay = getWeekendStartDay(props)
-
-      if (weekDay === 0 /* Sunday */ || weekDay === 6 /* Saturday */) {
-          // if (weekDay === weekendStartDay || weekDay === weekendStartDay + 1) {
-          return (0, _join2.default)(this.bem('day--weekend'), highlightWeekends && this.bem('day--weekend-highlight'));
-        }
-
-      return '';
-    }
-  }, {
-    key: 'prepareRangeProps',
-    value: function prepareRangeProps(dateMoment, props) {
-      var inRange = false;
-
-      var className = [];
-
-      var hoverRange = props.hoverRange;
-      var range = props.range;
-
-
-      if (range) {
-        var _range = _slicedToArray(range, 2);
-
-        var rangeStart = _range[0];
-        var rangeEnd = _range[1];
-
-
-        if (!range.length) {
-          rangeStart = props.rangeStart;
-        }
-
-        // const rangeName = !props.partialRange ? 'hover-range' : 'range'
-        var rangeName = 'range'; //hoverRange ? 'range' : 'hover-range'
-
-        if (rangeStart && dateMoment.isSame(rangeStart)) {
-          className.push(this.bem('day--' + rangeName + '-start'));
-          className.push(this.bem('day--in-' + rangeName));
-
-          if (!rangeEnd) {
-            className.push(this.bem('day--' + rangeName + '-end'));
+            return Component;
           }
-
-          inRange = true;
-        }
-
-        if (rangeEnd && dateMoment.isSame(rangeEnd)) {
-          className.push(this.bem('day--' + rangeName + '-end'));
-          className.push(this.bem('day--in-' + rangeName));
-
-          inRange = true;
-        }
-
-        if (!inRange && (0, _isInRange2.default)(dateMoment, range)) {
-          className.push(this.bem('day--in-' + rangeName));
-
-          inRange = true;
-        }
-      }
-
-      if (range && range.length < 2 && hoverRange && (0, _isInRange2.default)(dateMoment, hoverRange)) {
-        className.push(this.bem('day--in-hover-range'));
-
-        if (dateMoment.isSame(hoverRange[0])) {
-          className.push(this.bem('day--hover-range-start'));
-        }
-
-        if (dateMoment.isSame(hoverRange[1])) {
-          className.push(this.bem('day--hover-range-end'));
-        }
-      }
-
-      return {
-        inRange: inRange,
-        className: (0, _join2.default)(className)
-      };
-    }
-  }, {
-    key: 'prepareDayProps',
-    value: function prepareDayProps(renderDayProps, props) {
-      var timestamp = renderDayProps.timestamp;
-      var dateMoment = renderDayProps.dateMoment;
-      var className = renderDayProps.className;
-
-
-      props = props || this.p;
-      var result = {};
-
-      var minMaxProps = this.prepareMinMaxProps(timestamp, props);
-      var rangeProps = this.prepareRangeProps(dateMoment, props);
-
-      var weekendClassName = this.prepareWeekendClassName(dateMoment, props);
-      var prevNextClassName = this.preparePrevNextClassName(timestamp, props);
-
-      var currentTimestamp = props.timestamp;
-
-      (0, _objectAssign2.default)(result, minMaxProps, rangeProps, {
-        children: _react2.default.createElement(
-          'div',
-          { className: this.bem('day-text') },
-          renderDayProps.day
-        ),
-        className: (0, _join2.default)([minMaxProps.className, rangeProps.className, prevNextClassName, weekendClassName, timestamp == currentTimestamp ? this.bem('day--value') : null, timestamp == props.activeDate ? this.bem('day--active') : null, className])
-      });
-
-      if (!result.disabled && props.isDisabledDay) {
-        result.disabled = props.isDisabledDay(renderDayProps, props);
-      }
-
-      return result;
-    }
-  }, {
-    key: 'focus',
-    value: function focus() {
-      var domNode = (0, _reactDom.findDOMNode)(this);
-
-      if (domNode) {
-        domNode.focus();
-      }
-    }
-  }, {
-    key: 'onDayTextMouseEnter',
-    value: function onDayTextMouseEnter(_ref2) {
-      var dateMoment = _ref2.dateMoment;
-      var timestamp = _ref2.timestamp;
-
-      if (!this.state.focused) {
-        this.focus();
-      }
-
-      this.onActiveDateChange({ dateMoment: dateMoment, timestamp: timestamp });
-    }
-  }, {
-    key: 'renderDay',
-    value: function renderDay(renderProps) {
-      var _this3 = this;
-
-      var props = this.p;
-
-      var _renderProps = renderProps;
-      var dateMoment = _renderProps.dateMoment;
-      var timestamp = _renderProps.timestamp;
-
-
-      (0, _objectAssign2.default)(renderProps, this.prepareDayProps(renderProps, props));
-
-      if (props.range && props.highlightRangeOnMouseMove) {
-        renderProps.onMouseEnter = this.handleDayMouseEnter.bind(this, renderProps);
-      }
-
-      if (typeof props.onRenderDay === 'function') {
-        renderProps = props.onRenderDay(renderProps);
-      }
-
-      if (renderProps.disabled) {
-        renderProps.className = (0, _join2.default)(this.bem('day--disabled'), renderProps.className);
-      } else {
-        (function () {
-          var eventParam = { dateMoment: dateMoment, timestamp: timestamp };
-
-          var onClick = _this3.handleClick.bind(_this3, eventParam);
-          var prevOnClick = renderProps.onClick;
-
-          renderProps.onClick = prevOnClick ? function () {
-            prevOnClick.apply(undefined, arguments);
-            onClick.apply(undefined, arguments);
-          } : onClick;
-
-          if (props.activateOnHover && _this3.props.activeDate !== null) {
-            (function () {
-              var onMouseEnter = _this3.onDayTextMouseEnter.bind(_this3, eventParam);
-              var prevOnMouseEnter = renderProps.onMouseEnter;
-
-              renderProps.onMouseEnter = prevOnMouseEnter ? function () {
-                prevOnMouseEnter.apply(undefined, arguments);
-                onMouseEnter.apply(undefined, arguments);
-              } : onMouseEnter;
-            })();
-          }
-        })();
-      }
-
-      props.dayPropsMap[timestamp] = renderProps;
-
-      var renderFunction = props.renderDay || RENDER_DAY;
-
-      var result = renderFunction(renderProps);
-
-      if (result === undefined) {
-        result = RENDER_DAY(renderProps);
-      }
-
-      return result;
-    }
-  }, {
-    key: 'render',
-    value: function render() {
-      var props = this.p = this.prepareProps(this.props);
-
-      var basicViewProps = (0, _objectAssign2.default)({}, props);
-
-      delete basicViewProps.activeDate;
-      delete basicViewProps.activateOnHover;
-      delete basicViewProps.arrows;
-
-      delete basicViewProps.cleanup;
-      delete basicViewProps.constrainViewDate;
-      delete basicViewProps.constrainActiveInView;
-      delete basicViewProps.dayPropsMap;
-      delete basicViewProps.date;
-      delete basicViewProps.defaultActiveDate;
-      delete basicViewProps.defaultDate;
-      delete basicViewProps.defaultViewDate;
-
-      delete basicViewProps.enableHistoryView;
-
-      delete basicViewProps.focusOnFooterMouseDown;
-      delete basicViewProps.focusOnNavMouseDown;
-      delete basicViewProps.footer;
-      delete basicViewProps.footerClearDate;
-
-      delete basicViewProps.getTransitionTime;
-
-      delete basicViewProps.highlightRangeOnMouseMove;
-      delete basicViewProps.highlightToday;
-      delete basicViewProps.highlightWeekends;
-      delete basicViewProps.hoverRange;
-
-      delete basicViewProps.insideField;
-      delete basicViewProps.isDatePicker;
-
-      delete basicViewProps.maxConstrained;
-      delete basicViewProps.maxDate;
-      delete basicViewProps.maxDateMoment;
-      delete basicViewProps.minConstrained;
-      delete basicViewProps.minDate;
-      delete basicViewProps.minDateMoment;
-
-      delete basicViewProps.navBarArrows;
-      delete basicViewProps.navNext;
-      delete basicViewProps.navigation;
-      delete basicViewProps.navOnDateClick;
-      delete basicViewProps.navPrev;
-      delete basicViewProps.onActiveDateChange;
-      delete basicViewProps.onChange;
-      delete basicViewProps.onViewDateChange;
-      delete basicViewProps.onTransitionStart;
-
-      delete basicViewProps.partialRange;
-      delete basicViewProps.range;
-      delete basicViewProps.renderNavBar;
-
-      delete basicViewProps.showDaysAfterMonth;
-      delete basicViewProps.showDaysBeforeMonth;
-
-      delete basicViewProps.theme;
-
-      delete basicViewProps.viewDate;
-      delete basicViewProps.viewMonthEnd;
-      delete basicViewProps.viewMonthStart;
-
-      if (typeof props.cleanup == 'function') {
-        props.cleanup(basicViewProps);
-      }
-
-      return _react2.default.createElement(_BasicMonthView2.default, _extends({
-        tabIndex: 0
-      }, basicViewProps, {
-
-        renderChildren: this.renderChildren,
-
-        onKeyDown: this.onViewKeyDown,
-        onFocus: this.onFocus,
-        onBlur: this.onBlur,
-
-        renderDay: this.renderDay,
-        viewMoment: props.viewMoment,
-        onMouseLeave: props.highlightRangeOnMouseMove && this.handleViewMouseLeave
-      }));
-    }
-  }, {
-    key: 'handleViewMouseLeave',
-    value: function handleViewMouseLeave(event) {
-      if (this.props.onMouseLeave) {
-        this.props.onMouseLeave(event);
-      }
-
-      if (this.state.hoverRange) {
-        this.setHoverRange(null);
-      }
-    }
-  }, {
-    key: 'renderChildren',
-    value: function renderChildren(children) {
-      var props = this.p;
-      var navBar = this.renderNavBar(props);
-      var footer = this.renderFooter(props);
-
-      var result = [navBar, children, footer];
-
-      if (props.renderChildren) {
-        return props.renderChildren(result);
-      }
-
-      return result;
-    }
-  }, {
-    key: 'focusFromFooter',
-    value: function focusFromFooter() {
-      if (!this.isFocused() && this.props.focusOnFooterMouseDown) {
-        this.focus();
-      }
-    }
-  }, {
-    key: 'onFooterTodayClick',
-    value: function onFooterTodayClick() {
-      this.focusFromFooter();
-
-      if (this.props.onFooterTodayClick) {
-        if (this.props.onFooterTodayClick() === false) {
-          return;
-        }
-      }
-
-      this.select({ dateMoment: this.toMoment(Date.now()) });
-    }
-  }, {
-    key: 'onFooterClearClick',
-    value: function onFooterClearClick() {
-      this.focusFromFooter();
-
-      if (this.props.onFooterClearClick) {
-        if (this.props.onFooterClearClick() === false) {
-          return;
-        }
-      }
-
-      this.select({ dateMoment: null });
-    }
-  }, {
-    key: 'onFooterOkClick',
-    value: function onFooterOkClick() {
-      this.focusFromFooter();
-
-      if (this.props.onFooterOkClick) {
-        this.props.onFooterOkClick();
-      }
-    }
-  }, {
-    key: 'onFooterCancelClick',
-    value: function onFooterCancelClick() {
-      if (this.props.onFooterCancelClick) {
-        this.props.onFooterCancelClick();
-      }
-    }
-  }, {
-    key: 'renderFooter',
-    value: function renderFooter(props) {
-      return _renderFooter((0, _objectAssign2.default)({}, props, {
-        selectDate: this.select,
-        owner: this
-      }), this);
-    }
-  }, {
-    key: 'renderNavBar',
-    value: function renderNavBar(props) {
-      var _this4 = this;
-
-      var theme = props.theme;
-
-      var childNavBar = _react2.default.Children.toArray(props.children).filter(function (c) {
-        return c && c.props && c.props.isDatePickerNavBar;
-      })[0];
-
-      var ref = function ref(navBar) {
-        _this4.navBar = navBar;
-      };
-
-      if (!childNavBar) {
-        if (props.navigation || props.renderNavBar) {
-          return this.renderNavBarComponent((0, _assignDefined2.default)({
-            // prevDisabled,
-            // nextDisabled,
-            minDate: props.minDate,
-            maxDate: props.maxDate,
-            theme: theme,
-            secondary: true,
-            date: props.moment,
-            viewMoment: props.viewMoment,
-            onViewDateChange: this.onNavViewDateChange,
-            onMouseDown: this.onNavMouseDown,
-            arrows: props.navBarArrows,
-            ref: ref
-          }, {
-            enableHistoryView: props.enableHistoryView
-          }));
-        }
-
-        return null;
-      }
-
-      var navBarProps = (0, _objectAssign2.default)({}, childNavBar.props, (0, _assignDefined2.default)({
-        viewMoment: props.viewMoment,
-        date: props.moment,
-        theme: theme,
-        ref: ref,
-        minDate: props.minDate,
-        maxDate: props.maxDate
-      }, {
-        enableHistoryView: props.enableHistoryView
-      }));
-
-      var prevOnViewDateChange = navBarProps.onViewDateChange;
-      var onViewDateChange = this.onViewDateChange;
-
-      if (prevOnViewDateChange) {
-        onViewDateChange = function onViewDateChange() {
-          prevOnViewDateChange.apply(undefined, arguments);
-          _this4.onNavViewDateChange.apply(_this4, arguments);
-        };
-      }
-
-      navBarProps.onViewDateChange = onViewDateChange;
-
-      var prevOnMouseDown = navBarProps.onMouseDown;
-      var onMouseDown = this.onNavMouseDown;
-
-      if (prevOnMouseDown) {
-        onMouseDown = function onMouseDown() {
-          prevOnMouseDown.apply(undefined, arguments);
-          _this4.onNavMouseDown.apply(_this4, arguments);
-        };
-      }
-
-      navBarProps.onMouseDown = onMouseDown;
-
-      if (navBarProps) {
-        return this.renderNavBarComponent(navBarProps);
-      }
-
-      return null;
-    }
-  }, {
-    key: 'onNavMouseDown',
-    value: function onNavMouseDown(event) {
-      if (this.props.focusOnNavMouseDown && !this.isFocused()) {
-        this.focus();
-      }
-    }
-  }, {
-    key: 'renderNavBarComponent',
-    value: function renderNavBarComponent(navBarProps) {
-      if (this.props.renderNavBar) {
-        return this.props.renderNavBar(navBarProps);
-      }
-
-      return _react2.default.createElement(_NavBar2.default, navBarProps);
-    }
-  }, {
-    key: 'isFocused',
-    value: function isFocused() {
-      return this.state.focused;
-    }
-  }, {
-    key: 'onFocus',
-    value: function onFocus(event) {
-      this.setState({
-        focused: true
-      });
-
-      this.props.onFocus(event);
-    }
-  }, {
-    key: 'onBlur',
-    value: function onBlur(event) {
-      this.setState({
-        focused: false
-      });
-
-      this.hideHistoryView();
-
-      this.props.onBlur(event);
-    }
-  }, {
-    key: 'showHistoryView',
-    value: function showHistoryView() {
-      if (this.navBar) {
-        this.navBar.showHistoryView();
-      }
-    }
-  }, {
-    key: 'hideHistoryView',
-    value: function hideHistoryView() {
-      if (this.navBar) {
-        this.navBar.hideHistoryView();
-      }
-    }
-  }, {
-    key: 'isHistoryViewVisible',
-    value: function isHistoryViewVisible() {
-      if (this.navBar) {
-        return this.navBar.isHistoryViewVisible();
-      }
-
-      return false;
-    }
-  }, {
-    key: 'tryNavBarKeyDown',
-    value: function tryNavBarKeyDown(event) {
-      if (this.navBar && this.navBar.getHistoryView) {
-        var historyView = this.navBar.getHistoryView();
-
-        if (historyView && historyView.onKeyDown) {
-          historyView.onKeyDown(event);
-          return true;
-        }
-      }
-
-      return false;
-    }
-  }, {
-    key: 'onViewKeyDown',
-    value: function onViewKeyDown(event) {
-      if (this.tryNavBarKeyDown(event)) {
-        return;
-      }
-
-      return _onKeyDown2.default.call(this, event);
-    }
-  }, {
-    key: 'confirm',
-    value: function confirm(date, event) {
-      event.preventDefault();
-
-      if (this.props.confirm) {
-        return this.props.confirm(date, event);
-      }
-
-      var dateMoment = this.toMoment(date);
-
-      this.select({ dateMoment: dateMoment, timestamp: +dateMoment }, event);
-
-      return undefined;
-    }
-  }, {
-    key: 'navigate',
-    value: function navigate(dir, event) {
-      var _this5 = this;
-
-      var props = this.p;
-
-      var getNavigationDate = function getNavigationDate(dir, date, dateFormat) {
-        var mom = _moment2.default.isMoment(date) ? date : _this5.toMoment(date, dateFormat);
-
-        return typeof dir == 'function' ? dir(mom) : mom.add(dir, 'day');
-      };
-
-      if (props.navigate) {
-        return props.navigate(dir, event, getNavigationDate);
-      }
-
-      event.preventDefault();
-
-      if (props.activeDate) {
-        var nextMoment = getNavigationDate(dir, props.activeDate);
-
-        this.gotoViewDate({ dateMoment: nextMoment });
-      }
-
-      return undefined;
-    }
-  }, {
-    key: 'handleDayMouseEnter',
-    value: function handleDayMouseEnter(dayProps) {
-      var props = this.p;
-
-      var rangeStart = props.rangeStart;
-      var range = props.range;
-
-
-      var partial = !!(rangeStart && range.length < 2);
-
-      if (partial) {
-        this.setHoverRange((0, _clampRange2.default)([rangeStart, dayProps.dateMoment]));
-      }
-    }
-  }, {
-    key: 'handleClick',
-    value: function handleClick(_ref3, event) {
-      var timestamp = _ref3.timestamp;
-      var dateMoment = _ref3.dateMoment;
-
-      var props = this.p;
-
-      if (props.minDate && timestamp < props.minDate) {
-        return;
-      }
-
-      if (props.maxDate && timestamp > props.maxDate) {
-        return;
-      }
-
-      event.target.value = timestamp;
-
-      this.select({ dateMoment: dateMoment, timestamp: timestamp }, event);
-    }
-  }, {
-    key: 'select',
-    value: function select(_ref4, event) {
-      var dateMoment = _ref4.dateMoment;
-      var timestamp = _ref4.timestamp;
-
-      if (dateMoment && timestamp === undefined) {
-        timestamp = +dateMoment;
-      }
-
-      if (this.props.select) {
-        return this.props.select({ dateMoment: dateMoment, timestamp: timestamp }, event);
-      }
-
-      if (!timestamp) {
-        timestamp = +dateMoment;
-      }
-
-      this.gotoViewDate({ dateMoment: dateMoment, timestamp: timestamp });
-
-      var props = this.p;
-      var range = props.range;
-
-      if (range) {
-        this.selectRange({ dateMoment: dateMoment, timestamp: timestamp }, event);
-      } else {
-        this.onChange({ dateMoment: dateMoment, timestamp: timestamp }, event);
-      }
-
-      return undefined;
-    }
-  }, {
-    key: 'selectRange',
-    value: function selectRange(_ref5, event) {
-      var dateMoment = _ref5.dateMoment;
-      var timestamp = _ref5.timestamp;
-
-      var props = this.p;
-      var range = props.range;
-      var rangeStart = props.rangeStart;
-
-      if (dateMoment == null) {
-        this.setState({
-          rangeStart: null
-        });
-        this.onRangeChange([], event);
-        return;
-      }
-
-      if (!rangeStart) {
-        this.setState({
-          rangeStart: dateMoment
-        });
-
-        if (range.length == 2) {
-          this.onRangeChange([], event);
-        }
-      } else {
-        this.setState({
-          rangeStart: null
-        });
-
-        this.onRangeChange((0, _clampRange2.default)([rangeStart, dateMoment]), event);
-      }
-    }
-  }, {
-    key: 'format',
-    value: function format(mom) {
-      return mom == null ? '' : mom.format(this.props.dateFormat);
-    }
-  }, {
-    key: 'setHoverRange',
-    value: function setHoverRange(hoverRange) {
-      if (this.props.hoverRange === undefined) {
-        this.setState({
-          hoverRange: hoverRange
-        });
-      }
-
-      if (this.props.onHoverRangeChange) {
-        this.props.onHoverRangeChange(hoverRange);
-      }
-    }
-  }, {
-    key: 'onRangeChange',
-    value: function onRangeChange(range, event) {
-      var _this6 = this;
-
-      this.setState({
-        range: this.props.range === undefined ? range : null
-      });
-
-      this.setHoverRange(null);
-
-      if (this.props.onRangeChange) {
-        var newRange = range.map(function (m) {
-          var dateMoment = _this6.toMoment(m);
-
-          return {
-            dateString: dateMoment.format(_this6.props.dateFormat),
-            dateMoment: dateMoment,
-            timestamp: +dateMoment
-          };
-        });
-
-        var formatted = newRange.map(function (o) {
-          return o.dateString;
-        });
-
-        this.props.onRangeChange(formatted, newRange, event);
-      }
-    }
-  }, {
-    key: 'onChange',
-    value: function onChange(_ref6, event) {
-      var dateMoment = _ref6.dateMoment;
-      var timestamp = _ref6.timestamp;
-
-      if (this.props.date === undefined) {
-        this.setState({
-          date: timestamp
-        });
-      }
-
-      if (this.props.onChange) {
-        var dateString = this.format(dateMoment);
-        this.props.onChange(dateString, { dateMoment: dateMoment, timestamp: timestamp, dateString: dateString }, event);
-      }
-    }
-  }, {
-    key: 'onNavViewDateChange',
-    value: function onNavViewDateChange(dateString, _ref7) {
-      var dateMoment = _ref7.dateMoment;
-      var timestamp = _ref7.timestamp;
-
-      this.onViewDateChange({ dateMoment: dateMoment, timestamp: timestamp });
-    }
-  }, {
-    key: 'onViewDateChange',
-    value: function onViewDateChange(_ref8) {
-      var dateMoment = _ref8.dateMoment;
-      var timestamp = _ref8.timestamp;
-
-      var minDate = void 0;
-      var maxDate = void 0;
-
-      if (this.p.minDateMoment) {
-        minDate = +this.toMoment(this.p.minDateMoment).startOf('month');
-      }
-      if (this.p.maxDateMoment) {
-        maxDate = +this.toMoment(this.p.maxDateMoment).endOf('month');
-      }
-      if (this.props.constrainViewDate && !isDateInMinMax(timestamp, {
-        minDate: minDate,
-        maxDate: maxDate
-      })) {
-        return;
-      }
-
-      if (this.props.viewDate === undefined && this.props.navOnDateClick) {
-        this.setState({
-          viewDate: timestamp
-        });
-      }
-
-      if (this.props.onViewDateChange) {
-        var dateString = this.format(dateMoment);
-
-        this.props.onViewDateChange(dateString, { dateMoment: dateMoment, dateString: dateString, timestamp: timestamp });
-      }
-    }
-  }, {
-    key: 'isValidActiveDate',
-    value: function isValidActiveDate(date, props) {
-      return _isValidActiveDate(date, props || this.p);
-    }
-  }, {
-    key: 'onActiveDateChange',
-    value: function onActiveDateChange(_ref9) {
-      var dateMoment = _ref9.dateMoment;
-      var timestamp = _ref9.timestamp;
-
-      if (!_isValidActiveDate(timestamp, this.p)) {
-        return;
-      }
-
-      var props = this.p;
-      var range = props.range;
-
-      if (range && props.rangeStart) {
-        var newRange = (0, _clampRange2.default)([props.rangeStart, dateMoment]);
-
-        if (props.partialRange) {
-          this.onRangeChange(newRange);
-        }
-
-        this.setState({
-          rangeStart: props.rangeStart,
-          range: newRange
-        });
-      }
-
-      if (this.props.activeDate === undefined) {
-        this.setState({
-          activeDate: timestamp
-        });
-      }
-
-      if (this.props.onActiveDateChange) {
-        var dateString = this.format(dateMoment);
-        this.props.onActiveDateChange(dateString, { dateMoment: dateMoment, timestamp: timestamp, dateString: dateString });
-      }
-    }
-  }, {
-    key: 'gotoViewDate',
-    value: function gotoViewDate(_ref10) {
-      var dateMoment = _ref10.dateMoment;
-      var timestamp = _ref10.timestamp;
-
-      if (!timestamp) {
-        timestamp = dateMoment == null ? null : +dateMoment;
-      }
-
-      this.onViewDateChange({ dateMoment: dateMoment, timestamp: timestamp });
-      this.onActiveDateChange({ dateMoment: dateMoment, timestamp: timestamp });
-    }
-  }]);
-
-  return MonthView;
-}(_reactClass2.default);
-
-exports.default = MonthView;
-
-
-MonthView.defaultProps = {
-  defaultClassName: 'react-date-picker__month-view',
-  dateFormat: 'YYYY-MM-DD',
-
-  theme: 'default',
-
-  onBlur: function onBlur() {},
-  onFocus: function onFocus() {},
-
-  footerClearDate: null,
-
-  partialRange: true,
-
-  activateOnHover: false,
-  constrainActiveInView: false,
-
-  showDaysBeforeMonth: true,
-  showDaysAfterMonth: true,
-
-  highlightWeekends: true,
-  highlightToday: true,
-
-  navOnDateClick: true,
-  navigation: true,
-
-  constrainViewDate: true,
-  highlightRangeOnMouseMove: false,
-
-  isDatePicker: true,
-
-  enableHistoryView: true,
-  focusOnNavMouseDown: true,
-  focusOnFooterMouseDown: true
-};
-
-MonthView.propTypes = {
-  navOnDateClick: _react.PropTypes.bool,
-  isDisabledDay: _react.PropTypes.func,
-
-  onChange: _react.PropTypes.func,
-  onViewDateChange: _react.PropTypes.func,
-  onActiveDateChange: _react.PropTypes.func
-};
-
-exports.NAV_KEYS = _navKeys2.default;
-exports.renderFooter = _renderFooter;
-},{"../BasicMonthView":58,"../Footer":69,"../NavBar":75,"../assignDefined":85,"../bemFactory":86,"../clampRange":87,"../join":90,"../joinFunctions":91,"../toMoment":92,"../utils/isInRange":97,"./navKeys":72,"./onKeyDown":73,"moment":52,"object-assign":100,"react":263,"react-class":56,"react-dom":101}],72:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = {
-  ArrowUp: -7,
-  ArrowDown: 7,
-  ArrowLeft: -1,
-  ArrowRight: 1,
-
-  PageUp: function PageUp(mom) {
-    return mom.add(-1, 'month');
-  },
-  PageDown: function PageDown(mom) {
-    return mom.add(1, 'month');
-  },
-  Home: function Home(mom) {
-    return mom.startOf('month');
-  },
-  End: function End(mom) {
-    return mom.endOf('month');
-  }
-};
-},{}],73:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-exports.default = function (event) {
-  var key = event.key;
-
-  if (this.props.onKeyDown) {
-    if (this.props.onKeyDown(event) === false) {
-      return;
-    }
-  }
-
-  if (key == 'Enter' && this.p.activeDate) {
-    this.confirm(this.p.activeDate, event);
-  }
-
-  var navKeys = this.p.navKeys || _navKeys2.default;
-  var dir = navKeys[key];
-
-  if (!dir) {
-    return;
-  }
-
-  event.preventDefault();
-  this.navigate(dir, event);
-};
-
-var _navKeys = require('./navKeys');
-
-var _navKeys2 = _interopRequireDefault(_navKeys);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-},{"./navKeys":72}],74:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.renderNavBar = undefined;
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactClass = require('react-class');
-
-var _reactClass2 = _interopRequireDefault(_reactClass);
-
-var _reactFlex = require('react-flex');
-
-var _reactInlineBlock = require('react-inline-block');
-
-var _reactInlineBlock2 = _interopRequireDefault(_reactInlineBlock);
-
-var _objectAssign = require('object-assign');
-
-var _objectAssign2 = _interopRequireDefault(_objectAssign);
-
-var _clampRange = require('./clampRange');
-
-var _clampRange2 = _interopRequireDefault(_clampRange);
-
-var _NavBar = require('./NavBar');
-
-var _NavBar2 = _interopRequireDefault(_NavBar);
-
-var _toMoment = require('./toMoment');
-
-var _toMoment2 = _interopRequireDefault(_toMoment);
-
-var _join = require('./join');
-
-var _join2 = _interopRequireDefault(_join);
-
-var _isInRange2 = require('./utils/isInRange');
-
-var _isInRange3 = _interopRequireDefault(_isInRange2);
-
-var _BasicMonthView = require('./BasicMonthView');
-
-var _MonthView = require('./MonthView');
-
-var _MonthView2 = _interopRequireDefault(_MonthView);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
-var times = function times(count) {
-  return [].concat(_toConsumableArray(new Array(count))).map(function (v, i) {
-    return i;
-  });
-};
-
-var prepareDate = function prepareDate(props, state) {
-  if (props.range) {
-    return null;
-  }
-
-  return props.date === undefined ? state.date : props.date;
-};
-
-var prepareViewDate = function prepareViewDate(props, state) {
-  return props.viewDate === undefined ? state.viewDate : state.propViewDate || props.viewDate;
-};
-
-var prepareRange = function prepareRange(props, state) {
-  return props.range && props.range.length ? props.range : state.range;
-};
-
-var prepareActiveDate = function prepareActiveDate(props, state) {
-  var fallbackDate = prepareDate(props, state) || (prepareRange(props, state) || [])[0];
-
-  var activeDate = props.activeDate === undefined ?
-  // only fallback to date if activeDate not specified
-  state.activeDate || fallbackDate : props.activeDate;
-
-  if (activeDate && props.inViewStart && props.inViewEnd && props.constrainActiveInView) {
-    var activeMoment = this.toMoment(activeDate);
-
-    if (!(0, _isInRange3.default)(activeMoment, [props.inViewStart, props.inViewEnd])) {
-      var date = fallbackDate;
-      var dateMoment = this.toMoment(date);
-
-      if (date && (0, _isInRange3.default)(dateMoment, [props.inViewStart, props.inViewEnd])) {
-        return date;
-      }
-
-      return null;
-    }
-  }
-
-  return activeDate;
-};
-
-var prepareViews = function prepareViews(props) {
-  var daysInView = [];
-
-  var viewMoments = [];
-
-  var viewMoment = props.viewMoment;
-
-  var index = 0;
-  var size = props.size;
-
-  while (index < size) {
-    var mom = this.toMoment(viewMoment).startOf('day').add(index, 'month');
-    var days = (0, _BasicMonthView.getDaysInMonthView)(mom, props);
-
-    viewMoments.push(mom);
-    daysInView.push(days);
-
-    index++;
-  }
-
-  props.daysInView = daysInView;
-  props.viewMoments = viewMoments;
-
-  var lastViewDays = daysInView[size - 1];
-
-  props.inViewStart = daysInView[0][0];
-  props.inViewEnd = lastViewDays[lastViewDays.length - 1];
-};
-
-var _renderNavBar = function _renderNavBar(config, navBarProps) {
-  var props = this.props;
-  var index = config.index;
-  var viewMoment = config.viewMoment;
-
-
-  navBarProps = (0, _objectAssign2.default)({}, navBarProps, {
-    secondary: true,
-
-    minDate: config.minDate || props.minDate,
-    maxDate: config.maxDate || props.maxDate,
-
-    renderNavNext: config.renderHiddenNav || this.renderHiddenNav,
-    renderNavPrev: config.renderHiddenNav || this.renderHiddenNav,
-
-    viewMoment: viewMoment,
-
-    onViewDateChange: config.onViewDateChange || this.onNavViewDateChange,
-    onUpdate: config.onUpdate || this.updateViewMoment,
-
-    enableHistoryView: props.enableHistoryView
-  });
-
-  if (index == 0) {
-    delete navBarProps.renderNavPrev;
-  }
-
-  if (index == props.perRow - 1) {
-    delete navBarProps.renderNavNext;
-  }
-
-  return _react2.default.createElement(_NavBar2.default, navBarProps);
-};
-
-exports.renderNavBar = _renderNavBar;
-
-var MultiMonthView = function (_Component) {
-  _inherits(MultiMonthView, _Component);
-
-  function MultiMonthView(props) {
-    _classCallCheck(this, MultiMonthView);
-
-    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(MultiMonthView).call(this, props));
-
-    _this.state = {
-      hoverRange: null,
-      range: props.defaultRange,
-      date: props.defaultDate,
-      activeDate: props.defaultActiveDate,
-      viewDate: props.defaultViewDate
-    };
-    return _this;
-  }
-
-  _createClass(MultiMonthView, [{
-    key: 'componentWillMount',
-    value: function componentWillMount() {
-      this.updateToMoment(this.props);
-    }
-  }, {
-    key: 'componentWillReceiveProps',
-    value: function componentWillReceiveProps(nextProps) {
-      if (nextProps.locale != this.props.locale || nextProps.dateFormat != this.props.dateFormat) {
-        this.updateToMoment(nextProps);
-      }
-
-      // if (nextProps.viewDate && !nextProps.forceViewUpdate){
-
-      //   //this is here in order not to change view if already in view
-      //   const viewMoment = this.toMoment(nextProps.viewDate)
-
-      //   if (this.isInRange(viewMoment) && !nextProps.forceViewUpdate){
-      //     console.log(this.format(viewMoment), this.format(this.p.viewStart),
-      // this.format(this.p.viewEnd))
-      //     this.setState({
-      //       propViewDate: this.p.viewMoment
-      //     })
-      //   } else {
-      //     debugger
-      //     this.setState({
-      //       propViewDate: null
-      //     })
-      //   }
-      // }
-    }
-  }, {
-    key: 'updateToMoment',
-    value: function updateToMoment(props) {
-      this.toMoment = function (value, dateFormat) {
-        return (0, _toMoment2.default)(value, {
-          locale: props.locale,
-          dateFormat: dateFormat || props.dateFormat
-        });
-      };
-    }
-  }, {
-    key: 'prepareProps',
-    value: function prepareProps(thisProps, state) {
-      var _this2 = this;
-
-      var props = (0, _objectAssign2.default)({}, thisProps);
-      state = state || this.state;
-
-      props.viewMoment = this.toMoment(prepareViewDate(props, state));
-
-      // viewStart is the first day of the first month displayed
-      // viewEnd is the last day of the last month displayed
-      props.viewStart = this.toMoment(props.viewMoment).startOf('month');
-      props.viewEnd = this.toMoment(props.viewStart).add(props.size - 1, 'month').endOf('month');
-
-      // but we also have inViewStart, which can be a day before viewStart
-      // which is in displayed as belonging to the prev month
-      // but is displayed in the current view since it's on the same week
-      // as viewStart
-      //
-      // same for inViewEnd, which is a day after viewEnd - the last day in the same week
-      prepareViews.call(this, props);
-
-      var activeDate = prepareActiveDate.call(this, props, state);
-
-      if (activeDate) {
-        props.activeDate = +this.toMoment(activeDate);
-      }
-
-      props.date = prepareDate(props, state);
-
-      if (!props.date) {
-        var range = prepareRange(props, state);
-
-        if (range) {
-          props.range = range.map(function (d) {
-            return _this2.toMoment(d).startOf('day');
-          });
-          props.rangeStart = state.rangeStart || (props.range.length == 1 ? props.range[0] : null);
-        }
-      }
-
-      return props;
-    }
-  }, {
-    key: 'render',
-    value: function render() {
-      this.views = [];
-      var props = this.p = this.prepareProps(this.props, this.state);
-      var size = props.size;
-
-      var rowCount = Math.ceil(size / props.perRow);
-      var children = times(rowCount).map(this.renderRow).filter(function (x) {
-        return !!x;
-      });
-
-      var className = (0, _join2.default)(props.className, 'react-date-picker__multi-month-view', props.theme && 'react-date-picker__multi-month-view--theme-' + props.theme);
-
-      var footer = (0, _MonthView.renderFooter)(props, this);
-
-      if (footer) {
-        children.push(footer);
-      }
-
-      return _react2.default.createElement(_reactFlex.Flex, _extends({
-        column: true,
-        inline: true,
-        alignItems: 'stretch',
-        wrap: false
-      }, props, {
-        className: className,
-        children: children
-      }));
-    }
-  }, {
-    key: 'renderRow',
-    value: function renderRow(rowIndex) {
-      var _this3 = this;
-
-      var props = this.p;
-
-      var children = times(props.perRow).map(function (i) {
-        var index = rowIndex * props.perRow + i;
-
-        if (index >= props.size) {
-          return null;
-        }
-
-        return _this3.renderView(index, props.size);
-      });
-
-      return _react2.default.createElement(_reactFlex.Flex, { inline: true, row: true, wrap: false, children: children });
-    }
-  }, {
-    key: 'renderView',
-    value: function renderView(index, size) {
-      var _this4 = this;
-
-      var props = this.p;
-      var viewMoment = props.viewMoments[index];
-
-      var range = void 0;
-
-      if (props.range) {
-        range = props.rangeStart && props.range.length == 0 ? [props.rangeStart] : props.range;
-      }
-
-      return _react2.default.createElement(_MonthView2.default, _extends({
-        ref: function ref(view) {
-          _this4.views[index] = view;
-        },
-        constrainViewDate: false
-      }, this.props, {
-
-        className: null,
-
-        index: index,
-
-        footer: false,
-        constrainActiveInView: false,
-
-        navigate: this.onMonthNavigate.bind(this, index),
-        hoverRange: this.state.hoverRange,
-        onHoverRangeChange: this.setHoverRange,
-
-        activeDate: props.activeDate,
-
-        onActiveDateChange: this.onActiveDateChange,
-        onViewDateChange: this.onAdjustViewDateChange,
-
-        date: props.date,
-        defaultDate: null,
-        onChange: this.onChange,
-
-        range: range,
-        defaultRange: null,
-        onRangeChange: this.onRangeChange,
-
-        viewMoment: viewMoment,
-
-        insideMultiView: true,
-
-        daysInView: props.daysInView[index],
-
-        showDaysBeforeMonth: index == 0,
-        showDaysAfterMonth: index == size - 1,
-
-        select: this.select,
-
-        renderNavBar: this.props.navigation && (this.props.renderNavBar || this.renderNavBar).bind(this, { index: index, viewMoment: viewMoment })
-      }));
-    }
-  }, {
-    key: 'onFooterTodayClick',
-    value: function onFooterTodayClick() {
-      this.views[0].onFooterTodayClick();
-    }
-  }, {
-    key: 'onFooterClearClick',
-    value: function onFooterClearClick() {
-      this.views[0].onFooterClearClick();
-    }
-  }, {
-    key: 'onFooterOkClick',
-    value: function onFooterOkClick() {
-      this.views[0].onFooterOkClick();
-    }
-  }, {
-    key: 'onFooterCancelClick',
-    value: function onFooterCancelClick() {
-      this.views[0].onFooterCancelClick();
-    }
-  }, {
-    key: 'isFocused',
-    value: function isFocused() {
-      var firstView = this.views[0];
-
-      if (firstView) {
-        return firstView.isFocused();
-      }
-
-      return false;
-    }
-  }, {
-    key: 'focus',
-    value: function focus() {
-      var firstView = this.views[0];
-
-      if (firstView) {
-        firstView.focus();
-      }
-    }
-  }, {
-    key: 'setHoverRange',
-    value: function setHoverRange(hoverRange) {
-      this.setState({
-        hoverRange: hoverRange
-      });
-    }
-  }, {
-    key: 'select',
-    value: function select(_ref) {
-      var dateMoment = _ref.dateMoment;
-      var timestamp = _ref.timestamp;
-
-      // if (!dateMoment) {
-      //   return
-      // }
-
-      var props = this.p;
-
-      var visibleRange = [props.inViewStart, props.inViewEnd];
-
-      // TODO check why this was needed
-      // if (!isInRange(dateMoment, { range: visibleRange, inclusive: true })) {
-      //   return
-      // }
-
-      this.onAdjustViewDateChange({ dateMoment: dateMoment, timestamp: timestamp });
-      this.onActiveDateChange({ dateMoment: dateMoment, timestamp: timestamp });
-
-      var range = props.range;
-
-      if (range) {
-        this.selectRange({ dateMoment: dateMoment, timestamp: timestamp });
-      } else {
-        this.onChange({ dateMoment: dateMoment, timestamp: timestamp }, event);
-      }
-    }
-  }, {
-    key: 'selectRange',
-    value: function selectRange(_ref2) {
-      var dateMoment = _ref2.dateMoment;
-      var timestamp = _ref2.timestamp;
-
-      return _MonthView2.default.prototype.selectRange.call(this, { dateMoment: dateMoment, timestamp: timestamp });
-    }
-  }, {
-    key: 'onRangeChange',
-    value: function onRangeChange(range) {
-      return _MonthView2.default.prototype.onRangeChange.call(this, range);
-    }
-  }, {
-    key: 'onViewKeyDown',
-    value: function onViewKeyDown() {
-      var view = this.views[0];
-      if (view) {
-        view.onViewKeyDown.apply(view, arguments);
-      }
-    }
-  }, {
-    key: 'renderNavBar',
-    value: function renderNavBar(config, navBarProps) {
-      return _renderNavBar.call(this, config, navBarProps);
-    }
-  }, {
-    key: 'onMonthNavigate',
-    value: function onMonthNavigate(index, dir, event, getNavigationDate) {
-      var props = this.p;
-
-      event.preventDefault();
-
-      if (!props.activeDate) {
-        return;
-      }
-
-      var key = event.key;
-
-      var homeEndDate = key == 'Home' ? props.viewStart : props.viewEnd;
-
-      var mom = key == 'Home' || key == 'End' ? homeEndDate : props.activeDate;
-
-      var nextMoment = getNavigationDate(dir, this.toMoment(mom));
-
-      var viewMoment = this.toMoment(nextMoment);
-
-      this.onActiveDateChange({
-        dateMoment: nextMoment,
-        timestamp: +nextMoment
-      });
-
-      if (this.isInRange(viewMoment)) {
-        return;
-      }
-
-      if (viewMoment.isAfter(props.viewEnd)) {
-        viewMoment.add(-props.size + 1, 'month');
-      }
-
-      this.onViewDateChange({
-        dateMoment: viewMoment,
-        timestamp: +viewMoment
-      });
-    }
-  }, {
-    key: 'onAdjustViewDateChange',
-    value: function onAdjustViewDateChange(_ref3) {
-      var dateMoment = _ref3.dateMoment;
-      var timestamp = _ref3.timestamp;
-
-      var props = this.p;
-
-      var update = dateMoment == null;
-
-      if (dateMoment && dateMoment.isAfter(props.viewEnd)) {
-        dateMoment = this.toMoment(dateMoment).add(-props.size + 1, 'month');
-        timestamp = +dateMoment;
-        update = true;
-      } else if (dateMoment && dateMoment.isBefore(props.viewStart)) {
-        update = true;
-      }
-
-      if (update) {
-        this.onViewDateChange({ dateMoment: dateMoment, timestamp: timestamp });
-      }
-    }
-  }, {
-    key: 'updateViewMoment',
-    value: function updateViewMoment(dateMoment, dir) {
-      var sign = dir < 0 ? -1 : 1;
-      var abs = Math.abs(dir);
-
-      var newMoment = this.toMoment(this.p.viewStart);
-
-      newMoment.add(sign, abs == 1 ? 'month' : 'year');
-
-      return newMoment;
-    }
-  }, {
-    key: 'renderHiddenNav',
-    value: function renderHiddenNav(props) {
-      return _react2.default.createElement(_reactInlineBlock2.default, _extends({}, props, { style: { visibility: 'hidden' } }));
-    }
-  }, {
-    key: 'isInRange',
-    value: function isInRange(moment) {
-      return (0, _isInRange3.default)(moment, [this.p.viewStart, this.p.viewEnd]);
-    }
-  }, {
-    key: 'isInView',
-    value: function isInView(moment) {
-      return this.isInRange(moment);
-    }
-  }, {
-    key: 'onNavViewDateChange',
-    value: function onNavViewDateChange(dateString, _ref4) {
-      var dateMoment = _ref4.dateMoment;
-      var timestamp = _ref4.timestamp;
-
-      this.onViewDateChange({ dateMoment: dateMoment, timestamp: timestamp });
-    }
-  }, {
-    key: 'onViewDateChange',
-    value: function onViewDateChange(_ref5) {
-      var dateMoment = _ref5.dateMoment;
-      var timestamp = _ref5.timestamp;
-
-      if (this.props.viewDate === undefined) {
-        this.setState({
-          viewDate: timestamp
-        });
-      }
-
-      if (this.props.onViewDateChange) {
-        var dateString = this.format(dateMoment);
-        this.props.onViewDateChange(dateString, { dateMoment: dateMoment, dateString: dateString, timestamp: timestamp });
-      }
-    }
-  }, {
-    key: 'onActiveDateChange',
-    value: function onActiveDateChange(_ref6) {
-      var dateMoment = _ref6.dateMoment;
-      var timestamp = _ref6.timestamp;
-
-      var valid = this.views.reduce(function (isValid, view) {
-        return isValid && view.isValidActiveDate(timestamp);
-      }, true);
-
-      if (!valid) {
-        return;
-      }
-
-      var props = this.p;
-      var range = props.range;
-
-      if (range && props.rangeStart) {
-        this.setState({
-          rangeStart: props.rangeStart,
-          range: (0, _clampRange2.default)([props.rangeStart, dateMoment])
-        });
-      }
-
-      if (this.props.activeDate === undefined) {
-        this.setState({
-          activeDate: timestamp
-        });
-      }
-
-      if (this.props.onActiveDateChange) {
-        var dateString = this.format(dateMoment);
-        this.props.onActiveDateChange(dateString, { dateMoment: dateMoment, dateString: dateString, timestamp: timestamp });
-      }
-    }
-  }, {
-    key: 'gotoViewDate',
-    value: function gotoViewDate(_ref7) {
-      var dateMoment = _ref7.dateMoment;
-      var timestamp = _ref7.timestamp;
-
-      if (!timestamp) {
-        timestamp = +dateMoment;
-      }
-
-      this.onViewDateChange({ dateMoment: dateMoment, timestamp: timestamp });
-      this.onActiveDateChange({ dateMoment: dateMoment, timestamp: timestamp });
-    }
-  }, {
-    key: 'format',
-    value: function format(mom) {
-      return mom == null ? '' : mom.format(this.props.dateFormat);
-    }
-  }, {
-    key: 'onChange',
-    value: function onChange(_ref8, event) {
-      var dateMoment = _ref8.dateMoment;
-      var timestamp = _ref8.timestamp;
-
-      if (this.props.date === undefined) {
-        this.setState({
-          date: timestamp
-        });
-      }
-
-      if (this.props.onChange) {
-        var dateString = this.format(dateMoment);
-        this.props.onChange(dateString, { dateMoment: dateMoment, dateString: dateString, timestamp: timestamp }, event);
-      }
-    }
-  }, {
-    key: 'getViewSize',
-    value: function getViewSize() {
-      return this.props.size;
-    }
-  }]);
-
-  return MultiMonthView;
-}(_reactClass2.default);
-
-exports.default = MultiMonthView;
-
-
-MultiMonthView.defaultProps = {
-  perRow: 2,
-  size: 2,
-
-  enableHistoryView: true,
-
-  footerClearDate: null,
-
-  isDatePicker: true,
-  forceViewUpdate: false,
-
-  navigation: true,
-  theme: 'default',
-
-  constrainActiveInView: true,
-
-  dateFormat: 'YYYY-MM-DD'
-};
-
-MultiMonthView.propTypes = {};
-},{"./BasicMonthView":58,"./MonthView":71,"./NavBar":75,"./clampRange":87,"./join":90,"./toMoment":92,"./utils/isInRange":97,"object-assign":100,"react":263,"react-class":56,"react-flex":107,"react-inline-block":113}],75:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactClass = require('react-class');
-
-var _reactClass2 = _interopRequireDefault(_reactClass);
-
-var _reactFlex = require('react-flex');
-
-var _reactInlineBlock = require('react-inline-block');
-
-var _reactInlineBlock2 = _interopRequireDefault(_reactInlineBlock);
-
-var _objectAssign = require('object-assign');
-
-var _objectAssign2 = _interopRequireDefault(_objectAssign);
-
-var _toMoment2 = require('./toMoment');
-
-var _toMoment3 = _interopRequireDefault(_toMoment2);
-
-var _join = require('./join');
-
-var _join2 = _interopRequireDefault(_join);
-
-var _bemFactory = require('./bemFactory');
-
-var _bemFactory2 = _interopRequireDefault(_bemFactory);
-
-var _HistoryView = require('./HistoryView');
-
-var _HistoryView2 = _interopRequireDefault(_HistoryView);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var ARROWS = {
-  prev: _react2.default.createElement(
-    'svg',
-    { height: '24', viewBox: '0 0 24 24', width: '24' },
-    _react2.default.createElement('path', { d: 'M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z' }),
-    _react2.default.createElement('path', { d: 'M0 0h24v24H0z', fill: 'none' })
-  ),
-
-  next: _react2.default.createElement(
-    'svg',
-    { height: '24', viewBox: '0 0 24 24', width: '24' },
-    _react2.default.createElement('path', { d: 'M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z' }),
-    _react2.default.createElement('path', { d: 'M0 0h24v24H0z', fill: 'none' })
-  )
-};
-
-var bem = (0, _bemFactory2.default)('react-date-picker__nav-bar');
-
-var NavBar = function (_Component) {
-  _inherits(NavBar, _Component);
-
-  function NavBar(props) {
-    _classCallCheck(this, NavBar);
-
-    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(NavBar).call(this, props));
-
-    _this.state = {
-      viewDate: props.defaultViewDate
-    };
-    return _this;
-  }
-
-  _createClass(NavBar, [{
-    key: 'prepareViewDate',
-    value: function prepareViewDate(props) {
-      return props.viewDate === undefined ? this.state.viewDate : props.viewDate;
-    }
-  }, {
-    key: 'render',
-    value: function render() {
-      var props = this.p = (0, _objectAssign2.default)({}, this.props);
-
-      var viewMoment = props.viewMoment = props.viewMoment || this.toMoment(this.prepareViewDate(props));
-
-      props.historyViewEnabled = props.expandedHistoryView || props.enableHistoryView;
-
-      var secondary = props.secondary;
-
-      var className = (0, _join2.default)(props.className, bem(), bem(null, 'theme-' + props.theme), props.historyViewEnabled && bem(null, 'with-history-view'));
-
-      var historyView = props.historyViewEnabled ? this.renderHistoryView() : null;
-
-      var flexProps = (0, _objectAssign2.default)({}, props);
-
-      delete flexProps.arrows;
-      delete flexProps.date;
-      delete flexProps.enableHistoryView;
-      delete flexProps.historyViewEnabled;
-      delete flexProps.isDatePickerNavBar;
-      delete flexProps.minDate;
-      delete flexProps.maxDate;
-      delete flexProps.navDateFormat;
-      delete flexProps.onNavClick;
-      delete flexProps.onViewDateChange;
-      delete flexProps.secondary;
-      delete flexProps.theme;
-      delete flexProps.viewDate;
-      delete flexProps.viewMoment;
-
-      if (typeof props.cleanup == 'function') {
-        props.cleanup(flexProps);
-      }
-
-      return _react2.default.createElement(
-        _reactFlex.Flex,
-        _extends({ inline: true, row: true }, flexProps, { className: className }),
-        secondary && this.renderNav(-2, viewMoment),
-        this.renderNav(-1, viewMoment),
-        _react2.default.createElement(
-          _reactFlex.Item,
-          {
-            className: bem('date'),
-            style: { textAlign: 'center' },
-            onMouseDown: props.historyViewEnabled ? this.toggleHistoryView : null
-          },
-          this.renderNavDate(viewMoment)
-        ),
-        this.renderNav(1, viewMoment),
-        secondary && this.renderNav(2, viewMoment),
-        historyView
-      );
-    }
-  }, {
-    key: 'renderHistoryView',
-    value: function renderHistoryView() {
-      var _this2 = this;
-
-      if (!this.state.historyView) {
-        return null;
-      }
-
-      var className = bem('history-view');
-      var _p = this.p;
-      var viewMoment = _p.viewMoment;
-      var theme = _p.theme;
-
-
-      var historyViewProps = {
-        defaultViewDate: viewMoment,
-        defaultDate: viewMoment,
-
-        ref: function ref(view) {
-          _this2.historyView = view;
-        },
-        focusDecadeView: false,
-
-        className: className,
-        theme: theme,
-
-        onOkClick: this.onHistoryViewOk,
-        onCancelClick: this.onHistoryViewCancel
-      };
-
-      if (this.props.renderHistoryView) {
-        return this.props.renderHistoryView(historyViewProps);
-      }
-
-      return _react2.default.createElement(_HistoryView2.default, historyViewProps);
-    }
-  }, {
-    key: 'toggleHistoryView',
-    value: function toggleHistoryView(event) {
-      if (this.isHistoryViewVisible()) {
-        this.hideHistoryView(event);
-      } else {
-        this.showHistoryView(event);
-      }
-    }
-  }, {
-    key: 'getHistoryView',
-    value: function getHistoryView() {
-      return this.historyView;
-    }
-  }, {
-    key: 'isHistoryViewVisible',
-    value: function isHistoryViewVisible() {
-      return !!this.historyView;
-    }
-  }, {
-    key: 'onHistoryViewOk',
-    value: function onHistoryViewOk(dateString, _ref) {
-      var dateMoment = _ref.dateMoment;
-      var timestamp = _ref.timestamp;
-
-      this.hideHistoryView();
-      this.onViewDateChange({ dateMoment: dateMoment, timestamp: timestamp });
-    }
-  }, {
-    key: 'onHistoryViewCancel',
-    value: function onHistoryViewCancel() {
-      this.hideHistoryView();
-    }
-  }, {
-    key: 'showHistoryView',
-    value: function showHistoryView(event) {
-      event.preventDefault();
-
-      this.setState({
-        historyView: true
-      });
-
-      if (this.props.onShowHistoryView) {
-        this.props.onShowHistoryView();
-      }
-    }
-  }, {
-    key: 'hideHistoryView',
-    value: function hideHistoryView(event) {
-      if (event && event.preventDefault) {
-        event.preventDefault();
-      }
-
-      this.setState({
-        historyView: false
-      });
-
-      if (this.props.onHideHistoryView) {
-        this.props.onHideHistoryView();
-      }
-    }
-  }, {
-    key: 'toMoment',
-    value: function toMoment(value, props) {
-      props = props || this.props;
-
-      return (0, _toMoment3.default)(value, {
-        locale: props.locale,
-        dateFormat: props.dateFormat
-      });
-    }
-  }, {
-    key: 'renderNav',
-    value: function renderNav(dir, viewMoment) {
-      var props = this.p;
-
-      var name = dir < 0 ? 'prev' : 'next';
-      var disabled = dir < 0 ? props.prevDisabled : props.nextDisabled;
-      var secondary = Math.abs(dir) == 2;
-
-      if (dir < 0 && props.minDate) {
-        var gotoMoment = this.getGotoMoment(dir, viewMoment).endOf('month');
-
-        if (gotoMoment.isBefore(this.toMoment(props.minDate))) {
-          disabled = true;
-        }
-      }
-
-      if (dir > 0 && props.maxDate) {
-        var _gotoMoment = this.getGotoMoment(dir, viewMoment).startOf('month');
-
-        if (_gotoMoment.isAfter(this.toMoment(props.maxDate))) {
-          disabled = true;
-        }
-      }
-
-      if (this.state.historyView) {
-        disabled = true;
-      }
-
-      var className = [bem('arrow'), bem('arrow--' + name), secondary && bem('secondary-arrow'), disabled && bem('arrow--disabled')];
-
-      var arrow = props.arrows[dir] || props.arrows[name] || ARROWS[name];
-
-      var children = void 0;
-
-      if (secondary) {
-        var dirArrow = props.arrows[dir];
-
-        if (dirArrow) {
-          children = dirArrow;
-        } else {
-          var secondArrow = _react2.default.createElement(
-            _reactInlineBlock2.default,
-            { style: _defineProperty({ position: 'absolute' }, dir < 0 ? 'left' : 'left', 7) },
-            arrow
-          );
-          children = dir < 0 ? [secondArrow, arrow] : [secondArrow, arrow];
-        }
-      } else {
-        children = arrow;
-      }
-
-      var navProps = {
-        dir: dir,
-        name: name,
-        disabled: disabled,
-        className: (0, _join2.default)(className),
-        onClick: !disabled && this.onNavClick.bind(this, dir, viewMoment),
-        children: children
-      };
-
-      if (props.renderNav) {
-        return props.renderNav(navProps);
-      }
-
-      if (dir < 0 && props.renderNavPrev) {
-        return props.renderNavPrev(navProps);
-      }
-
-      if (dir > 0 && props.renderNavNext) {
-        return props.renderNavNext(navProps);
-      }
-
-      return _react2.default.createElement(_reactInlineBlock2.default, _extends({}, navProps, {
-        disabled: null,
-        name: null
-      }));
-    }
-  }, {
-    key: 'getGotoMoment',
-    value: function getGotoMoment(dir, viewMoment) {
-      viewMoment = viewMoment || this.p.viewMoment;
-
-      var sign = dir < 0 ? -1 : 1;
-      var abs = Math.abs(dir);
-
-      var mom = this.toMoment(viewMoment);
-
-      mom.add(sign, abs == 1 ? 'month' : 'year');
-
-      return mom;
-    }
-  }, {
-    key: 'onNavClick',
-    value: function onNavClick(dir, viewMoment, event) {
-      var props = this.props;
-
-      var dateMoment = this.toMoment(viewMoment);
-
-      if (props.onUpdate) {
-        dateMoment = props.onUpdate(dateMoment, dir);
-      } else {
-        var sign = dir < 0 ? -1 : 1;
-        var abs = Math.abs(dir);
-
-        dateMoment.add(sign, abs == 1 ? 'month' : 'year');
-      }
-
-      var timestamp = +dateMoment;
-
-      props.onNavClick(dir, viewMoment, event);
-
-      var disabled = dir < 0 ? props.prevDisabled : props.nextDisabled;
-
-      if (disabled) {
-        return;
-      }
-
-      this.onViewDateChange({
-        dateMoment: dateMoment,
-        timestamp: timestamp
-      });
-    }
-  }, {
-    key: 'renderNavDate',
-    value: function renderNavDate(viewMoment) {
-      var props = this.props;
-      var text = viewMoment.format(props.navDateFormat);
-
-      if (props.renderNavDate) {
-        return props.renderNavDate(viewMoment, text);
-      }
-
-      return text;
-    }
-  }, {
-    key: 'onViewDateChange',
-    value: function onViewDateChange(_ref3) {
-      var dateMoment = _ref3.dateMoment;
-      var timestamp = _ref3.timestamp;
-
-      if (this.props.viewDate === undefined) {
-        this.setState({
-          viewDate: timestamp
-        });
-      }
-
-      if (this.props.onViewDateChange) {
-        var dateString = dateMoment.format(this.props.dateFormat);
-        this.props.onViewDateChange(dateString, { dateString: dateString, dateMoment: dateMoment, timestamp: timestamp });
-      }
-    }
-  }]);
-
-  return NavBar;
-}(_reactClass2.default);
-
-exports.default = NavBar;
-
-
-NavBar.defaultProps = {
-  arrows: {},
-
-  theme: 'default',
-
-  isDatePickerNavBar: true,
-
-  navDateFormat: 'MMM YYYY',
-  enableHistoryView: true,
-  onNavClick: function onNavClick(dir, viewMoment) {},
-
-  onViewDateChange: function onViewDateChange() {}
-};
-
-NavBar.propTypes = {
-  secondary: _react.PropTypes.bool,
-
-  renderNav: _react.PropTypes.func,
-  renderNavPrev: _react.PropTypes.func,
-  renderNavNext: _react.PropTypes.func,
-
-  arrows: _react.PropTypes.object,
-  navDateFormat: _react.PropTypes.string,
-
-  onUpdate: _react.PropTypes.func,
-  onNavClick: _react.PropTypes.func,
-  onViewDateChange: _react.PropTypes.func
-};
-},{"./HistoryView":70,"./bemFactory":86,"./join":90,"./toMoment":92,"object-assign":100,"react":263,"react-class":56,"react-flex":107,"react-inline-block":113}],76:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-exports.default = function (_ref10) {
-  var oldValue = _ref10.oldValue;
-  var range = _ref10.range;
-  var event = _ref10.event;
-  var _ref10$separator = _ref10.separator;
-  var separator = _ref10$separator === undefined ? ':' : _ref10$separator;
-  var incrementNext = _ref10.incrementNext;
-  var circular = _ref10.circular;
-  var propagate = _ref10.propagate;
-  var hours24 = _ref10.hours24;
-  var meridiem = _ref10.meridiem;
-
-
-  var newChar = String.fromCharCode(event.which);
-  var start = range.start;
-  var end = range.end;
-  var key = event.key;
-
-
-  if (key == 'Delete' || key == 'Backspace') {
-    return getValueOnDelete({
-      key: key,
-      oldValue: oldValue,
-      range: range,
-      separator: separator,
-      meridiem: meridiem
-    });
-  }
-
-  var dir = ARROWS[key];
-
-  if (dir) {
-    return getValueOnDirection({
-      hours24: hours24,
-      meridiem: meridiem,
-      dir: dir,
-      oldValue: oldValue,
-      range: range,
-      circular: circular,
-      propagate: propagate,
-      separator: separator,
-      incrementNext: incrementNext
-    });
-  }
-
-  if (key == 'Unidentified' && newChar * 1 == newChar) {
-    return getValueOnNumber({
-      num: newChar * 1,
-      circular: circular,
-      separator: separator,
-      oldValue: oldValue,
-      range: range,
-      meridiem: meridiem
-    });
-  }
-
-  return {
-    value: oldValue
-  };
-};
-
-var _objectAssign = require('object-assign');
-
-var _objectAssign2 = _interopRequireDefault(_objectAssign);
-
-var _toTimeValue = require('./toTimeValue');
-
-var _toTimeValue2 = _interopRequireDefault(_toTimeValue);
-
-var _leftPad = require('../utils/leftPad');
-
-var _leftPad2 = _interopRequireDefault(_leftPad);
-
-var _clamp = require('../utils/clamp');
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var removeAt = function removeAt(_ref) {
-  var value = _ref.value;
-  var index = _ref.index;
-  var _ref$len = _ref.len;
-  var len = _ref$len === undefined ? 1 : _ref$len;
-
-  return value.substring(0, index) + value.substring(index + len);
-};
-
-var replaceAt = function replaceAt(_ref2) {
-  var value = _ref2.value;
-  var index = _ref2.index;
-  var _ref2$len = _ref2.len;
-  var len = _ref2$len === undefined ? 1 : _ref2$len;
-  var str = _ref2.str;
-
-  return value.substring(0, index) + str + value.substring(index + len);
-};
-
-var replaceBetween = function replaceBetween(_ref3) {
-  var value = _ref3.value;
-  var start = _ref3.start;
-  var end = _ref3.end;
-  var str = _ref3.str;
-
-  return (value.substring(0, start) || '') + str + (value.substring(end) || '');
-};
-
-var toggleMeridiem = function toggleMeridiem(meridiem) {
-  return {
-    am: 'pm',
-    AM: 'PM',
-    pm: 'am',
-    PM: 'pm'
-  }[meridiem];
-};
-
-var getValueOnDelete = function getValueOnDelete(_ref4) {
-  var oldValue = _ref4.oldValue;
-  var range = _ref4.range;
-  var key = _ref4.key;
-  var separator = _ref4.separator;
-  var meridiem = _ref4.meridiem;
-  var start = range.start;
-  var end = range.end;
-
-
-  var selectedValue = oldValue.substring(start, end);
-
-  var value = void 0;
-
-  if (selectedValue) {
-
-    var replacement = selectedValue.split('').map(function (c) {
-      if (c == separator || c == ' ') {
-        return c;
-      }
-
-      if (meridiem && c * 1 != c) {
-        return c == 'p' ? 'a' : c == 'P' ? 'A' : c;
-      }
-
-      return 0;
-    }).join('');
-
-    value = replaceBetween({ value: oldValue, start: start, end: end, str: replacement });
-
-    return {
-      value: value,
-      update: value != oldValue,
-      caretPos: key == 'Backspace' ? start : end
-    };
-  } else {
-
-    var back = key == 'Backspace';
-    var index = start + (back ? -1 : 0);
-    var caretPos = start + (back ? -1 : 1);
-
-    if (index < 0) {
-      return {
-        value: oldValue,
-        update: false
-      };
-    }
-
-    var char = oldValue[index];
-
-    value = oldValue;
-
-    var _replacement = char == separator || char == ' ' ? char : 0;
-
-    if (char && char * 1 != char && _replacement === 0 && meridiem) {
-      if (char == 'p') {
-        _replacement = 'a';
-      } else if (char == 'P') {
-        _replacement = 'A';
-      } else if (char == 'M' || char == 'm' || char == 'a' || char == 'A') {
-        _replacement = char;
-      }
-    }
-
-    value = replaceAt({ value: oldValue, index: index, str: _replacement });
-
-    return {
-      update: value != oldValue,
-      value: value,
-      caretPos: caretPos
-    };
-  }
-};
-
-var ARROWS = {
-  ArrowUp: 1,
-  ArrowDown: -1,
-  PageUp: 10,
-  PageDown: -10
-};
-
-var TIME_PARTS = {
-  24: [{ start: 0, end: 2, name: 'hours', max: 23 }, { start: 3, end: 5, name: 'minutes', max: 59 }, { start: 6, end: 8, name: 'seconds', max: 59 }],
-  12: [{ start: 0, end: 2, name: 'hours', max: 12, min: 1 }, { start: 3, end: 5, name: 'minutes', max: 59 }, { start: 6, end: 8, name: 'seconds', max: 59 }]
-};
-
-var getActiveTimePartIndex = function getActiveTimePartIndex(_ref5) {
-  var value = _ref5.value;
-  var timeValue = _ref5.timeValue;
-  var separator = _ref5.separator;
-  var range = _ref5.range;
-  var hours24 = _ref5.hours24;
-  var meridiem = _ref5.meridiem;
-  var start = range.start;
-
-  var timeParts = TIME_PARTS[hours24 ? 24 : 12];
-
-  var partIndex = 0;
-  var currentPart = void 0;
-
-  while (currentPart = timeParts[partIndex]) {
-
-    if (currentPart.name == 'seconds' && timeValue && !timeValue.seconds) {
-      return 4; //the index of the meridiem
-    }
-    if (start >= currentPart.start && start <= currentPart.end) {
-      return partIndex;
-    }
-
-    partIndex++;
-  }
-
-  return 4;
-};
-
-var getTimePartAt = function getTimePartAt(index, _ref6) {
-  var hours24 = _ref6.hours24;
-
-  return (0, _objectAssign2.default)({}, TIME_PARTS[hours24 ? 24 : 12][index]);
-};
-
-var getActiveTimePart = function getActiveTimePart(_ref7) {
-  var value = _ref7.value;
-  var timeValue = _ref7.timeValue;
-  var separator = _ref7.separator;
-  var range = _ref7.range;
-  var hours24 = _ref7.hours24;
-  var meridiem = _ref7.meridiem;
-
-
-  var index = getActiveTimePartIndex({ value: value, timeValue: timeValue, separator: separator, range: range, hours24: hours24 });
-
-  if (index == 4 && meridiem) {
-    var timePart = {
-      start: 6, end: 8, name: 'meridiem'
-    };
-
-    if (timeValue.seconds) {
-      timePart.start += 3;
-      timePart.end += 3;
-    }
-
-    return timePart;
-  }
-
-  return getTimePartAt(index, { hours24: hours24 });
-};
-
-var getValueOnDirection = function getValueOnDirection(_ref8) {
-  var oldValue = _ref8.oldValue;
-  var range = _ref8.range;
-  var separator = _ref8.separator;
-  var dir = _ref8.dir;
-  var incrementNext = _ref8.incrementNext;
-  var circular = _ref8.circular;
-  var propagate = _ref8.propagate;
-  var hours24 = _ref8.hours24;
-  var meridiem = _ref8.meridiem;
-  var start = range.start;
-  var end = range.end;
-
-
-  var value = void 0;
-
-  var timeValue = (0, _toTimeValue2.default)({ value: oldValue, separator: separator, meridiem: meridiem });
-  var activeTimePart = getActiveTimePart({ value: oldValue, timeValue: timeValue, separator: separator, range: range, hours24: hours24, meridiem: meridiem });
-
-  if (activeTimePart.name != 'meridiem') {
-    timeValue[activeTimePart.name] = dir + timeValue[activeTimePart.name] * 1;
-  }
-
-  var hours = timeValue.hours;
-  var minutes = timeValue.minutes;
-  var seconds = timeValue.seconds;
-
-
-  var toggleMeridiemValue = false;
-
-  hours *= 1;
-  minutes *= 1;
-
-  if (seconds) {
-    seconds *= 1;
-  }
-
-  if (activeTimePart.name != 'meridiem') {
-
-    if (seconds && (seconds > 59 || seconds < 0)) {
-
-      if (propagate) {
-        minutes += seconds > 59 ? 1 : -1;
-      }
-
-      if (circular) {
-        seconds %= 60;
-
-        if (seconds < 0) {
-          seconds = 60 + seconds;
-        }
-      }
-    }
-
-    if (minutes && (minutes > 59 || minutes < 0)) {
-      if (propagate) {
-        hours += minutes > 59 ? 1 : -1;
-      }
-
-      if (circular) {
-        minutes %= 60;
-
-        if (minutes < 0) {
-          minutes = 60 + minutes;
-        }
-      }
-    }
-
-    if (meridiem && circular && (hours > 12 || hours < 1)) {
-      toggleMeridiemValue = true;
-    }
-  }
-
-  hours = (0, _leftPad2.default)((0, _clamp.clampHour)(hours * 1, { circular: circular, max: activeTimePart.max, min: activeTimePart.min }));
-  minutes = (0, _leftPad2.default)((0, _clamp.clampMinute)(minutes * 1, { circular: circular }));
-
-  if (seconds != undefined) {
-    seconds = (0, _leftPad2.default)((0, _clamp.clampSecond)(seconds * 1, { circular: circular }));
-  }
-
-  value = hours + separator + minutes;
-
-  if (seconds) {
-    value += separator + seconds;
-  }
-
-  if (activeTimePart.name == 'meridiem') {
-    toggleMeridiemValue = true;
-  }
-
-  if (meridiem) {
-    value += ' ' + (toggleMeridiemValue ? toggleMeridiem(timeValue.meridiem) : timeValue.meridiem);
-  }
-
-  return {
-    value: value,
-    caretPos: activeTimePart || range.start,
-    update: oldValue != value
-  };
-};
-
-var getValueOnNumber = function getValueOnNumber(_ref9) {
-  var oldValue = _ref9.oldValue;
-  var num = _ref9.num;
-  var range = _ref9.range;
-  var separator = _ref9.separator;
-  var circular = _ref9.circular;
-  var hours24 = _ref9.hours24;
-  var meridiem = _ref9.meridiem;
-
-  var activeTimePartIndex = getActiveTimePartIndex({ value: oldValue, separator: separator, range: range, hours24: hours24 });
-  var activeTimePart = getTimePartAt(activeTimePartIndex, { hours24: hours24 });
-
-  if (activeTimePart && range.start == range.end && activeTimePart.end == range.end) {
-    activeTimePart = getTimePartAt(activeTimePartIndex + 1, { hours24: hours24 });
-  }
-
-  if (!activeTimePart) {
-    return {
-      value: value,
-      update: false
-    };
-  }
-
-  var name = activeTimePart.name;
-  var timeParts = (0, _toTimeValue2.default)({ value: oldValue, separator: separator, meridiem: meridiem });
-
-  var timePartValue = timeParts[name] + '';
-
-  var caretPos = void 0;
-
-  if (range.start <= activeTimePart.start) {
-    var maxFirstChar = (activeTimePart.max + '').charAt(0) * 1;
-
-    caretPos = range.start + (num > maxFirstChar ? 3 : range.start < activeTimePart.start ? 2 : 1);
-    timeParts[name] = num > maxFirstChar ? '0' + num : num + timeParts[name].charAt(1);
-  } else {
-    caretPos = range.start + 2;
-    timeParts[name] = (0, _clamp.clampNamed)(name, replaceAt({ value: timePartValue, index: 1, str: num }) * 1, { circular: circular });
-  }
-
-  var hours = timeParts.hours;
-  var minutes = timeParts.minutes;
-  var seconds = timeParts.seconds;
-
-
-  var value = hours + separator + minutes;
-
-  if (seconds) {
-    value += separator + seconds;
-  }
-
-  if (meridiem) {
-    value += ' ' + timeParts.meridiem;
-  }
-
-  return {
-    value: value,
-    caretPos: caretPos,
-    update: true
-  };
-};
-},{"../utils/clamp":93,"../utils/leftPad":98,"./toTimeValue":81,"object-assign":100}],77:[function(require,module,exports){
-(function (global){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.default = getSelectionEnd;
-var document = global.document;
-
-function getSelectionEnd(o) {
-    if (o.createTextRange && !global.getSelection) {
-        var r = document.selection.createRange().duplicate();
-        r.moveStart('character', -o.value.length);
-        return r.text.length;
-    } else return o.selectionEnd;
-}
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],78:[function(require,module,exports){
-(function (global){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.default = getSelectionStart;
-var document = global.document;
-
-//from http://javascript.nwbox.com/cursor_position/, but added the !window.getSelection check, which
-//is needed for newer versions of IE, which adhere to standards
-function getSelectionStart(o) {
-    if (o.createTextRange && !global.getSelection) {
-        var r = document.selection.createRange().duplicate();
-        r.moveEnd('character', o.value.length);
-        if (r.text == '') return o.value.length;
-        return o.value.lastIndexOf(r.text);
-    } else return o.selectionStart;
-}
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],79:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.toTimeValue = exports.setCaretPosition = exports.getNewValue = exports.getSelectionEnd = exports.getSelectionStart = undefined;
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactDom = require('react-dom');
-
-var _reactClass = require('react-class');
-
-var _reactClass2 = _interopRequireDefault(_reactClass);
-
-var _raf = require('raf');
-
-var _raf2 = _interopRequireDefault(_raf);
-
-var _moment = require('moment');
-
-var _moment2 = _interopRequireDefault(_moment);
-
-var _objectAssign = require('object-assign');
-
-var _objectAssign2 = _interopRequireDefault(_objectAssign);
-
-var _toMoment = require('../toMoment');
-
-var _toMoment2 = _interopRequireDefault(_toMoment);
-
-var _join = require('../join');
-
-var _join2 = _interopRequireDefault(_join);
-
-var _Clock = require('../Clock');
-
-var _Clock2 = _interopRequireDefault(_Clock);
-
-var _reactFlex = require('react-flex');
-
-var _getSelectionStart = require('./getSelectionStart');
-
-var _getSelectionStart2 = _interopRequireDefault(_getSelectionStart);
-
-var _getSelectionEnd = require('./getSelectionEnd');
-
-var _getSelectionEnd2 = _interopRequireDefault(_getSelectionEnd);
-
-var _setCaretPosition2 = require('./setCaretPosition');
-
-var _setCaretPosition3 = _interopRequireDefault(_setCaretPosition2);
-
-var _getNewValue2 = require('./getNewValue');
-
-var _getNewValue3 = _interopRequireDefault(_getNewValue2);
-
-var _toTimeValue = require('./toTimeValue');
-
-var _toTimeValue2 = _interopRequireDefault(_toTimeValue);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-exports.getSelectionStart = _getSelectionStart2.default;
-exports.getSelectionEnd = _getSelectionEnd2.default;
-exports.getNewValue = _getNewValue3.default;
-exports.setCaretPosition = _setCaretPosition3.default;
-exports.toTimeValue = _toTimeValue2.default;
-
-var TimeInput = function (_Component) {
-  _inherits(TimeInput, _Component);
-
-  function TimeInput(props) {
-    _classCallCheck(this, TimeInput);
-
-    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(TimeInput).call(this, props));
-
-    var format = props.format || props.timeFormat;
-
-    if (format.indexOf('hh') != 0 && format.indexOf('HH') != 0) {
-      console.warn('Please start your time format with 2 digit hours.');
-    }
-
-    var hours24 = true;
-    var meridiem = format.indexOf('a') != -1 || format.indexOf('A') != -1;
-
-    if (format.indexOf('hh') == 0) {
-      hours24 = false;
-    }
-
-    var separator = props.separator || format && format.length > 2 ? format.charAt(2) : ':';
-    var hasSeconds = format.indexOf('ss') != -1;
-
-    if (hasSeconds && format.charAt(5) != separator) {
-      console.warn('Expected minutes-seconds separator to be same as hours-minutes separator. (at position 5)');
-    }
-
-    var defaultValue = '00' + separator + '00';
-
-    if (hasSeconds) {
-      defaultValue += separator + '00';
-    }
-    if (meridiem) {
-      defaultValue += ' am';
-    }
-
-    _this.state = {
-      valueRange: props.valueRange || 0,
-      separator: separator,
-      hours24: hours24,
-      meridiem: meridiem,
-      value: props.defaultValue || defaultValue
-    };
-    return _this;
-  }
-
-  _createClass(TimeInput, [{
-    key: 'render',
-    value: function render() {
-
-      var props = this.p = (0, _objectAssign2.default)({}, this.props);
-
-      props.value = this.state.value; //props.value !== undefined?
-      // props.value:
-      // this.state.value
-
-      return _react2.default.createElement('input', _extends({}, props, {
-        defaultValue: undefined,
-        value: props.value,
-        onKeyDown: this.onKeyDown,
-        onChange: this.onChange
-      }));
-    }
-  }, {
-    key: 'onChange',
-    value: function onChange(event) {
-      event.stopPropagation();
-    }
-  }, {
-    key: 'onKeyDown',
-    value: function onKeyDown(event) {
-      var _this2 = this;
-
-      var value = this.p.value;
-
-      var valueRange = this.state.valueRange;
-
-      if (this.props.onKeyDown) {
-        this.props.onKeyDown(event);
-      }
-
-      var range = this.getSelectedRange();
-      var separator = this.props.separator || this.state.separator || ':';
-
-      var _getNewValue = (0, _getNewValue3.default)({
-        range: range,
-        event: event,
-
-        circular: this.props.circular,
-        propagate: this.props.propagate,
-
-        oldValue: value,
-        separator: separator,
-        meridiem: this.state.meridiem,
-        hours24: this.state.hours24,
-        incrementNext: this.props.incrementNext
-
-      });
-
-      var newValue = _getNewValue.value;
-      var update = _getNewValue.update;
-      var caretPos = _getNewValue.caretPos;
-
-
-      var updateCaretPos = function updateCaretPos() {
-        if (caretPos != undefined) {
-          _this2.setCaretPosition(caretPos);
-        }
-      };
-
-      if (update || caretPos) {
-        event.preventDefault();
-      }
-
-      if (update) {
-        this.setValue(newValue, updateCaretPos);
-      } else {
-        (0, _raf2.default)(updateCaretPos);
-      }
-    }
-  }, {
-    key: 'getInput',
-    value: function getInput() {
-      return (0, _reactDom.findDOMNode)(this);
-    }
-  }, {
-    key: 'setCaretPosition',
-    value: function setCaretPosition(pos) {
-      var dom = this.getInput();
-      dom && (0, _setCaretPosition3.default)(dom, pos);
-    }
-  }, {
-    key: 'setValue',
-    value: function setValue(value, callback) {
-      // if (this.props.value === undefined){
-      this.setState({
-        now: Date.now(),
-        value: value
-      }, typeof callback == 'function' && callback);
-      // } else {
-      //   this.updateCallback = callback
-      // }
-
-      if (this.props.onChange) {
-        this.props.onChange(value);
-      }
-    }
-  }, {
-    key: 'componentDidUpdate',
-    value: function componentDidUpdate() {
-      if (this.updateCallback) {
-        this.updateCallback();
-        this.updateCallback = null;
-      }
-    }
-  }, {
-    key: 'getSelectedRange',
-    value: function getSelectedRange() {
-      var dom = this.getInput();
-
-      return {
-        start: (0, _getSelectionStart2.default)(dom),
-        end: (0, _getSelectionEnd2.default)(dom)
-      };
-    }
-  }, {
-    key: 'getSelectedValue',
-    value: function getSelectedValue() {
-      var range = this.getSelectedRange();
-      var value = this.p.value;
-
-      return value.substring(range.start, range.end);
-    }
-  }, {
-    key: 'onChange',
-    value: function onChange(event) {
-      var value = event.target.value;
-    }
-  }, {
-    key: 'onTimeChange',
-    value: function onTimeChange(value) {
-      var time = value.split(':');
-
-      this.setState({
-        minutes: time[0] * 60 + time[1]
-      });
-    }
-  }, {
-    key: 'renderClock',
-    value: function renderClock() {
-
-      var props = this.p;
-      var clock = props.children.filter(function (child) {
-        return child && child.props && child.props.isTimePickerClock;
-      })[0];
-
-      var clockProps = {
-        time: this.state.minutes || props.date,
-        showSecondsHand: true
-      };
-
-      if (clock) {
-        return _react2.default.cloneElement(clock, clockProps);
-      }
-
-      return _react2.default.createElement(_Clock2.default, clockProps);
-    }
-  }]);
-
-  return TimeInput;
-}(_reactClass2.default);
-
-exports.default = TimeInput;
-
-
-TimeInput.defaultProps = {
-  theme: 'default',
-
-  circular: true,
-  propagate: true,
-  incrementNext: true
-};
-
-TimeInput.propTypes = {
-  format: _react.PropTypes.string,
-  value: function value(props, propName) {
-    if (props[propName] !== undefined) {
-      console.warn('Due to performance considerations, TimeInput will only be uncontrolled.');
-    }
-  }
-};
-},{"../Clock":60,"../join":90,"../toMoment":92,"./getNewValue":76,"./getSelectionEnd":77,"./getSelectionStart":78,"./setCaretPosition":80,"./toTimeValue":81,"moment":52,"object-assign":100,"raf":55,"react":263,"react-class":56,"react-dom":101,"react-flex":107}],80:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = setCaretPosition;
-function setCaretPosition(elem, caretPos) {
-  var start = caretPos;
-  var end = caretPos;
-
-  if (caretPos && (caretPos.start != undefined || caretPos.end != undefined)) {
-    start = caretPos.start || 0;
-    end = caretPos.end || start;
-  }
-
-  if (elem != null) {
-    if (elem.createTextRange) {
-      var range = elem.createTextRange();
-      range.moveStart('character', start);
-      range.moveEnd('character', end);
-      range.select();
-    } else {
-      elem.focus();
-      elem.setSelectionRange(start, end);
-    }
-  }
-}
-},{}],81:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _leftPad = require('../utils/leftPad');
-
-var _leftPad2 = _interopRequireDefault(_leftPad);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = function (_ref) {
-  var value = _ref.value;
-  var _ref$separator = _ref.separator;
-  var separator = _ref$separator === undefined ? ':' : _ref$separator;
-  var meridiem = _ref.meridiem;
-
-  var parts = value.split(separator);
-
-  var hours = parts[0];
-  var minutes = parts[1];
-  var seconds = parts[2];
-
-  var result = { hours: hours, minutes: minutes };
-
-  if (typeof seconds == 'string' && seconds.length) {
-    result.seconds = seconds;
-  }
-
-  if (meridiem && seconds !== undefined && seconds * 1 != seconds) {
-    result.seconds = (0, _leftPad2.default)(parseInt(seconds, 10));
-  }
-
-  if (meridiem && seconds === undefined && minutes * 1 != minutes) {
-    result.minutes = (0, _leftPad2.default)(parseInt(minutes, 10));
-  }
-
-  if (meridiem) {
-    (function () {
-      var meridiems = ['am', 'AM', 'pm', 'PM'];
-      var indexes = meridiems.map(function (m) {
-        return (seconds || minutes).indexOf(m);
-      });
-
-      indexes.forEach(function (indexOf, i) {
-        if (indexOf != -1) {
-          result.meridiem = meridiems[i];
-        }
-      });
-    })();
-  }
-
-  return result;
-};
-},{"../utils/leftPad":98}],82:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactDom = require('react-dom');
-
-var _reactClass = require('react-class');
-
-var _reactClass2 = _interopRequireDefault(_reactClass);
-
-var _TimeInput = require('./TimeInput');
-
-var _TimeInput2 = _interopRequireDefault(_TimeInput);
-
-var _moment = require('moment');
-
-var _moment2 = _interopRequireDefault(_moment);
-
-var _objectAssign = require('object-assign');
-
-var _objectAssign2 = _interopRequireDefault(_objectAssign);
-
-var _toMoment = require('./toMoment');
-
-var _toMoment2 = _interopRequireDefault(_toMoment);
-
-var _join = require('./join');
-
-var _join2 = _interopRequireDefault(_join);
-
-var _Clock = require('./Clock');
-
-var _Clock2 = _interopRequireDefault(_Clock);
-
-var _reactFlex = require('react-flex');
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var TimePicker = function (_Component) {
-  _inherits(TimePicker, _Component);
-
-  function TimePicker(props) {
-    _classCallCheck(this, TimePicker);
-
-    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(TimePicker).call(this, props));
-
-    _this.state = {};
-    return _this;
-  }
-
-  // prepareDate(props){
-  //   return toMoment(props.date, props)
-  // }
-
-  _createClass(TimePicker, [{
-    key: 'render',
-    value: function render() {
-
-      var props = this.p = (0, _objectAssign2.default)({}, this.props);
-      props.children = _react2.default.Children.toArray(props.children);
-
-      var timeFormat = props.timeFormat.toLowerCase();
-
-      // props.date = this.prepareDate(props)
-      props.hasTime = props.hasTime || timeFormat.indexOf('k') != -1 || timeFormat.indexOf('h') != -1;
-
-      var className = (0, _join2.default)(props.className, 'react-date-picker__time-picker', props.theme && 'react-date-picker__time-picker--theme-' + props.theme);
-
-      return _react2.default.createElement(
-        _reactFlex.Flex,
-        _extends({
-          inline: true,
-          column: true,
-          wrap: false
-        }, this.props, {
-          className: className }),
-        this.renderClock(),
-        this.renderInput()
-      );
-    }
-  }, {
-    key: 'renderInput',
-    value: function renderInput() {
-      return _react2.default.createElement(_TimeInput2.default, {
-        className: 'react-date-picker__time-picker-input',
-        format: this.props.timeFormat || this.props.format,
-        defaultValue: this.props.value || this.props.defaultValue,
-        onChange: this.onTimeChange
-      });
-    }
-  }, {
-    key: 'onTimeChange',
-    value: function onTimeChange(value) {
-      var time = value.split(':');
-
-      var seconds = time[0] * 3600 + parseInt(time[1], 10) * 60;
-
-      if (time[2]) {
-        seconds += parseInt(time[2], 10);
-      }
-
-      this.setState({
-        seconds: seconds
-      });
-
-      if (this.props.onChange) {
-        this.props.onChange(value);
-      }
-    }
-  }, {
-    key: 'renderClock',
-    value: function renderClock() {
-
-      var props = this.p;
-      var clock = props.children.filter(function (child) {
-        return child && child.props && child.props.isTimePickerClock;
-      })[0];
-
-      var clockProps = {
-        seconds: this.state.seconds,
-        showSecondsHand: true
-      };
-
-      if (clock) {
-        return _react2.default.cloneElement(clock, clockProps);
-      }
-
-      return _react2.default.createElement(_Clock2.default, clockProps);
-    }
-  }]);
-
-  return TimePicker;
-}(_reactClass2.default);
-
-exports.default = TimePicker;
-
-
-TimePicker.defaultProps = {
-  format: 'HH:mm:ss a',
-  theme: 'default',
-  isTimePicker: true
-};
-
-TimePicker.propTypes = {};
-},{"./Clock":60,"./TimeInput":79,"./join":90,"./toMoment":92,"moment":52,"object-assign":100,"react":263,"react-class":56,"react-dom":101,"react-flex":107}],83:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactDom = require('react-dom');
-
-var _reactClass = require('react-class');
-
-var _reactClass2 = _interopRequireDefault(_reactClass);
-
-var _objectAssign = require('object-assign');
-
-var _objectAssign2 = _interopRequireDefault(_objectAssign);
-
-var _join = require('./join');
-
-var _join2 = _interopRequireDefault(_join);
-
-var _toMoment2 = require('./toMoment');
-
-var _toMoment3 = _interopRequireDefault(_toMoment2);
-
-var _forwardTime = require('./utils/forwardTime');
-
-var _forwardTime2 = _interopRequireDefault(_forwardTime);
-
-var _getTransitionEnd = require('./getTransitionEnd');
-
-var _getTransitionEnd2 = _interopRequireDefault(_getTransitionEnd);
-
-var _assignDefined = require('./assignDefined');
-
-var _assignDefined2 = _interopRequireDefault(_assignDefined);
-
-var _MonthView = require('./MonthView');
-
-var _NavBar = require('./NavBar');
-
-var _NavBar2 = _interopRequireDefault(_NavBar);
-
-var _reactFlex = require('react-flex');
-
-var _times = require('./utils/times');
-
-var _times2 = _interopRequireDefault(_times);
-
-var _reactInlineBlock = require('react-inline-block');
-
-var _reactInlineBlock2 = _interopRequireDefault(_reactInlineBlock);
-
-var _reactStyleNormalizer = require('react-style-normalizer');
-
-var _reactStyleNormalizer2 = _interopRequireDefault(_reactStyleNormalizer);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var renderHiddenNav = function renderHiddenNav(props) {
-  return _react2.default.createElement(_reactInlineBlock2.default, _extends({}, props, { style: { visibility: 'hidden' } }));
-};
-
-var joinFunctions = function joinFunctions(a, b) {
-  if (a && b) {
-    return function () {
-      a.apply(undefined, arguments);
-      b.apply(undefined, arguments);
-    };
-  }
-
-  return a || b;
-};
-
-var TRANSITION_DURATION = '0.4s';
-
-var TransitionView = function (_Component) {
-  _inherits(TransitionView, _Component);
-
-  function TransitionView(props) {
-    _classCallCheck(this, TransitionView);
-
-    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(TransitionView).call(this, props));
-
-    var child = _react2.default.Children.toArray(_this.props.children)[0];
-    var childProps = child.props;
-
-    var viewDate = props.viewDate || props.defaultViewDate || props.defaultDate || props.date || childProps.viewDate || childProps.defaultViewDate || childProps.defaultDate || childProps.date;
-
-    var dateFormat = props.dateFormat || childProps.dateFormat;
-    var locale = props.locale || childProps.locale;
-
-    _this.state = {
-      rendered: false,
-      viewDate: _this.toMoment(viewDate, { dateFormat: dateFormat, locale: locale })
-    };
-    return _this;
-  }
-
-  _createClass(TransitionView, [{
-    key: 'toMoment',
-    value: function toMoment(value, props) {
-      props = props || this.props;
-
-      return (0, _toMoment3.default)(value, {
-        locale: props.locale,
-        dateFormat: props.dateFormat
-      });
-    }
-  }, {
-    key: 'format',
-    value: function format(mom, props) {
-      props = props || this.props;
-      return mom.format(props.dateFormat);
-    }
-  }, {
-    key: 'componentDidMount',
-    value: function componentDidMount() {
-      this.setState({
-        rendered: true
-      });
-    }
-  }, {
-    key: 'componentWillReceiveProps',
-    value: function componentWillReceiveProps(nextProps) {
-      if (nextProps.viewDate) {
-        // this is in order to transition when the prop changes
-        // if we were to simply do setState({ viewDate }) it wouldn't have had a transition
-        this.transitionTo(nextProps.viewDate, nextProps);
-      }
-    }
-  }, {
-    key: 'transitionTo',
-    value: function transitionTo(date, props) {
-      props = props || this.props;
-
-      var dateMoment = this.toMoment(date, props);
-
-      this.doTransition(dateMoment);
-    }
-  }, {
-    key: 'getViewChild',
-    value: function getViewChild() {
-      return _react2.default.Children.toArray(this.props.children).filter(function (c) {
-        return c && c.props && c.props.isDatePicker;
-      })[0];
-    }
-  }, {
-    key: 'prepareChildProps',
-    value: function prepareChildProps(child, extraProps) {
-      if (this.view) {
-        return this.view.p;
-      }
-
-      child = child || this.getViewChild();
-
-      return (0, _objectAssign2.default)({}, child.props, extraProps);
-    }
-  }, {
-    key: 'render',
-    value: function render() {
-      var _this2 = this;
-
-      var props = this.props;
-
-      var child = this.child = this.getViewChild();
-
-      var viewDate = this.state.viewDate || props.viewMoment || props.viewDate;
-
-      var renderedChildProps = this.renderedChildProps = this.prepareChildProps(child, (0, _assignDefined2.default)({
-        viewDate: viewDate
-      }));
-
-      viewDate = this.state.viewDate || renderedChildProps.viewMoment || renderedChildProps.viewDate;
-
-      if (!this.state.transition) {
-        this.viewDate = viewDate;
-      }
-
-      var multiView = !!(child.props.size && child.props.size >= 2);
-
-      var onViewDateChange = joinFunctions(this.onViewDateChange, props.onViewDateChange);
-
-      // TODO make transition view pass all props, as is to child component
-      var newProps = {
-        key: 'picker',
-        ref: function ref(v) {
-          _this2.view = v;
         },
 
-        viewDate: this.viewDate,
-        onViewDateChange: onViewDateChange,
-        navigation: multiView,
-        constrainActiveInView: props.constrainActiveInView,
-
-        className: (0, _join2.default)(child.props.className, 'react-date-picker__center')
-      };
-
-      // only pass those down if they have been specified
-      // as props on this TransitionView
-      (0, _assignDefined2.default)(newProps, {
-        // tabIndex: -1,
-        range: props.range,
-        date: props.date,
-        activeDate: props.activeDate,
-        footer: false,
-        insideField: props.insideField,
-
-        defaultRange: props.defaultRange,
-        defaultDate: props.defaultDate,
-        defaultActiveDate: props.defaultActiveDate,
-
-        // this is here in order to ensure time changes are reflected
-        // when using a TransitionView inside a DateField
-        onTimeChange: props.onTimeChange,
-        onClockInputBlur: props.onClockInputBlur,
-        onClockInputFocus: props.onClockInputFocus,
-        onClockEnterKey: props.onClockEnterKey,
-        onClockEscapeKey: props.onClockEscapeKey,
-        showClock: props.showClock,
-
-        tabIndex: props.tabIndex,
-
-        dateFormat: props.dateFormat,
-        locale: props.locale,
-        theme: props.theme,
-
-        minDate: props.minDate,
-        maxDate: props.maxDate,
-        onKeyDown: this.onKeyDown,
-        onBlur: this.onBlur
-      });
-
-      if (props.onChange) {
-        newProps.onChange = joinFunctions(props.onChange, renderedChildProps.onChange);
-      }
-      if (props.onRangeChange) {
-        newProps.onRangeChange = joinFunctions(props.onRangeChange, renderedChildProps.onRangeChange);
-      }
-
-      if (props.onActiveDateChange) {
-        newProps.onActiveDateChange = joinFunctions(props.onActiveDateChange, renderedChildProps.onActiveDateChange);
-      }
-
-      if (this.state.transition) {
-        this.transitionDurationStyle = (0, _reactStyleNormalizer2.default)({
-          transitionDuration: props.transitionDuration || TRANSITION_DURATION
-        });
-
-        newProps.style = (0, _objectAssign2.default)({}, child.props.style, this.transitionDurationStyle);
-
-        newProps.className = (0, _join2.default)(newProps.className, 'react-date-picker--transition', 'react-date-picker--transition-' + (this.state.transition == -1 ? 'left' : 'right'));
-      }
-
-      var navBar = void 0;
-
-      var navBarProps = {
-        minDate: props.minDate || renderedChildProps.minDate,
-        maxDate: props.maxDate || renderedChildProps.maxDate,
-        enableHistoryView: props.enableHistoryView === undefined ? renderedChildProps.enableHistoryView : props.enableHistoryView,
-        secondary: true,
-        viewDate: this.nextViewDate || this.viewDate,
-        onViewDateChange: onViewDateChange,
-        multiView: multiView
-      };
-
-      if (props.navigation) {
-        navBar = this.renderNavBar((0, _objectAssign2.default)({}, navBarProps, { mainNavBar: true }));
-      }
-
-      var footer = void 0;
-
-      if (props.footer) {
-        footer = (0, _MonthView.renderFooter)(props, props.insideField ? props : this.view);
-      }
-
-      if (multiView) {
-        newProps.renderNavBar = this.renderMultiViewNavBar.bind(this, navBarProps);
-      }
-
-      var clone = _react2.default.cloneElement(child, newProps);
-
-      return _react2.default.createElement(
-        _reactFlex.Flex,
-        _extends({
-          column: true,
-          inline: true,
-          wrap: false,
-          alignItems: 'stretch'
-        }, props, {
-          className: (0, _join2.default)(props.className, 'react-date-picker__transition-month-view', props.theme && 'react-date-picker__transition-month-view--theme-' + props.theme)
-        }),
-        navBar,
-        _react2.default.createElement(
-          _reactFlex.Flex,
-          { inline: true, row: true, style: { position: 'relative' } },
-          this.renderAt(-1, { multiView: multiView, navBarProps: navBarProps }),
-          clone,
-          this.renderAt(1, { multiView: multiView, navBarProps: navBarProps })
-        ),
-        footer
-      );
-    }
-  }, {
-    key: 'tryNavBarKeyDown',
-    value: function tryNavBarKeyDown(event) {
-      if (this.navBar && this.navBar.getHistoryView) {
-        var historyView = this.navBar.getHistoryView();
-
-        if (historyView && historyView.onKeyDown) {
-          historyView.onKeyDown(event);
-          return true;
-        }
-      }
-
-      return false;
-    }
-  }, {
-    key: 'onKeyDown',
-    value: function onKeyDown(event) {
-      var initialKeyDown = this.child.onKeyDown;
-
-      if (this.tryNavBarKeyDown(event)) {
-        return false;
-      }
-
-      if (initialKeyDown) {
-        return initialKeyDown(event);
-      }
-    }
-  }, {
-    key: 'isHistoryViewVisible',
-    value: function isHistoryViewVisible() {
-      if (this.navBar && this.navBar.isHistoryViewVisible) {
-        return this.navBar.isHistoryViewVisible();
-      }
-
-      return false;
-    }
-  }, {
-    key: 'showHistoryView',
-    value: function showHistoryView() {
-      if (this.navBar) {
-        this.navBar.showHistoryView();
-      }
-    }
-  }, {
-    key: 'hideHistoryView',
-    value: function hideHistoryView() {
-      if (this.navBar) {
-        this.navBar.hideHistoryView();
-      }
-    }
-  }, {
-    key: 'onBlur',
-    value: function onBlur(event) {
-      var initialBlur = this.child.onBlur;
-
-      this.hideHistoryView();
-
-      if (initialBlur) {
-        initialBlur(event);
-      }
-
-      return true;
-    }
-
-    /**
-     * This method is only called when rendering the NavBar of the MonthViews
-     * that are not on the first row of the MultiMonthView
-     *
-     * @param  {Object} navBarProps
-     * @param  {Object} config
-     * @return {ReactNode}
-     */
-
-  }, {
-    key: 'renderMultiViewNavBar',
-    value: function renderMultiViewNavBar(navBarProps, config) {
-      var index = config.index;
-
-      var count = this.child.props.perRow;
-
-      if (index >= count) {
-        var viewDate = this.toMoment(navBarProps.viewDate).add(index, 'month');
-
-        return _react2.default.createElement(_NavBar2.default, _extends({}, navBarProps, {
-          renderNavNext: renderHiddenNav,
-          renderNavPrev: renderHiddenNav,
-          onViewDateChange: null,
-          viewDate: this.toMoment(viewDate)
-        }));
-      }
-
-      return null;
-    }
-  }, {
-    key: 'renderNavBar',
-    value: function renderNavBar(navBarProps) {
-      var _this3 = this;
-
-      navBarProps = (0, _objectAssign2.default)({}, navBarProps);
-
-      if (navBarProps.mainNavBar) {
-        navBarProps.ref = function (navBar) {
-          _this3.navBar = navBar;
-        };
-        navBarProps.onMouseDown = this.onNavMouseDown;
-      }
-
-      var props = this.props;
-      var _navBarProps = navBarProps;
-      var multiView = _navBarProps.multiView;
-
-
-      var navBar = _react2.default.Children.toArray(props.children).filter(function (c) {
-        return c && c.props && c.props.isDatePickerNavBar;
-      })[0];
-
-      var newProps = navBarProps;
-
-      if (navBar) {
-        newProps = (0, _objectAssign2.default)({}, navBarProps, navBar.props);
-
-        // have viewDate & onViewDateChange win over initial navBar.props
-        newProps.viewDate = navBarProps.viewDate;
-        newProps.onViewDateChange = navBarProps.onViewDateChange;
-      }
-
-      if (multiView) {
-        var _ret = function () {
-          var count = _this3.child.props.perRow;
-          var viewSize = _this3.getViewSize();
-
-          var bars = (0, _times2.default)(count).map(function (index) {
-            var onUpdate = function onUpdate(dateMoment, dir) {
-              var mom = _this3.toMoment(newProps.viewDate);
-
-              if (Math.abs(dir) == 1) {
-                mom.add(dir * viewSize, 'month');
-              } else {
-                var sign = dir > 0 ? 1 : -1;
-
-                mom.add(sign, 'year');
-              }
-
-              return mom;
-            };
-
-            var barProps = (0, _objectAssign2.default)({}, newProps, {
-              onUpdate: onUpdate,
-              renderNavNext: renderHiddenNav,
-              renderNavPrev: renderHiddenNav,
-              viewDate: _this3.toMoment(newProps.viewDate).add(index, 'month')
-            });
-
-            if (index == 0) {
-              delete barProps.renderNavPrev;
-            }
-            if (index == count - 1) {
-              delete barProps.renderNavNext;
-            }
-
-            return _react2.default.createElement(_NavBar2.default, _extends({ flex: true }, barProps));
-          });
-
-          return {
-            v: _react2.default.createElement(_reactFlex.Flex, { row: true, children: bars })
-          };
-        }();
-
-        if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
-      }
-
-      return navBar ? _react2.default.cloneElement(navBar, newProps) : _react2.default.createElement(_NavBar2.default, newProps);
-    }
-  }, {
-    key: 'getViewSize',
-    value: function getViewSize() {
-      return this.view && this.view.getViewSize ? this.view.getViewSize() || 1 : 1;
-    }
-  }, {
-    key: 'renderAt',
-    value: function renderAt(index, _ref) {
-      var multiView = _ref.multiView;
-      var navBarProps = _ref.navBarProps;
-
-      if (!this.state.rendered || !this.view) {
-        // || this.state.prepareTransition != -index ) {
-        return null;
-      }
-
-      var viewSize = this.getViewSize();
-      var viewDiff = viewSize * index;
-
-      var childProps = this.child.props;
-      var renderedProps = this.renderedChildProps;
-
-      var viewDate = this.toMoment(this.viewDate).add(viewDiff, 'month');
-
-      if (this.nextViewDate && this.state.prepareTransition == -index) {
-        // we're transitioning to this viewDate, so make sure
-        // it renders the date we'll need at the end of the transition
-        viewDate = this.nextViewDate;
-      }
-
-      var date = renderedProps.date || renderedProps.moment;
-
-      if (this.state.transitionTime) {
-        date = (0, _forwardTime2.default)(this.state.transitionTime, this.toMoment(date));
-        // console.log('date.format', date.format('HH:mm'));
-      }
-
-      var newProps = (0, _objectAssign2.default)({
-        date: date,
-        readOnly: true,
-        range: renderedProps.range,
-        activeDate: renderedProps.activeDate,
-        dateFormat: renderedProps.dateFormat,
-        locale: renderedProps.locale,
-        tabIndex: -1,
-        clockTabIndex: -1,
-        navigation: multiView,
-        viewDate: viewDate,
-        key: index,
-        footer: false,
-        className: (0, _join2.default)(childProps.className, 'react-date-picker__' + (index == -1 ? 'prev' : 'next'))
-      });
-
-      (0, _assignDefined2.default)(newProps, {
-        showClock: renderedProps.showClock,
-        minDate: renderedProps.minDate,
-        maxDate: renderedProps.maxDate
-      });
-
-      if (this.state.transition && this.state.transition != index) {
-        newProps.style = (0, _objectAssign2.default)({}, childProps.style, this.transitionDurationStyle);
-        newProps.className = (0, _join2.default)(newProps.className, 'react-date-picker--transition', 'react-date-picker--transition-' + (this.state.transition == -1 ? 'left' : 'right'));
-      }
-
-      if (multiView) {
-        newProps.renderNavBar = this.renderMultiViewNavBar.bind(this, (0, _objectAssign2.default)({}, navBarProps, { viewDate: viewDate, onViewDateChange: null }));
-      }
-
-      return _react2.default.cloneElement(this.child, newProps);
-    }
-  }, {
-    key: 'getView',
-    value: function getView() {
-      return this.view;
-    }
-  }, {
-    key: 'isInView',
-    value: function isInView() {
-      var _view;
-
-      return (_view = this.view).isInView.apply(_view, arguments);
-    }
-  }, {
-    key: 'onViewDateChange',
-    value: function onViewDateChange(dateString, _ref2) {
-      var dateMoment = _ref2.dateMoment;
-
-      this.doTransition(dateMoment);
-    }
-  }, {
-    key: 'doTransition',
-    value: function doTransition(dateMoment) {
-      var _this4 = this;
-
-      if (this.state.transition) {
-        // this.nextViewDate = dateMoment
-        return;
-      }
-      // to protect of null, which will default to current date
-      dateMoment = this.toMoment(dateMoment);
-
-      var newMoment = this.toMoment(dateMoment).startOf('month');
-      var viewMoment = this.toMoment(this.viewDate).startOf('month');
-
-      if (newMoment.format('YYYY-MM') == viewMoment.format('YYYY-MM')) {
-        return;
-      }
-
-      var navNext = newMoment.isAfter(viewMoment);
-      var transition = navNext ? -1 : 1;
-      var viewSize = this.getViewSize();
-
-      if (Math.abs(viewSize) > 1) {
-        var temp = this.toMoment(viewMoment).add(viewSize * -transition, 'month');
-
-        if (navNext) {
-          dateMoment = dateMoment.isAfter(temp) ? dateMoment : temp;
-        } else {
-          dateMoment = dateMoment.isBefore(temp) ? dateMoment : temp;
-        }
-      }
-
-      var transitionTime = this.props.getTransitionTime ? this.props.getTransitionTime() : null;
-
-      this.setState({
-        transitionTime: transitionTime,
-        prepareTransition: transition
-      }, function () {
-        setTimeout(function () {
-          // in order to allow this.view.p to update
-          if (!(0, _reactDom.findDOMNode)(_this4.view)) {
+        /**
+         * Access the wrapped Component's instance.
+         */
+        getInstance: function() {
+          return Component.prototype.isReactComponent ? this.refs.instance : this;
+        },
+
+        // this is given meaning in componentDidMount
+        __outsideClickHandler: function() {},
+
+        /**
+         * Add click listeners to the current document,
+         * linked to this component's state.
+         */
+        componentDidMount: function() {
+          // If we are in an environment without a DOM such 
+          // as shallow rendering or snapshots then we exit 
+          // early to prevent any unhandled errors being thrown.
+          if (typeof document === 'undefined' || !document.createElement){
             return;
           }
 
-          _this4.nextViewDate = dateMoment;
-
-          _this4.addTransitionEnd();
-
-          _this4.setState({
-            transition: transition
-          });
-        });
-      });
-    }
-  }, {
-    key: 'addTransitionEnd',
-    value: function addTransitionEnd() {
-      var dom = (0, _reactDom.findDOMNode)(this.view);
-
-      if (dom) {
-        dom.addEventListener((0, _getTransitionEnd2.default)(), this.onTransitionEnd, false);
-      }
-    }
-  }, {
-    key: 'removeTransitionEnd',
-    value: function removeTransitionEnd(dom) {
-      dom = dom || (0, _reactDom.findDOMNode)(this.view);
-
-      if (dom) {
-        dom.removeEventListener((0, _getTransitionEnd2.default)(), this.onTransitionEnd);
-      }
-    }
-  }, {
-    key: 'onTransitionEnd',
-    value: function onTransitionEnd() {
-      this.removeTransitionEnd();
-
-      if (!this.nextViewDate) {
-        return;
-      }
-
-      this.setState({
-        viewDate: this.nextViewDate,
-        transition: 0,
-        prepareTransition: 0
-      });
-
-      if (this.props.focusOnTransitionEnd) {
-        this.focus();
-      }
-
-      delete this.nextViewDate;
-    }
-  }, {
-    key: 'onNavMouseDown',
-    value: function onNavMouseDown() {
-      if (this.props.focusOnNavMouseDown && !this.isFocused()) {
-        this.focus();
-      }
-    }
-  }, {
-    key: 'isFocused',
-    value: function isFocused() {
-      var view = this.getView();
-
-      if (view) {
-        return view.isFocused();
-      }
-
-      return false;
-    }
-  }, {
-    key: 'focus',
-    value: function focus() {
-      this.getView().focus();
-    }
-  }]);
-
-  return TransitionView;
-}(_reactClass2.default);
-
-exports.default = TransitionView;
-
-
-TransitionView.propTypes = {
-  children: _react2.default.PropTypes.node.isRequired
-};
-
-TransitionView.defaultProps = {
-  focusOnNavMouseDown: true,
-
-  onTransitionStart: function onTransitionStart() {},
-  onTransitionEnd: function onTransitionEnd() {},
-
-  footerClearDate: null,
-  enableHistoryView: true,
-  constrainActiveInView: false,
-  focusOnTransitionEnd: false,
-  navigation: true,
-  theme: 'default',
-  isDatePicker: true
-};
-},{"./MonthView":71,"./NavBar":75,"./assignDefined":85,"./getTransitionEnd":88,"./join":90,"./toMoment":92,"./utils/forwardTime":95,"./utils/times":99,"object-assign":100,"react":263,"react-class":56,"react-dom":101,"react-flex":107,"react-inline-block":113,"react-style-normalizer":130}],84:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactDom = require('react-dom');
-
-var _reactClass = require('react-class');
-
-var _reactClass2 = _interopRequireDefault(_reactClass);
-
-var _objectAssign = require('object-assign');
-
-var _objectAssign2 = _interopRequireDefault(_objectAssign);
-
-var _times = require('./utils/times');
-
-var _times2 = _interopRequireDefault(_times);
-
-var _join = require('./join');
-
-var _join2 = _interopRequireDefault(_join);
-
-var _toMoment2 = require('./toMoment');
-
-var _toMoment3 = _interopRequireDefault(_toMoment2);
-
-var _reactFlex = require('react-flex');
-
-var _bemFactory = require('./bemFactory');
-
-var _bemFactory2 = _interopRequireDefault(_bemFactory);
-
-var _DecadeView = require('./DecadeView');
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var bem = (0, _bemFactory2.default)('react-date-picker__year-view');
-
-var NAV_KEYS = {
-  ArrowUp: function ArrowUp(mom) {
-    if (mom.get('month') >= 4) {
-      mom.add(-4, 'month');
-    }
-
-    return mom;
-  },
-  ArrowDown: function ArrowDown(mom) {
-    if (mom.get('month') <= 7) {
-      mom.add(4, 'month');
-    }
-
-    return mom;
-  },
-  ArrowLeft: function ArrowLeft(mom) {
-    if (mom.get('month') >= 1) {
-      mom.add(-1, 'month');
-    }
-
-    return mom;
-  },
-  ArrowRight: function ArrowRight(mom) {
-    if (mom.get('month') <= 10) {
-      mom.add(1, 'month');
-    }
-
-    return mom;
-  },
-  Home: function Home(mom) {
-    return mom.startOf('year').startOf('month');
-  },
-  End: function End(mom) {
-    return mom.endOf('year').startOf('month');
-  },
-  PageUp: function PageUp(mom) {
-    var month = mom.get('month') - 4;
-    var extra4 = month - 4;
-
-    if (month >= 0) {
-      if (extra4 >= 0) {
-        return mom.set('month', extra4);
-      }
-
-      return mom.set('month', month);
-    }
-
-    return mom;
-  },
-  PageDown: function PageDown(mom) {
-    var month = mom.get('month') + 4;
-    var extra4 = month + 4;
-
-    if (month <= 11) {
-      if (extra4 <= 11) {
-        return mom.set('month', extra4);
-      }
-
-      return mom.set('month', month);
-    }
-
-    return mom;
-  }
-};
-
-var YearView = function (_Component) {
-  _inherits(YearView, _Component);
-
-  function YearView(props) {
-    _classCallCheck(this, YearView);
-
-    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(YearView).call(this, props));
-
-    _this.state = (0, _DecadeView.getInitialState)(props);
-    return _this;
-  }
-
-  /**
-   * Returns all the days in the specified month.
-   *
-   * @param  {Moment/Date/Number} value
-   * @return {Moment[]}
-   */
-
-
-  _createClass(YearView, [{
-    key: 'getMonthsInYear',
-    value: function getMonthsInYear(value) {
-      var _this2 = this;
-
-      var start = this.toMoment(value).startOf('year');
-
-      return (0, _times2.default)(12).map(function (i) {
-        return _this2.toMoment(start).add(i, 'month');
-      });
-    }
-  }, {
-    key: 'toMoment',
-    value: function toMoment(date) {
-      return (0, _toMoment3.default)(date, this.props);
-    }
-  }, {
-    key: 'render',
-    value: function render() {
-      var props = this.p = (0, _objectAssign2.default)({}, this.props);
-
-      if (props.onlyCompareMonth) {
-        // props.adjustDateStartOf = null
-      }
-
-      var dateProps = (0, _DecadeView.prepareDateProps)(props, this.state);
-
-      (0, _objectAssign2.default)(props, dateProps);
-
-      var className = (0, _join2.default)(props.className, bem(), props.theme && bem(null, 'theme-' + props.theme));
-
-      var monthsInView = this.getMonthsInYear(props.viewMoment);
-
-      var flexProps = (0, _objectAssign2.default)({}, props);
-
-      delete flexProps.activeDate;
-      delete flexProps.activeMoment;
-      delete flexProps.adjustDateStartOf;
-      delete flexProps.adjustMaxDateStartOf;
-      delete flexProps.adjustMinDateStartOf;
-
-      delete flexProps.cleanup;
-      delete flexProps.constrainViewDate;
-
-      delete flexProps.date;
-      delete flexProps.dateFormat;
-
-      delete flexProps.isYearView;
-
-      delete flexProps.moment;
-      delete flexProps.monthFormat;
-
-      delete flexProps.navKeys;
-
-      delete flexProps.onActiveDateChange;
-      delete flexProps.onViewDateChange;
-      delete flexProps.onlyCompareMonth;
-
-      delete flexProps.timestamp;
-      delete flexProps.theme;
-
-      delete flexProps.viewDate;
-      delete flexProps.viewMoment;
-
-      if (typeof props.cleanup == 'function') {
-        props.cleanup(flexProps);
-      }
-
-      return _react2.default.createElement(
-        _reactFlex.Flex,
-        _extends({
-          inline: true,
-          column: true,
-          alignItems: 'stretch',
-          tabIndex: 0
-        }, flexProps, {
-          onKeyDown: this.onKeyDown,
-          className: className
-        }),
-        this.renderMonths(props, monthsInView)
-      );
-    }
-  }, {
-    key: 'renderMonths',
-    value: function renderMonths(props, months) {
-      var _this3 = this;
-
-      var nodes = months.map(function (monthMoment) {
-        return _this3.renderMonth(props, monthMoment);
-      });
-
-      var buckets = (0, _times2.default)(Math.ceil(nodes.length / 4)).map(function (i) {
-        return nodes.slice(i * 4, (i + 1) * 4);
-      });
-
-      var className = bem('row');
-
-      return buckets.map(function (bucket, i) {
-        return _react2.default.createElement(
-          _reactFlex.Flex,
-          {
-            alignItems: 'center',
-            flex: true,
-            row: true,
-            inline: true,
-            key: 'row_' + i,
-            className: className
-          },
-          bucket
-        );
-      });
-    }
-  }, {
-    key: 'format',
-    value: function format(mom, _format) {
-      _format = _format || this.props.monthFormat;
-
-      return mom.format(_format);
-    }
-  }, {
-    key: 'renderMonth',
-    value: function renderMonth(props, dateMoment) {
-      var index = dateMoment.get('month');
-
-      var monthText = props.monthNames ? props.monthNames[index] || this.format(dateMoment) : this.format(dateMoment);
-
-      var timestamp = +dateMoment;
-
-      var isActiveDate = props.onlyCompareMonth && props.activeMoment ? dateMoment.get('month') == props.activeMoment.get('month') : timestamp === props.activeDate;
-
-      var isValue = props.onlyCompareMonth && props.moment ? dateMoment.get('month') == props.moment.get('month') : timestamp === props.timestamp;
-
-      var disabled = props.minDate != null && timestamp < props.minDate || props.maxDate != null && timestamp > props.maxDate;
-
-      var className = (0, _join2.default)(bem('month'), !disabled && isActiveDate && bem('month', 'active'), isValue && bem('month', 'value'), disabled && bem('month', 'disabled'));
-
-      var onClick = disabled ? null : this.handleClick.bind(this, {
-        dateMoment: dateMoment,
-        timestamp: timestamp
-      });
-
-      return _react2.default.createElement(
-        _reactFlex.Item,
-        {
-          key: monthText,
-          className: className,
-          onClick: onClick
+          var instance = this.getInstance();
+          var clickOutsideHandler;
+
+          if(config && typeof config.handleClickOutside === 'function') {
+            clickOutsideHandler = config.handleClickOutside(instance);
+            if(typeof clickOutsideHandler !== 'function') {
+              throw new Error('Component lacks a function for processing outside click events specified by the handleClickOutside config option.');
+            }
+          } else if(typeof instance.handleClickOutside === 'function') {
+            if (React.Component.prototype.isPrototypeOf(instance)) {
+              clickOutsideHandler = instance.handleClickOutside.bind(instance);
+            } else {
+              clickOutsideHandler = instance.handleClickOutside;
+            }
+          } else if(typeof instance.props.handleClickOutside === 'function') {
+            clickOutsideHandler = instance.props.handleClickOutside;
+          } else {
+            throw new Error('Component lacks a handleClickOutside(event) function for processing outside click events.');
+          }
+
+          var fn = this.__outsideClickHandler = generateOutsideCheck(
+            ReactDOM.findDOMNode(instance),
+            instance,
+            clickOutsideHandler,
+            this.props.outsideClickIgnoreClass || IGNORE_CLASS,
+            this.props.preventDefault || false,
+            this.props.stopPropagation || false
+          );
+
+          var pos = registeredComponents.length;
+          registeredComponents.push(this);
+          handlers[pos] = fn;
+
+          // If there is a truthy disableOnClickOutside property for this
+          // component, don't immediately start listening for outside events.
+          if (!this.props.disableOnClickOutside) {
+            this.enableOnClickOutside();
+          }
         },
-        monthText
-      );
-    }
-  }, {
-    key: 'handleClick',
-    value: function handleClick(_ref, event) {
-      var timestamp = _ref.timestamp;
-      var dateMoment = _ref.dateMoment;
 
-      event.target.value = timestamp;
-
-      this.select({ dateMoment: dateMoment, timestamp: timestamp }, event);
-    }
-  }, {
-    key: 'onKeyDown',
-    value: function onKeyDown(event) {
-      return _DecadeView.onKeyDown.call(this, event);
-    }
-  }, {
-    key: 'confirm',
-    value: function confirm(date, event) {
-      return _DecadeView.confirm.call(this, date, event);
-    }
-  }, {
-    key: 'navigate',
-    value: function navigate(direction, event) {
-      return _DecadeView.navigate.call(this, direction, event);
-    }
-  }, {
-    key: 'select',
-    value: function select(_ref2, event) {
-      var dateMoment = _ref2.dateMoment;
-      var timestamp = _ref2.timestamp;
-
-      return _DecadeView.select.call(this, { dateMoment: dateMoment, timestamp: timestamp }, event);
-    }
-  }, {
-    key: 'onViewDateChange',
-    value: function onViewDateChange(_ref3) {
-      var dateMoment = _ref3.dateMoment;
-      var timestamp = _ref3.timestamp;
-
-      return _DecadeView.onViewDateChange.call(this, { dateMoment: dateMoment, timestamp: timestamp });
-    }
-  }, {
-    key: 'gotoViewDate',
-    value: function gotoViewDate(_ref4) {
-      var dateMoment = _ref4.dateMoment;
-      var timestamp = _ref4.timestamp;
-
-      return _DecadeView.gotoViewDate.call(this, { dateMoment: dateMoment, timestamp: timestamp });
-    }
-  }, {
-    key: 'onActiveDateChange',
-    value: function onActiveDateChange(_ref5) {
-      var dateMoment = _ref5.dateMoment;
-      var timestamp = _ref5.timestamp;
-
-      return _DecadeView.onActiveDateChange.call(this, { dateMoment: dateMoment, timestamp: timestamp });
-    }
-  }, {
-    key: 'onChange',
-    value: function onChange(_ref6, event) {
-      var dateMoment = _ref6.dateMoment;
-      var timestamp = _ref6.timestamp;
-
-      return _DecadeView.onChange.call(this, { dateMoment: dateMoment, timestamp: timestamp }, event);
-    }
-  }, {
-    key: 'focus',
-    value: function focus() {
-      (0, _reactDom.findDOMNode)(this).focus();
-    }
-  }]);
-
-  return YearView;
-}(_reactClass2.default);
-
-exports.default = YearView;
-
-
-YearView.defaultProps = {
-  isYearView: true,
-  navKeys: NAV_KEYS,
-  constrainViewDate: true,
-  theme: 'default',
-  monthFormat: 'MMM',
-  dateFormat: 'YYYY-MM-DD',
-
-  onlyCompareMonth: true,
-
-  adjustDateStartOf: 'month',
-  adjustMinDateStartOf: 'month',
-  adjustMaxDateStartOf: 'month'
-};
-},{"./DecadeView":68,"./bemFactory":86,"./join":90,"./toMoment":92,"./utils/times":99,"object-assign":100,"react":263,"react-class":56,"react-dom":101,"react-flex":107}],85:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _objectAssign = require('object-assign');
-
-var _objectAssign2 = _interopRequireDefault(_objectAssign);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
-var filter = function filter(object) {
-  return Object.keys(object).reduce(function (acc, prop) {
-    var value = object[prop];
-
-    if (value !== undefined) {
-      acc[prop] = value;
-    }
-
-    return acc;
-  }, {});
-};
-
-exports.default = function (target) {
-  for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-    args[_key - 1] = arguments[_key];
-  }
-
-  return _objectAssign2.default.apply(undefined, [target].concat(_toConsumableArray(args.map(filter))));
-};
-},{"object-assign":100}],86:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-exports.default = function (className) {
-
-  return function (element, modifier) {
-    var el = element ? '-' + element : '';
-    var mod = modifier ? '--' + modifier : '';
-
-    return '' + className + el + mod;
-  };
-};
-},{}],87:[function(require,module,exports){
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-exports.default = function (range) {
-  if (range[1] && range[0].isAfter(range[1])) {
-    range = [range[1], range[0]];
-  }
-
-  return range;
-};
-},{}],88:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-/**
- * Transition-end mapping
- */
-
-var map = {
-  'WebkitTransition': 'webkitTransitionEnd',
-  'MozTransition': 'transitionend',
-  'OTransition': 'oTransitionEnd',
-  'msTransition': 'MSTransitionEnd',
-  'transition': 'transitionend'
-};
-
-var EL = void 0;
-var RESULT = void 0;
-
-exports.default = function () {
-  if (!EL) {
-    EL = document.createElement('p');
-  }
-
-  if (RESULT) {
-    return RESULT;
-  }
-
-  for (var transition in map) {
-    if (null != EL.style[transition]) {
-      RESULT = map[transition];
-      break;
-    }
-  }
-
-  return RESULT;
-};
-},{}],89:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.TimeInput = exports.TimePicker = exports.Calendar = exports.DateField = exports.ClockInput = exports.Clock = exports.Footer = exports.NavBar = exports.MultiMonthView = exports.TransitionView = exports.DateFormatSpinnerInput = exports.DateFormatInput = exports.HistoryView = exports.DecadeView = exports.YearView = exports.MonthView = exports.DateEditor = exports.DatePicker = undefined;
-
-var _MonthView = require('./MonthView');
-
-var _MonthView2 = _interopRequireDefault(_MonthView);
-
-var _TimePicker = require('./TimePicker');
-
-var _TimePicker2 = _interopRequireDefault(_TimePicker);
-
-var _TimeInput = require('./TimeInput');
-
-var _TimeInput2 = _interopRequireDefault(_TimeInput);
-
-var _TransitionView = require('./TransitionView');
-
-var _TransitionView2 = _interopRequireDefault(_TransitionView);
-
-var _MultiMonthView = require('./MultiMonthView');
-
-var _MultiMonthView2 = _interopRequireDefault(_MultiMonthView);
-
-var _HistoryView = require('./HistoryView');
-
-var _HistoryView2 = _interopRequireDefault(_HistoryView);
-
-var _YearView = require('./YearView');
-
-var _YearView2 = _interopRequireDefault(_YearView);
-
-var _DecadeView = require('./DecadeView');
-
-var _DecadeView2 = _interopRequireDefault(_DecadeView);
-
-var _NavBar = require('./NavBar');
-
-var _NavBar2 = _interopRequireDefault(_NavBar);
-
-var _Footer = require('./Footer');
-
-var _Footer2 = _interopRequireDefault(_Footer);
-
-var _Clock = require('./Clock');
-
-var _Clock2 = _interopRequireDefault(_Clock);
-
-var _ClockInput = require('./ClockInput');
-
-var _ClockInput2 = _interopRequireDefault(_ClockInput);
-
-var _DateField = require('./DateField');
-
-var _DateField2 = _interopRequireDefault(_DateField);
-
-var _Calendar = require('./Calendar');
-
-var _Calendar2 = _interopRequireDefault(_Calendar);
-
-var _DateFormatInput = require('./DateFormatInput');
-
-var _DateFormatInput2 = _interopRequireDefault(_DateFormatInput);
-
-var _DateFormatSpinnerInput = require('./DateFormatSpinnerInput');
-
-var _DateFormatSpinnerInput2 = _interopRequireDefault(_DateFormatSpinnerInput);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = _MonthView2.default;
-
-// allow people to import with other aliases as well
-
-var DatePicker = exports.DatePicker = _Calendar2.default;
-var DateEditor = exports.DateEditor = _DateField2.default;
-
-exports.MonthView = _MonthView2.default;
-exports.YearView = _YearView2.default;
-exports.DecadeView = _DecadeView2.default;
-exports.HistoryView = _HistoryView2.default;
-exports.DateFormatInput = _DateFormatInput2.default;
-exports.DateFormatSpinnerInput = _DateFormatSpinnerInput2.default;
-exports.TransitionView = _TransitionView2.default;
-exports.MultiMonthView = _MultiMonthView2.default;
-exports.NavBar = _NavBar2.default;
-exports.Footer = _Footer2.default;
-exports.Clock = _Clock2.default;
-exports.ClockInput = _ClockInput2.default;
-exports.DateField = _DateField2.default;
-exports.Calendar = _Calendar2.default;
-exports.TimePicker = _TimePicker2.default;
-exports.TimeInput = _TimeInput2.default;
-},{"./Calendar":59,"./Clock":60,"./ClockInput":61,"./DateField":63,"./DateFormatInput":65,"./DateFormatSpinnerInput":67,"./DecadeView":68,"./Footer":69,"./HistoryView":70,"./MonthView":71,"./MultiMonthView":74,"./NavBar":75,"./TimeInput":79,"./TimePicker":82,"./TransitionView":83,"./YearView":84}],90:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-exports.default = function () {
-  for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-    args[_key] = arguments[_key];
-  }
-
-  if (args.length == 1 && Array.isArray(args[0])) {
-    args = args[0];
-  }
-
-  return args.filter(function (x) {
-    return !!x;
-  }).join(' ');
-};
-},{}],91:[function(require,module,exports){
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-exports.default = function (a, b) {
-  if (a && b) {
-    return function () {
-      a.apply(undefined, arguments);
-      b.apply(undefined, arguments);
+        /**
+        * Track for disableOnClickOutside props changes and enable/disable click outside
+        */
+        componentWillReceiveProps: function(nextProps) {
+          if (this.props.disableOnClickOutside && !nextProps.disableOnClickOutside) {
+            this.enableOnClickOutside();
+          } else if (!this.props.disableOnClickOutside && nextProps.disableOnClickOutside) {
+            this.disableOnClickOutside();
+          }
+        },
+
+        /**
+         * Remove the document's event listeners
+         */
+        componentWillUnmount: function() {
+          this.disableOnClickOutside();
+          this.__outsideClickHandler = false;
+          var pos = registeredComponents.indexOf(this);
+          if( pos>-1) {
+            // clean up so we don't leak memory
+            if (handlers[pos]) { handlers.splice(pos, 1); }
+            registeredComponents.splice(pos, 1);
+          }
+        },
+
+        /**
+         * Can be called to explicitly enable event listening
+         * for clicks and touches outside of this element.
+         */
+        enableOnClickOutside: function() {
+          var fn = this.__outsideClickHandler;
+          if (typeof document !== 'undefined') {
+            var events = this.props.eventTypes || DEFAULT_EVENTS;
+            if (!events.forEach) {
+              events = [events];
+            }
+            events.forEach(function (eventName) {
+              document.addEventListener(eventName, fn);
+            });
+          }
+        },
+
+        /**
+         * Can be called to explicitly disable event listening
+         * for clicks and touches outside of this element.
+         */
+        disableOnClickOutside: function() {
+          var fn = this.__outsideClickHandler;
+          if (typeof document !== 'undefined') {
+            var events = this.props.eventTypes || DEFAULT_EVENTS;
+            if (!events.forEach) {
+              events = [events];
+            }
+            events.forEach(function (eventName) {
+              document.removeEventListener(eventName, fn);
+            });
+          }
+        },
+
+        /**
+         * Pass-through render
+         */
+        render: function() {
+          var passedProps = this.props;
+          var props = {};
+          Object.keys(this.props).forEach(function(key) {
+            props[key] = passedProps[key];
+          });
+          if (Component.prototype.isReactComponent) {
+            props.ref = 'instance';
+          }
+          props.disableOnClickOutside = this.disableOnClickOutside;
+          props.enableOnClickOutside = this.enableOnClickOutside;
+          return React.createElement(Component, props);
+        }
+      });
+
+      // Add display name for React devtools
+      (function bindWrappedComponentName(c, wrapper) {
+        var componentName = c.displayName || c.name || 'Component';
+        wrapper.displayName = 'OnClickOutside(' + componentName + ')';
+      }(Component, wrapComponentWithOnClickOutsideHandling));
+
+      return wrapComponentWithOnClickOutsideHandling;
     };
   }
 
-  return a || b;
-};
-},{}],92:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
-
-var _moment = require('moment');
-
-var _moment2 = _interopRequireDefault(_moment);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-/**
- * This function will be used to convert a date to a moment.
- *
- * It accepts input as sring, date or moment
- *
- * @param  {String/Date/Moment} value
- *
- * @param  {String} [dateFormat] if value is string, it will be parsed to a moment
- * using this format.
- * You can skip this argument and only specify the config instead,
- * where you can have a dateFormat property
- *
- * @param  {Object} [config]
- * @param  {String} [config.dateFormat] a dateFormat string
- * @param  {String} [config.locale] a locale
- * @param  {Boolean} [config.strict] whether to perform strict parsing on strings
- *
- * @return {Moment}
- */
-
-exports.default = function (value, dateFormat, config) {
-  if ((typeof dateFormat === 'undefined' ? 'undefined' : _typeof(dateFormat)) === 'object') {
-    config = dateFormat;
-    dateFormat = null;
-  }
-
-  var strict = !!(config && config.strict);
-  var locale = config && config.locale;
-
-  dateFormat = dateFormat || config && config.dateFormat || 'YYYY-MM-DD';
-
-  if (typeof value == 'string') {
-    return (0, _moment2.default)(value, dateFormat, locale, strict);
-  }
-
-  value = value == null ? new Date() : value;
-
-  return (0, _moment2.default)(value, undefined, locale, strict);
-};
-},{"moment":52}],93:[function(require,module,exports){
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-var clamp = function clamp(value, _ref) {
-  var min = _ref.min;
-  var max = _ref.max;
-  var _ref$circular = _ref.circular;
-  var circular = _ref$circular === undefined ? true : _ref$circular;
-
-  return value < min ? circular ? max : min : value > max ? circular ? min : max : value;
-};
-
-var clampHour = exports.clampHour = function clampHour(value, _ref2) {
-  var max = _ref2.max;
-  var min = _ref2.min;
-  var circular = _ref2.circular;
-
-  return clamp(value, { min: min || 0, max: max || 23, circular: circular });
-};
-
-var clampMinute = exports.clampMinute = function clampMinute(value, _ref3) {
-  var circular = _ref3.circular;
-
-  return clamp(value, { min: 0, max: 59, circular: circular });
-};
-
-var clampSecond = exports.clampSecond = function clampSecond(value, _ref4) {
-  var circular = _ref4.circular;
-
-  return clamp(value, { min: 0, max: 59, circular: circular });
-};
-
-var MAP = {
-  second: clampSecond,
-  seconds: clampSecond,
-  minute: clampMinute,
-  minutes: clampMinute,
-  hour: clampHour,
-  hours: clampHour
-};
-
-var clampNamed = exports.clampNamed = function clampNamed(name, value, _ref5) {
-  var circular = _ref5.circular;
-  var max = _ref5.max;
-  var min = _ref5.min;
-
-  return MAP[name](value, { circular: circular, max: max, min: min });
-};
-
-exports.default = clamp;
-},{}],94:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _toMoment = require('../toMoment');
-
-var _toMoment2 = _interopRequireDefault(_toMoment);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var CONFIG = {
-  // the format in which days should be displayed in month view
-  dayFormat: 'D',
-
-  // the format in which months should be displayed in year view
-  monthFormat: 'MMMM',
-
-  // the format in which years should be displayed in decade view
-  yearFormat: 'YYYY'
-};
-
-var f = function f(mom, format) {
-  return (0, _toMoment2.default)(mom).format(format);
-};
-
-exports.default = {
-  day: function day(mom, format) {
-    return f(mom, format || CONFIG.dayFormat);
-  },
-  month: function month(mom, format) {
-    return f(mom, format || CONFIG.monthFormat);
-  },
-  year: function year(mom, format) {
-    return f(mom, format || CONFIG.yearFormat);
-  }
-};
-},{"../toMoment":92}],95:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-exports.default = function (from, to) {
-  if (from) {
-    ['hour', 'minute', 'second', 'millisecond'].forEach(function (part) {
-      to.set(part, from.get ? from.get(part) : from[part]);
-    });
-  }
-
-  return to;
-};
-},{}],96:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = getWeekDayNames;
-
-var _moment = require('moment');
-
-var _moment2 = _interopRequireDefault(_moment);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var DEFAULT_WEEK_START_DAY = (0, _moment2.default)().startOf('week').format('d') * 1;
-
-function getWeekDayNames(startDay, locale) {
-  var weekDays = void 0;
-
-  if (locale) {
-    var data = _moment2.default.localeData(locale);
-
-    weekDays = data && data._weekdaysShort ? data._weekdaysShort : weekDays;
-  }
-
-  weekDays = (weekDays || _moment2.default.weekdaysShort()).concat();
-
-  var names = weekDays;
-  var index = startDay == null ? DEFAULT_WEEK_START_DAY : startDay;
-
-  while (index > 0) {
-    names.push(names.shift());
-    index--;
-  }
-
-  return names;
-}
-},{"moment":52}],97:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
-
-exports.default = function (moment, configOrRange) {
-
-  var range = configOrRange;
-  var inclusive = true;
-
-  if (!Array.isArray(configOrRange) && (typeof configOrRange === 'undefined' ? 'undefined' : _typeof(configOrRange)) == 'object') {
-    range = configOrRange.range;
-
-    if (configOrRange.inclusive !== undefined) {
-      inclusive = !!configOrRange.inclusive;
+  /**
+   * This function sets up the library in ways that
+   * work with the various modulde loading solutions
+   * used in JavaScript land today.
+   */
+  function setupBinding(root, factory) {
+    if (typeof define === 'function' && define.amd) {
+      // AMD. Register as an anonymous module.
+      define(['react','react-dom'], function(React, ReactDom) {
+        return factory(root, React, ReactDom);
+      });
+    } else if (typeof exports === 'object') {
+      // Node. Note that this does not work with strict
+      // CommonJS, but only CommonJS-like environments
+      // that support module.exports
+      module.exports = factory(root, require('react'), require('react-dom'));
+    } else {
+      // Browser globals (root is window)
+      root.onClickOutside = factory(root, React, ReactDOM);
     }
   }
 
-  var start = range[0];
-  var end = range.length >= 2 && range[range.length - 1];
+  // Make it all happen
+  setupBinding(root, setupHOC);
 
-  if (!moment) {
-    return false;
-  }
+}(this));
 
-  if (start && end) {
-    var insideRange = start.isBefore(moment) && end.isAfter(moment);
-
-    return inclusive ? insideRange || start.isSame(moment) || end.isSame(moment) : insideRange;
-  }
-
-  return false;
-};
-},{}],98:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-exports.default = function (str) {
-
-  if (typeof str == 'string' && str.length < 2) {
-    return str.length ? '0' + str : '00';
-  }
-
-  if (typeof str == 'number') {
-    return str < 10 ? '0' + str : str + '';
-  }
-
-  return str;
-};
-},{}],99:[function(require,module,exports){
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
-var times = function times(count) {
-  return (count >= 0 ? [].concat(_toConsumableArray(new Array(count))) : []).map(function (v, i) {
-    return i;
-  });
-};
-exports.default = times;
-},{}],100:[function(require,module,exports){
-/* eslint-disable no-unused-vars */
-'use strict';
-var hasOwnProperty = Object.prototype.hasOwnProperty;
-var propIsEnumerable = Object.prototype.propertyIsEnumerable;
-
-function toObject(val) {
-	if (val === null || val === undefined) {
-		throw new TypeError('Object.assign cannot be called with null or undefined');
-	}
-
-	return Object(val);
-}
-
-module.exports = Object.assign || function (target, source) {
-	var from;
-	var to = toObject(target);
-	var symbols;
-
-	for (var s = 1; s < arguments.length; s++) {
-		from = Object(arguments[s]);
-
-		for (var key in from) {
-			if (hasOwnProperty.call(from, key)) {
-				to[key] = from[key];
-			}
-		}
-
-		if (Object.getOwnPropertySymbols) {
-			symbols = Object.getOwnPropertySymbols(from);
-			for (var i = 0; i < symbols.length; i++) {
-				if (propIsEnumerable.call(from, symbols[i])) {
-					to[symbols[i]] = from[symbols[i]];
-				}
-			}
-		}
-	}
-
-	return to;
-};
-
-},{}],101:[function(require,module,exports){
+},{"react":190,"react-dom":54}],54:[function(require,module,exports){
 'use strict';
 
 module.exports = require('react/lib/ReactDOM');
 
-},{"react/lib/ReactDOM":169}],102:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactDom = require('react-dom');
-
-var _objectAssign = require('object-assign');
-
-var _objectAssign2 = _interopRequireDefault(_objectAssign);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = _react2.default.createClass({
-
-  displayName: 'Field',
-
-  propTypes: {
-    type: _react.PropTypes.string,
-    stopChangePropagation: _react.PropTypes.bool
-  },
-
-  getDefaultProps: function getDefaultProps() {
-    return {
-      stopChangePropagation: true,
-      type: 'text'
-    };
-  },
-  render: function render() {
-    var onChange = null;
-
-    if (typeof this.props.onChange === 'function') {
-      //only pass our onChange if the user provided one
-      //so the React warning is still displayed if the user didn't provide onChange
-      //but provided value
-      onChange = this.onChange;
-    }
-
-    var inputProps = (0, _objectAssign2.default)({}, this.props);
-
-    delete inputProps.stopChangePropagation;
-
-    return _react2.default.createElement('input', _extends({}, inputProps, { onChange: onChange, ref: 'input' }));
-  },
-  focus: function focus() {
-    (0, _reactDom.findDOMNode)(this.refs.input).focus();
-  },
-  onChange: function onChange(event) {
-    if (this.props.stopChangePropagation) {
-      event.stopPropagation();
-    }
-
-    this.props.onChange(event.target.value, event);
-  }
-});
-},{"object-assign":103,"react":263,"react-dom":101}],103:[function(require,module,exports){
-arguments[4][57][0].apply(exports,arguments)
-},{"dup":57}],104:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-var _objectAssign = require('object-assign');
-
-var _objectAssign2 = _interopRequireDefault(_objectAssign);
-
-var _reactClass = require('react-class');
-
-var _reactClass2 = _interopRequireDefault(_reactClass);
-
-var _join = require('./join');
-
-var _join2 = _interopRequireDefault(_join);
-
-var _props2className = require('./props2className');
-
-var _props2className2 = _interopRequireDefault(_props2className);
-
-var _cleanup = require('./cleanup');
-
-var _cleanup2 = _interopRequireDefault(_cleanup);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Flex = function (_Component) {
-  _inherits(Flex, _Component);
-
-  function Flex() {
-    _classCallCheck(this, Flex);
-
-    return _possibleConstructorReturn(this, Object.getPrototypeOf(Flex).apply(this, arguments));
-  }
-
-  _createClass(Flex, [{
-    key: 'render',
-    value: function render() {
-      var props = this.props;
-      var className = (0, _join2.default)('react-flex', (0, _props2className2.default)(props));
-
-      var allProps = (0, _objectAssign2.default)({}, props);
-
-      (0, _cleanup2.default)(allProps);
-
-      allProps.className = className;
-
-      if (props.factory) {
-        return props.factory(allProps);
-      }
-
-      return _react2.default.createElement('div', allProps);
-    }
-  }]);
-
-  return Flex;
-}(_reactClass2.default);
-
-Flex.defaultProps = {
-  row: true,
-  wrap: true,
-  alignItems: 'center',
-  display: 'flex'
-};
-
-Flex.propTypes = {
-
-  flex: _react.PropTypes.oneOfType([_react.PropTypes.string, _react.PropTypes.number, _react.PropTypes.bool]),
-
-  display: _react.PropTypes.oneOf(['flex', 'inline-flex']),
-
-  inline: _react.PropTypes.bool,
-
-  reverse: _react.PropTypes.bool,
-
-  row: _react.PropTypes.bool,
-  column: _react.PropTypes.bool,
-  wrap: _react.PropTypes.bool,
-
-  alignItems: _react.PropTypes.string,
-  alignContent: _react.PropTypes.string,
-  justifyContent: _react.PropTypes.string
-};
-
-exports.default = Flex;
-},{"./cleanup":106,"./join":108,"./props2className":110,"object-assign":112,"react":263,"react-class":56}],105:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-var _objectAssign = require('object-assign');
-
-var _objectAssign2 = _interopRequireDefault(_objectAssign);
-
-var _reactClass = require('react-class');
-
-var _reactClass2 = _interopRequireDefault(_reactClass);
-
-var _join = require('./join');
-
-var _join2 = _interopRequireDefault(_join);
-
-var _props2className = require('./props2className');
-
-var _props2className2 = _interopRequireDefault(_props2className);
-
-var _cleanup = require('./cleanup');
-
-var _cleanup2 = _interopRequireDefault(_cleanup);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var FlexItem = function (_Component) {
-  _inherits(FlexItem, _Component);
-
-  function FlexItem() {
-    _classCallCheck(this, FlexItem);
-
-    return _possibleConstructorReturn(this, Object.getPrototypeOf(FlexItem).apply(this, arguments));
-  }
-
-  _createClass(FlexItem, [{
-    key: 'render',
-    value: function render() {
-
-      var props = this.props;
-      var className = (0, _join2.default)('react-flex-item', (0, _props2className2.default)(props));
-
-      var allProps = (0, _objectAssign2.default)({}, props);
-
-      (0, _cleanup2.default)(allProps);
-
-      allProps.className = className;
-
-      if (props.factory) {
-        return props.factory(allProps);
-      }
-
-      return _react2.default.createElement('div', allProps);
-    }
-  }]);
-
-  return FlexItem;
-}(_reactClass2.default);
-
-FlexItem.defaultProps = {
-  flex: 1
-};
-
-FlexItem.propTypes = {
-  display: _react.PropTypes.oneOf(['flex', 'inline-flex']),
-  inline: function inline(props, propName) {
-    if (props[propName] !== undefined) {
-      return new Error('"inline" prop should not be used on "Item". Use "display=\'inline-flex\'" instead');
-    }
-  },
-
-  flex: _react.PropTypes.any,
-  flexGrow: _react.PropTypes.any,
-  flexShrink: _react.PropTypes.any,
-  flexBasis: _react.PropTypes.any
-};
-
-exports.default = FlexItem;
-},{"./cleanup":106,"./join":108,"./props2className":110,"object-assign":112,"react":263,"react-class":56}],106:[function(require,module,exports){
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-exports.default = function (props) {
-  delete props.display;
-  delete props.wrap;
-  delete props.row;
-  delete props.column;
-  delete props.alignItems;
-  delete props.alignSelf;
-  delete props.alignContent;
-  delete props.justifyContent;
-  delete props.flex;
-  delete props.flexGrow;
-  delete props.flexShrink;
-  delete props.flexBasis;
-  delete props.inline;
-  delete props.wrap;
-};
-},{}],107:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Item = exports.Flex = undefined;
-
-var _Flex = require('./Flex');
-
-Object.defineProperty(exports, 'Flex', {
-  enumerable: true,
-  get: function get() {
-    return _interopRequireDefault(_Flex).default;
-  }
-});
-
-var _Item = require('./Item');
-
-Object.defineProperty(exports, 'Item', {
-  enumerable: true,
-  get: function get() {
-    return _interopRequireDefault(_Item).default;
-  }
-});
-
-var _Flex2 = _interopRequireDefault(_Flex);
-
-var _Item2 = _interopRequireDefault(_Item);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = {
-  Flex: _Flex2.default,
-  Item: _Item2.default
-};
-},{"./Flex":104,"./Item":105}],108:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-var notEmpty = function notEmpty(v) {
-  return !!v;
-};
-
-exports.default = function () {
-  for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-    args[_key] = arguments[_key];
-  }
-
-  return args.filter(notEmpty).join(' ');
-};
-},{}],109:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = 'react-flex-v2';
-},{}],110:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _join = require('./join');
-
-var _join2 = _interopRequireDefault(_join);
-
-var _props2flex = require('./props2flex');
-
-var _props2flex2 = _interopRequireDefault(_props2flex);
-
-var _prefix = require('./prefix');
-
-var _prefix2 = _interopRequireDefault(_prefix);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var PREFIX = _prefix2.default;
-
-exports.default = function (props) {
-
-  var column = !!props.column;
-  var row = !column && !!props.row;
-  var reverse = props.reverse ? '-reverse' : '';
-
-  var flex = (0, _props2flex2.default)(props);
-
-  var flexGrow = props.flexGrow;
-  var flexShrink = props.flexShrink;
-  var flexBasis = props.flexBasis;
-  var display = props.inline ? 'inline-flex' : props.display;
-
-  var className = (0, _join2.default)(props.className, props.alignItems ? PREFIX + '--align-items-' + props.alignItems : null, props.alignContent ? PREFIX + '--align-content-' + props.alignContent : null, props.justifyContent ? PREFIX + '--justify-content-' + props.justifyContent : null, props.wrap ? PREFIX + '--wrap' : null, props.alignSelf ? PREFIX + '--align-self-' + props.alignSelf : null, row ? PREFIX + '--row' + reverse : null, column ? PREFIX + '--column' + reverse : null,
-
-  // more like flex item related
-  flex != null ? PREFIX + '--flex-' + flex : null, flexGrow != null ? PREFIX + '--flex-grow-' + flexGrow : null, flexShrink != null ? PREFIX + '--flex-shrink-' + flexShrink : null, flexBasis != null ? PREFIX + '--flex-basis-' + flexBasis : null, display != null ? PREFIX + '--display-' + display : null);
-
-  return className;
-};
-},{"./join":108,"./prefix":109,"./props2flex":111}],111:[function(require,module,exports){
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-exports.default = function (props) {
-  return props.flex === false ? 0 : props.flex === true ? 1 : props.flex;
-};
-},{}],112:[function(require,module,exports){
-arguments[4][57][0].apply(exports,arguments)
-},{"dup":57}],113:[function(require,module,exports){
-'use strict';
-
-var React = require('react');
-var assign = require('object-assign');
-
-var inlineBlockStyle = {
-  display: 'inline-block'
-};
-
-module.exports = React.createClass({
-
-  displayName: 'ReactInlineBlock',
-
-  render: function render() {
-    var style = assign({}, this.props.style, inlineBlockStyle);
-    var props = assign({}, this.props, { style: style });
-
-    return React.createElement('div', props);
-  }
-});
-},{"object-assign":114,"react":263}],114:[function(require,module,exports){
-arguments[4][57][0].apply(exports,arguments)
-},{"dup":57}],115:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.NotifyResize = undefined;
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactClass = require('react-class');
-
-var _reactClass2 = _interopRequireDefault(_reactClass);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var notifyResizeStyle = {
-  position: 'absolute',
-  top: 0,
-  left: 0,
-  width: '100%',
-  height: '100%',
-  zIndex: -1,
-  overflow: 'hidden',
-  display: 'block',
-  pointerEvents: 'none',
-  opacity: 0
-};
-
-var expandToolStyle = {
-  position: 'absolute',
-  top: 0,
-  left: 0,
-  width: '100%',
-  height: '100%',
-  overflow: 'auto'
-};
-
-var contractToolStyle = {
-  position: 'absolute',
-  top: 0,
-  left: 0,
-  width: '100%',
-  height: '100%',
-  overflow: 'auto'
-};
-
-var contractToolInnerStyle = {
-  position: 'absolute',
-  top: 0,
-  left: 0,
-  width: '200%',
-  height: '200%'
-};
-
-var NotifyResize = function (_Component) {
-  _inherits(NotifyResize, _Component);
-
-  function NotifyResize(props) {
-    _classCallCheck(this, NotifyResize);
-
-    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(NotifyResize).call(this, props));
-
-    _this.state = {
-      notifyResizeWidth: 0,
-      notifyResizeHeight: 0,
-
-      expandToolWidth: 0,
-      expandToolHeight: 0,
-
-      contractToolWidth: 0,
-      contractToolHeight: 0
-    };
-
-    return _this;
-  }
-
-  _createClass(NotifyResize, [{
-    key: 'componentDidMount',
-    value: function componentDidMount() {
-      if (typeof this.props.onMount === 'function') {
-        this.props.onMount(this);
-      }
-
-      this.resetResizeTool();
-
-      if (this.props.notifyOnMount) {
-        var _notifyResizeSize = this.notifyResizeSize;
-        var width = _notifyResizeSize.notifyResizeWidth;
-        var height = _notifyResizeSize.notifyResizeHeight;
-
-        this.onResize({ width: width, height: height });
-      }
-    }
-  }, {
-    key: 'render',
-    value: function render() {
-      return _react2.default.createElement(
-        'div',
-        {
-          ref: 'notifyResize',
-          style: notifyResizeStyle,
-          onScroll: this.checkResize
-        },
-        this.renderExpandTool(),
-        this.renderContractTool()
-      );
-    }
-  }, {
-    key: 'renderExpandTool',
-    value: function renderExpandTool() {
-      return _react2.default.createElement(
-        'div',
-        {
-          ref: 'expandTool',
-          className: 'expandTool',
-          style: expandToolStyle
-        },
-        _react2.default.createElement('div', {
-          ref: 'expandToolInner',
-          className: 'expandToolInner',
-          style: {
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: this.state.expandToolWidth,
-            height: this.state.expandToolHeight
-          }
-        })
-      );
-    }
-  }, {
-    key: 'renderContractTool',
-    value: function renderContractTool() {
-      return _react2.default.createElement(
-        'div',
-        {
-          ref: 'contractTool',
-          className: 'contractTool',
-          style: contractToolStyle,
-          onScroll: this.checkResize
-        },
-        _react2.default.createElement('div', { ref: 'contractInner', style: contractToolInnerStyle })
-      );
-    }
-  }, {
-    key: 'resetResizeTool',
-    value: function resetResizeTool() {
-      this.setDimensions();
-      this.scrollToBottomExpandTool();
-    }
-  }, {
-    key: 'setDimensions',
-    value: function setDimensions() {
-      var _notifyResizeSize2 = this.notifyResizeSize = this.getDimensions();
-
-      var notifyResizeWidth = _notifyResizeSize2.notifyResizeWidth;
-      var notifyResizeHeight = _notifyResizeSize2.notifyResizeHeight;
-
-      // Resize tool will be bigger than it's parent by 1 pixel in each direction
-
-      this.setState({
-        notifyResizeWidth: notifyResizeWidth,
-        notifyResizeHeight: notifyResizeHeight,
-        expandToolWidth: notifyResizeWidth + 1,
-        expandToolHeight: notifyResizeHeight + 1
-      });
-    }
-  }, {
-    key: 'getDimensions',
-    value: function getDimensions() {
-      var notifyResize = this.refs.notifyResize;
-      var node = notifyResize.parentElement || notifyResize;
-
-      var size = void 0;
-
-      if (typeof this.props.measureSize == 'function') {
-        size = this.props.measureSize(node, notifyResize);
-      } else {
-        size = {
-          width: node.offsetWidth,
-          height: node.offsetHeight
-        };
-      }
-
-      return {
-        notifyResizeWidth: size.width,
-        notifyResizeHeight: size.height
-      };
-    }
-  }, {
-    key: 'scrollToBottomExpandTool',
-    value: function scrollToBottomExpandTool() {
-      var _this2 = this;
-
-      // so the scroll moves when element resizes
-
-      if (this.refs.notifyResize) {
-        setTimeout(function () {
-          // scroll to bottom
-          var expandTool = _this2.refs.expandTool;
-
-          if (expandTool) {
-            expandTool.scrollTop = expandTool.scrollHeight;
-            expandTool.scrollLeft = expandTool.scrollWidth;
-          }
-
-          var contractTool = _this2.refs.contractTool;
-          if (contractTool) {
-            contractTool.scrollTop = contractTool.scrollHeight;
-            contractTool.scrollLeft = contractTool.scrollWidth;
-          }
-        }, 0);
-      }
-    }
-  }, {
-    key: 'checkResize',
-    value: function checkResize() {
-      var _getDimensions = this.getDimensions();
-
-      var notifyResizeWidth = _getDimensions.notifyResizeWidth;
-      var notifyResizeHeight = _getDimensions.notifyResizeHeight;
-
-
-      if (notifyResizeWidth !== this.state.notifyResizeWidth || notifyResizeHeight !== this.state.notifyResizeHeight) {
-        // reset resizeToolDimensions
-        this.onResize({
-          width: notifyResizeWidth,
-          height: notifyResizeHeight
-        });
-        this.resetResizeTool();
-      }
-    }
-  }, {
-    key: 'onResize',
-    value: function onResize(_ref) {
-      var width = _ref.width;
-      var height = _ref.height;
-
-      if (typeof this.props.onResize === 'function') {
-        this.props.onResize({ width: width, height: height });
-      }
-    }
-  }]);
-
-  return NotifyResize;
-}(_reactClass2.default);
-
-NotifyResize.propTypes = {
-  onResize: _react.PropTypes.func,
-  onMount: _react.PropTypes.func,
-  notifyOnMount: _react.PropTypes.bool
-};
-
-var notifyResize = function notifyResize(Component) {
-  return function (_Component2) {
-    _inherits(NotifyResizeWrapper, _Component2);
-
-    function NotifyResizeWrapper() {
-      _classCallCheck(this, NotifyResizeWrapper);
-
-      return _possibleConstructorReturn(this, Object.getPrototypeOf(NotifyResizeWrapper).apply(this, arguments));
-    }
-
-    _createClass(NotifyResizeWrapper, [{
-      key: 'componentDidMount',
-      value: function componentDidMount() {
-        var component = this.component = this.refs.component;
-
-        // check if they are mounted
-        if (!this.notifyResize) {
-          console.warn('For notifyResize to work you must render resizeTool from {props.resizeTool}');
-        }
-      }
-    }, {
-      key: 'onNotifyResizeMount',
-      value: function onNotifyResizeMount(notifier) {
-        this.notifyResize = notifier;
-      }
-    }, {
-      key: 'render',
-      value: function render() {
-
-        var resizeTool = _react2.default.createElement(NotifyResize, {
-          onResize: this.onResize,
-          onMount: this.onNotifyResizeMount,
-
-          notifyOnMount: this.props.notifyOnMount
-        });
-
-        return _react2.default.createElement(Component, _extends({ ref: 'component' }, this.props, { resizeTool: resizeTool }));
-      }
-    }, {
-      key: 'onResize',
-      value: function onResize() {
-        if (typeof this.props.onResize === 'function') {
-          var _props;
-
-          (_props = this.props).onResize.apply(_props, arguments);
-        }
-
-        if (typeof this.refs.component.onResize === 'function') {
-          var _refs$component;
-
-          (_refs$component = this.refs.component).onResize.apply(_refs$component, arguments);
-        }
-      }
-    }]);
-
-    return NotifyResizeWrapper;
-  }(Component);
-};
-
-exports.default = notifyResize;
-exports.NotifyResize = NotifyResize;
-},{"react":263,"react-class":56}],116:[function(require,module,exports){
+},{"react/lib/ReactDOM":96}],55:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -19491,7 +7658,7 @@ Provider.childContextTypes = {
   store: _storeShape2["default"].isRequired
 };
 }).call(this,require('_process'))
-},{"../utils/storeShape":120,"../utils/warning":121,"_process":54,"react":263}],117:[function(require,module,exports){
+},{"../utils/storeShape":59,"../utils/warning":60,"_process":51,"react":190}],56:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -19887,7 +8054,7 @@ function connect(mapStateToProps, mapDispatchToProps, mergeProps) {
   };
 }
 }).call(this,require('_process'))
-},{"../utils/shallowEqual":119,"../utils/storeShape":120,"../utils/warning":121,"../utils/wrapActionCreators":122,"_process":54,"hoist-non-react-statics":44,"invariant":45,"lodash/isPlainObject":51,"react":263}],118:[function(require,module,exports){
+},{"../utils/shallowEqual":58,"../utils/storeShape":59,"../utils/warning":60,"../utils/wrapActionCreators":61,"_process":51,"hoist-non-react-statics":44,"invariant":45,"lodash/isPlainObject":49,"react":190}],57:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -19905,7 +8072,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "d
 
 exports.Provider = _Provider2["default"];
 exports.connect = _connect2["default"];
-},{"./components/Provider":116,"./components/connect":117}],119:[function(require,module,exports){
+},{"./components/Provider":55,"./components/connect":56}],58:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -19932,7 +8099,7 @@ function shallowEqual(objA, objB) {
 
   return true;
 }
-},{}],120:[function(require,module,exports){
+},{}],59:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -19944,7 +8111,7 @@ exports["default"] = _react.PropTypes.shape({
   dispatch: _react.PropTypes.func.isRequired,
   getState: _react.PropTypes.func.isRequired
 });
-},{"react":263}],121:[function(require,module,exports){
+},{"react":190}],60:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -19969,7 +8136,7 @@ function warning(message) {
   } catch (e) {}
   /* eslint-enable no-empty */
 }
-},{}],122:[function(require,module,exports){
+},{}],61:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -19982,376 +8149,7 @@ function wrapActionCreators(actionCreators) {
     return (0, _redux.bindActionCreators)(actionCreators, dispatch);
   };
 }
-},{"redux":269}],123:[function(require,module,exports){
-(function (global){
-'use strict';
-
-var el
-
-module.exports = function(){
-
-	if(!el && !!global.document){
-	  	el = global.document.createElement('div')
-	}
-
-	if (!el){
-		el = {style: {}}
-	}
-
-	return el
-}
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],124:[function(require,module,exports){
-'use strict';
-
-var toUpperFirst = require('./toUpperFirst')
-var getPrefix    = require('./getPrefix')
-var properties   = require('./prefixProps')
-
-/**
- * Returns the given key prefixed, if the property is found in the prefixProps map.
- *
- * Does not test if the property supports the given value unprefixed.
- * If you need this, use './getPrefixed' instead
- */
-module.exports = function(key, value){
-
-	if (!properties[key]){
-		return key
-	}
-
-	var prefix = getPrefix(key)
-
-	return prefix?
-				prefix + toUpperFirst(key):
-				key
-}
-},{"./getPrefix":126,"./prefixProps":133,"./toUpperFirst":134}],125:[function(require,module,exports){
-'use strict';
-
-var getPrefix     = require('./getPrefix')
-var forcePrefixed = require('./forcePrefixed')
-var el            = require('./el')
-
-var MEMORY = {}
-var STYLE
-var ELEMENT
-
-module.exports = function(key, value, force){
-
-    ELEMENT = ELEMENT || el()
-    STYLE   = STYLE   ||  ELEMENT.style
-
-    var k = key + ': ' + value
-
-    if (MEMORY[k]){
-        return MEMORY[k]
-    }
-
-    var prefix
-    var prefixed
-    var prefixedValue
-
-    if (force || !(key in STYLE)){
-
-        prefix = getPrefix('appearance')
-
-        if (prefix){
-            prefixed = forcePrefixed(key, value)
-
-            prefixedValue = '-' + prefix.toLowerCase() + '-' + value
-
-            if (prefixed in STYLE){
-                ELEMENT.style[prefixed] = ''
-                ELEMENT.style[prefixed] = prefixedValue
-
-                if (ELEMENT.style[prefixed] !== ''){
-                    value = prefixedValue
-                }
-            }
-        }
-    }
-
-    MEMORY[k] = value
-
-    return value
-}
-},{"./el":123,"./forcePrefixed":124,"./getPrefix":126}],126:[function(require,module,exports){
-'use strict';
-
-var toUpperFirst = require('./toUpperFirst')
-var prefixes     = ["ms", "Moz", "Webkit", "O"]
-
-var el = require('./el')
-
-var ELEMENT
-var PREFIX
-
-module.exports = function(key){
-
-	if (PREFIX !== undefined){
-		return PREFIX
-	}
-
-	ELEMENT = ELEMENT || el()
-
-	var i = 0
-	var len = prefixes.length
-	var tmp
-	var prefix
-
-	for (; i < len; i++){
-		prefix = prefixes[i]
-		tmp = prefix + toUpperFirst(key)
-
-		if (typeof ELEMENT.style[tmp] != 'undefined'){
-			return PREFIX = prefix
-		}
-	}
-
-	return PREFIX
-}
-},{"./el":123,"./toUpperFirst":134}],127:[function(require,module,exports){
-'use strict';
-
-var getStylePrefixed = require('./getStylePrefixed')
-var properties       = require('./prefixProps')
-
-module.exports = function(key, value){
-
-	if (!properties[key]){
-		return key
-	}
-
-	return getStylePrefixed(key, value)
-}
-},{"./getStylePrefixed":128,"./prefixProps":133}],128:[function(require,module,exports){
-'use strict';
-
-var toUpperFirst = require('./toUpperFirst')
-var getPrefix    = require('./getPrefix')
-var el           = require('./el')
-
-var MEMORY = {}
-var STYLE
-var ELEMENT
-
-var PREFIX
-
-module.exports = function(key, value){
-
-    ELEMENT = ELEMENT || el()
-    STYLE   = STYLE   || ELEMENT.style
-
-    var k = key// + ': ' + value
-
-    if (MEMORY[k]){
-        return MEMORY[k]
-    }
-
-    var prefix
-    var prefixed
-
-    if (!(key in STYLE)){//we have to prefix
-
-        // if (PREFIX){
-        //     prefix = PREFIX
-        // } else {
-            prefix = getPrefix('appearance')
-
-        //     if (prefix){
-        //         prefix = PREFIX = prefix.toLowerCase()
-        //     }
-        // }
-
-        if (prefix){
-            prefixed = prefix + toUpperFirst(key)
-
-            if (prefixed in STYLE){
-                key = prefixed
-            }
-        }
-    }
-
-    MEMORY[k] = key
-
-    return key
-}
-},{"./el":123,"./getPrefix":126,"./toUpperFirst":134}],129:[function(require,module,exports){
-'use strict';
-
-module.exports = function(obj, prop){
-	return Object.prototype.hasOwnProperty.call(obj, prop)
-}
-
-},{}],130:[function(require,module,exports){
-'use strict';
-
-var hasOwn      = require('./hasOwn')
-var getPrefixed = require('./getPrefixed')
-
-var map      = require('./map')
-var plugable = require('./plugable')
-
-function plugins(key, value){
-
-	var result = {
-		key  : key,
-		value: value
-	}
-
-	;(RESULT.plugins || []).forEach(function(fn){
-
-		var tmp = map(function(res){
-			return fn(key, value, res)
-		}, result)
-
-		if (tmp){
-			result = tmp
-		}
-	})
-
-	return result
-}
-
-function normalize(key, value){
-
-	var result = plugins(key, value)
-
-	return map(function(result){
-		return {
-			key  : getPrefixed(result.key, result.value),
-			value: result.value
-		}
-	}, result)
-
-	return result
-}
-
-var RESULT = function(style){
-
-	var k
-	var item
-	var result = {}
-
-	for (k in style) if (hasOwn(style, k)){
-		item = normalize(k, style[k])
-
-		if (!item){
-			continue
-		}
-
-		map(function(item){
-			result[item.key] = item.value
-		}, item)
-	}
-
-	return result
-}
-
-module.exports = plugable(RESULT)
-},{"./getPrefixed":127,"./hasOwn":129,"./map":131,"./plugable":132}],131:[function(require,module,exports){
-'use strict';
-
-module.exports = function(fn, item){
-
-	if (!item){
-		return
-	}
-
-	if (Array.isArray(item)){
-		return item.map(fn).filter(function(x){
-			return !!x
-		})
-	} else {
-		return fn(item)
-	}
-}
-},{}],132:[function(require,module,exports){
-'use strict';
-
-var getCssPrefixedValue = require('./getCssPrefixedValue')
-
-module.exports = function(target){
-	target.plugins = target.plugins || [
-		(function(){
-			var values = {
-				'flex':1,
-				'inline-flex':1
-			}
-
-			return function(key, value){
-				if (key === 'display' && value in values){
-					return {
-						key  : key,
-						value: getCssPrefixedValue(key, value, true)
-					}
-				}
-			}
-		})()
-	]
-
-	target.plugin = function(fn){
-		target.plugins = target.plugins || []
-
-		target.plugins.push(fn)
-	}
-
-	return target
-}
-},{"./getCssPrefixedValue":125}],133:[function(require,module,exports){
-'use strict';
-
-module.exports = {
-  'alignItems': 1,
-  'justifyContent': 1,
-  'flex': 1,
-  'flexFlow': 1,
-  'flexGrow': 1,
-  'flexShrink': 1,
-  'flexBasis': 1,
-  'flexDirection': 1,
-  'flexWrap': 1,
-  'alignContent': 1,
-  'alignSelf': 1,
-
-  'userSelect': 1,
-  'transform': 1,
-  'transition': 1,
-  'transformOrigin': 1,
-  'transformStyle': 1,
-  'transitionProperty': 1,
-  'transitionDuration': 1,
-  'transitionTimingFunction': 1,
-  'transitionDelay': 1,
-  'borderImage': 1,
-  'borderImageSlice': 1,
-  'boxShadow': 1,
-  'backgroundClip': 1,
-  'backfaceVisibility': 1,
-  'perspective': 1,
-  'perspectiveOrigin': 1,
-  'animation': 1,
-  'animationDuration': 1,
-  'animationName': 1,
-  'animationDelay': 1,
-  'animationDirection': 1,
-  'animationIterationCount': 1,
-  'animationTimingFunction': 1,
-  'animationPlayState': 1,
-  'animationFillMode': 1,
-  'appearance': 1
-}
-
-},{}],134:[function(require,module,exports){
-'use strict';
-
-module.exports = function(str){
-	return str?
-			str.charAt(0).toUpperCase() + str.slice(1):
-			''
-}
-},{}],135:[function(require,module,exports){
+},{"redux":196}],62:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -20388,7 +8186,7 @@ var AutoFocusUtils = {
 };
 
 module.exports = AutoFocusUtils;
-},{"./ReactMount":199,"./findDOMNode":242,"fbjs/lib/focusNode":26}],136:[function(require,module,exports){
+},{"./ReactMount":126,"./findDOMNode":169,"fbjs/lib/focusNode":26}],63:[function(require,module,exports){
 /**
  * Copyright 2013-2015 Facebook, Inc.
  * All rights reserved.
@@ -20794,7 +8592,7 @@ var BeforeInputEventPlugin = {
 };
 
 module.exports = BeforeInputEventPlugin;
-},{"./EventConstants":148,"./EventPropagators":152,"./FallbackCompositionState":153,"./SyntheticCompositionEvent":224,"./SyntheticInputEvent":228,"fbjs/lib/ExecutionEnvironment":18,"fbjs/lib/keyOf":36}],137:[function(require,module,exports){
+},{"./EventConstants":75,"./EventPropagators":79,"./FallbackCompositionState":80,"./SyntheticCompositionEvent":151,"./SyntheticInputEvent":155,"fbjs/lib/ExecutionEnvironment":18,"fbjs/lib/keyOf":36}],64:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -20934,7 +8732,7 @@ var CSSProperty = {
 };
 
 module.exports = CSSProperty;
-},{}],138:[function(require,module,exports){
+},{}],65:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -21112,7 +8910,7 @@ ReactPerf.measureMethods(CSSPropertyOperations, 'CSSPropertyOperations', {
 
 module.exports = CSSPropertyOperations;
 }).call(this,require('_process'))
-},{"./CSSProperty":137,"./ReactPerf":205,"./dangerousStyleValue":239,"_process":54,"fbjs/lib/ExecutionEnvironment":18,"fbjs/lib/camelizeStyleName":20,"fbjs/lib/hyphenateStyleName":31,"fbjs/lib/memoizeStringOnly":38,"fbjs/lib/warning":43}],139:[function(require,module,exports){
+},{"./CSSProperty":64,"./ReactPerf":132,"./dangerousStyleValue":166,"_process":51,"fbjs/lib/ExecutionEnvironment":18,"fbjs/lib/camelizeStyleName":20,"fbjs/lib/hyphenateStyleName":31,"fbjs/lib/memoizeStringOnly":38,"fbjs/lib/warning":43}],66:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -21208,7 +9006,7 @@ PooledClass.addPoolingTo(CallbackQueue);
 
 module.exports = CallbackQueue;
 }).call(this,require('_process'))
-},{"./Object.assign":156,"./PooledClass":157,"_process":54,"fbjs/lib/invariant":32}],140:[function(require,module,exports){
+},{"./Object.assign":83,"./PooledClass":84,"_process":51,"fbjs/lib/invariant":32}],67:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -21530,7 +9328,7 @@ var ChangeEventPlugin = {
 };
 
 module.exports = ChangeEventPlugin;
-},{"./EventConstants":148,"./EventPluginHub":149,"./EventPropagators":152,"./ReactUpdates":217,"./SyntheticEvent":226,"./getEventTarget":248,"./isEventSupported":253,"./isTextInputElement":254,"fbjs/lib/ExecutionEnvironment":18,"fbjs/lib/keyOf":36}],141:[function(require,module,exports){
+},{"./EventConstants":75,"./EventPluginHub":76,"./EventPropagators":79,"./ReactUpdates":144,"./SyntheticEvent":153,"./getEventTarget":175,"./isEventSupported":180,"./isTextInputElement":181,"fbjs/lib/ExecutionEnvironment":18,"fbjs/lib/keyOf":36}],68:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -21554,7 +9352,7 @@ var ClientReactRootIndex = {
 };
 
 module.exports = ClientReactRootIndex;
-},{}],142:[function(require,module,exports){
+},{}],69:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -21686,7 +9484,7 @@ ReactPerf.measureMethods(DOMChildrenOperations, 'DOMChildrenOperations', {
 
 module.exports = DOMChildrenOperations;
 }).call(this,require('_process'))
-},{"./Danger":145,"./ReactMultiChildUpdateTypes":201,"./ReactPerf":205,"./setInnerHTML":258,"./setTextContent":259,"_process":54,"fbjs/lib/invariant":32}],143:[function(require,module,exports){
+},{"./Danger":72,"./ReactMultiChildUpdateTypes":128,"./ReactPerf":132,"./setInnerHTML":185,"./setTextContent":186,"_process":51,"fbjs/lib/invariant":32}],70:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -21923,7 +9721,7 @@ var DOMProperty = {
 
 module.exports = DOMProperty;
 }).call(this,require('_process'))
-},{"_process":54,"fbjs/lib/invariant":32}],144:[function(require,module,exports){
+},{"_process":51,"fbjs/lib/invariant":32}],71:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -22151,7 +9949,7 @@ ReactPerf.measureMethods(DOMPropertyOperations, 'DOMPropertyOperations', {
 
 module.exports = DOMPropertyOperations;
 }).call(this,require('_process'))
-},{"./DOMProperty":143,"./ReactPerf":205,"./quoteAttributeValueForBrowser":256,"_process":54,"fbjs/lib/warning":43}],145:[function(require,module,exports){
+},{"./DOMProperty":70,"./ReactPerf":132,"./quoteAttributeValueForBrowser":183,"_process":51,"fbjs/lib/warning":43}],72:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -22299,7 +10097,7 @@ var Danger = {
 
 module.exports = Danger;
 }).call(this,require('_process'))
-},{"_process":54,"fbjs/lib/ExecutionEnvironment":18,"fbjs/lib/createNodesFromMarkup":23,"fbjs/lib/emptyFunction":24,"fbjs/lib/getMarkupWrap":28,"fbjs/lib/invariant":32}],146:[function(require,module,exports){
+},{"_process":51,"fbjs/lib/ExecutionEnvironment":18,"fbjs/lib/createNodesFromMarkup":23,"fbjs/lib/emptyFunction":24,"fbjs/lib/getMarkupWrap":28,"fbjs/lib/invariant":32}],73:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -22327,7 +10125,7 @@ var keyOf = require('fbjs/lib/keyOf');
 var DefaultEventPluginOrder = [keyOf({ ResponderEventPlugin: null }), keyOf({ SimpleEventPlugin: null }), keyOf({ TapEventPlugin: null }), keyOf({ EnterLeaveEventPlugin: null }), keyOf({ ChangeEventPlugin: null }), keyOf({ SelectEventPlugin: null }), keyOf({ BeforeInputEventPlugin: null })];
 
 module.exports = DefaultEventPluginOrder;
-},{"fbjs/lib/keyOf":36}],147:[function(require,module,exports){
+},{"fbjs/lib/keyOf":36}],74:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -22452,7 +10250,7 @@ var EnterLeaveEventPlugin = {
 };
 
 module.exports = EnterLeaveEventPlugin;
-},{"./EventConstants":148,"./EventPropagators":152,"./ReactMount":199,"./SyntheticMouseEvent":230,"fbjs/lib/keyOf":36}],148:[function(require,module,exports){
+},{"./EventConstants":75,"./EventPropagators":79,"./ReactMount":126,"./SyntheticMouseEvent":157,"fbjs/lib/keyOf":36}],75:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -22545,7 +10343,7 @@ var EventConstants = {
 };
 
 module.exports = EventConstants;
-},{"fbjs/lib/keyMirror":35}],149:[function(require,module,exports){
+},{"fbjs/lib/keyMirror":35}],76:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -22827,7 +10625,7 @@ var EventPluginHub = {
 
 module.exports = EventPluginHub;
 }).call(this,require('_process'))
-},{"./EventPluginRegistry":150,"./EventPluginUtils":151,"./ReactErrorUtils":190,"./accumulateInto":236,"./forEachAccumulated":244,"_process":54,"fbjs/lib/invariant":32,"fbjs/lib/warning":43}],150:[function(require,module,exports){
+},{"./EventPluginRegistry":77,"./EventPluginUtils":78,"./ReactErrorUtils":117,"./accumulateInto":163,"./forEachAccumulated":171,"_process":51,"fbjs/lib/invariant":32,"fbjs/lib/warning":43}],77:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -23050,7 +10848,7 @@ var EventPluginRegistry = {
 
 module.exports = EventPluginRegistry;
 }).call(this,require('_process'))
-},{"_process":54,"fbjs/lib/invariant":32}],151:[function(require,module,exports){
+},{"_process":51,"fbjs/lib/invariant":32}],78:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -23255,7 +11053,7 @@ var EventPluginUtils = {
 
 module.exports = EventPluginUtils;
 }).call(this,require('_process'))
-},{"./EventConstants":148,"./ReactErrorUtils":190,"_process":54,"fbjs/lib/invariant":32,"fbjs/lib/warning":43}],152:[function(require,module,exports){
+},{"./EventConstants":75,"./ReactErrorUtils":117,"_process":51,"fbjs/lib/invariant":32,"fbjs/lib/warning":43}],79:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -23393,7 +11191,7 @@ var EventPropagators = {
 
 module.exports = EventPropagators;
 }).call(this,require('_process'))
-},{"./EventConstants":148,"./EventPluginHub":149,"./accumulateInto":236,"./forEachAccumulated":244,"_process":54,"fbjs/lib/warning":43}],153:[function(require,module,exports){
+},{"./EventConstants":75,"./EventPluginHub":76,"./accumulateInto":163,"./forEachAccumulated":171,"_process":51,"fbjs/lib/warning":43}],80:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -23489,7 +11287,7 @@ assign(FallbackCompositionState.prototype, {
 PooledClass.addPoolingTo(FallbackCompositionState);
 
 module.exports = FallbackCompositionState;
-},{"./Object.assign":156,"./PooledClass":157,"./getTextContentAccessor":251}],154:[function(require,module,exports){
+},{"./Object.assign":83,"./PooledClass":84,"./getTextContentAccessor":178}],81:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -23720,7 +11518,7 @@ var HTMLDOMPropertyConfig = {
 };
 
 module.exports = HTMLDOMPropertyConfig;
-},{"./DOMProperty":143,"fbjs/lib/ExecutionEnvironment":18}],155:[function(require,module,exports){
+},{"./DOMProperty":70,"fbjs/lib/ExecutionEnvironment":18}],82:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -23857,7 +11655,7 @@ var LinkedValueUtils = {
 
 module.exports = LinkedValueUtils;
 }).call(this,require('_process'))
-},{"./ReactPropTypeLocations":207,"./ReactPropTypes":208,"_process":54,"fbjs/lib/invariant":32,"fbjs/lib/warning":43}],156:[function(require,module,exports){
+},{"./ReactPropTypeLocations":134,"./ReactPropTypes":135,"_process":51,"fbjs/lib/invariant":32,"fbjs/lib/warning":43}],83:[function(require,module,exports){
 /**
  * Copyright 2014-2015, Facebook, Inc.
  * All rights reserved.
@@ -23905,7 +11703,7 @@ function assign(target, sources) {
 }
 
 module.exports = assign;
-},{}],157:[function(require,module,exports){
+},{}],84:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -24027,7 +11825,7 @@ var PooledClass = {
 
 module.exports = PooledClass;
 }).call(this,require('_process'))
-},{"_process":54,"fbjs/lib/invariant":32}],158:[function(require,module,exports){
+},{"_process":51,"fbjs/lib/invariant":32}],85:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -24068,7 +11866,7 @@ React.__SECRET_DOM_DO_NOT_USE_OR_YOU_WILL_BE_FIRED = ReactDOM;
 React.__SECRET_DOM_SERVER_DO_NOT_USE_OR_YOU_WILL_BE_FIRED = ReactDOMServer;
 
 module.exports = React;
-},{"./Object.assign":156,"./ReactDOM":169,"./ReactDOMServer":179,"./ReactIsomorphic":197,"./deprecated":240}],159:[function(require,module,exports){
+},{"./Object.assign":83,"./ReactDOM":96,"./ReactDOMServer":106,"./ReactIsomorphic":124,"./deprecated":167}],86:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -24107,7 +11905,7 @@ var ReactBrowserComponentMixin = {
 
 module.exports = ReactBrowserComponentMixin;
 }).call(this,require('_process'))
-},{"./ReactInstanceMap":196,"./findDOMNode":242,"_process":54,"fbjs/lib/warning":43}],160:[function(require,module,exports){
+},{"./ReactInstanceMap":123,"./findDOMNode":169,"_process":51,"fbjs/lib/warning":43}],87:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -24432,7 +12230,7 @@ ReactPerf.measureMethods(ReactBrowserEventEmitter, 'ReactBrowserEventEmitter', {
 });
 
 module.exports = ReactBrowserEventEmitter;
-},{"./EventConstants":148,"./EventPluginHub":149,"./EventPluginRegistry":150,"./Object.assign":156,"./ReactEventEmitterMixin":191,"./ReactPerf":205,"./ViewportMetrics":235,"./isEventSupported":253}],161:[function(require,module,exports){
+},{"./EventConstants":75,"./EventPluginHub":76,"./EventPluginRegistry":77,"./Object.assign":83,"./ReactEventEmitterMixin":118,"./ReactPerf":132,"./ViewportMetrics":162,"./isEventSupported":180}],88:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2014-2015, Facebook, Inc.
@@ -24557,7 +12355,7 @@ var ReactChildReconciler = {
 
 module.exports = ReactChildReconciler;
 }).call(this,require('_process'))
-},{"./ReactReconciler":210,"./instantiateReactComponent":252,"./shouldUpdateReactComponent":260,"./traverseAllChildren":261,"_process":54,"fbjs/lib/warning":43}],162:[function(require,module,exports){
+},{"./ReactReconciler":137,"./instantiateReactComponent":179,"./shouldUpdateReactComponent":187,"./traverseAllChildren":188,"_process":51,"fbjs/lib/warning":43}],89:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -24740,7 +12538,7 @@ var ReactChildren = {
 };
 
 module.exports = ReactChildren;
-},{"./PooledClass":157,"./ReactElement":186,"./traverseAllChildren":261,"fbjs/lib/emptyFunction":24}],163:[function(require,module,exports){
+},{"./PooledClass":84,"./ReactElement":113,"./traverseAllChildren":188,"fbjs/lib/emptyFunction":24}],90:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -25514,7 +13312,7 @@ var ReactClass = {
 
 module.exports = ReactClass;
 }).call(this,require('_process'))
-},{"./Object.assign":156,"./ReactComponent":164,"./ReactElement":186,"./ReactNoopUpdateQueue":203,"./ReactPropTypeLocationNames":206,"./ReactPropTypeLocations":207,"_process":54,"fbjs/lib/emptyObject":25,"fbjs/lib/invariant":32,"fbjs/lib/keyMirror":35,"fbjs/lib/keyOf":36,"fbjs/lib/warning":43}],164:[function(require,module,exports){
+},{"./Object.assign":83,"./ReactComponent":91,"./ReactElement":113,"./ReactNoopUpdateQueue":130,"./ReactPropTypeLocationNames":133,"./ReactPropTypeLocations":134,"_process":51,"fbjs/lib/emptyObject":25,"fbjs/lib/invariant":32,"fbjs/lib/keyMirror":35,"fbjs/lib/keyOf":36,"fbjs/lib/warning":43}],91:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -25639,7 +13437,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 module.exports = ReactComponent;
 }).call(this,require('_process'))
-},{"./ReactNoopUpdateQueue":203,"./canDefineProperty":238,"_process":54,"fbjs/lib/emptyObject":25,"fbjs/lib/invariant":32,"fbjs/lib/warning":43}],165:[function(require,module,exports){
+},{"./ReactNoopUpdateQueue":130,"./canDefineProperty":165,"_process":51,"fbjs/lib/emptyObject":25,"fbjs/lib/invariant":32,"fbjs/lib/warning":43}],92:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -25681,7 +13479,7 @@ var ReactComponentBrowserEnvironment = {
 };
 
 module.exports = ReactComponentBrowserEnvironment;
-},{"./ReactDOMIDOperations":174,"./ReactMount":199}],166:[function(require,module,exports){
+},{"./ReactDOMIDOperations":101,"./ReactMount":126}],93:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2014-2015, Facebook, Inc.
@@ -25735,7 +13533,7 @@ var ReactComponentEnvironment = {
 
 module.exports = ReactComponentEnvironment;
 }).call(this,require('_process'))
-},{"_process":54,"fbjs/lib/invariant":32}],167:[function(require,module,exports){
+},{"_process":51,"fbjs/lib/invariant":32}],94:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -26432,7 +14230,7 @@ var ReactCompositeComponent = {
 
 module.exports = ReactCompositeComponent;
 }).call(this,require('_process'))
-},{"./Object.assign":156,"./ReactComponentEnvironment":166,"./ReactCurrentOwner":168,"./ReactElement":186,"./ReactInstanceMap":196,"./ReactPerf":205,"./ReactPropTypeLocationNames":206,"./ReactPropTypeLocations":207,"./ReactReconciler":210,"./ReactUpdateQueue":216,"./shouldUpdateReactComponent":260,"_process":54,"fbjs/lib/emptyObject":25,"fbjs/lib/invariant":32,"fbjs/lib/warning":43}],168:[function(require,module,exports){
+},{"./Object.assign":83,"./ReactComponentEnvironment":93,"./ReactCurrentOwner":95,"./ReactElement":113,"./ReactInstanceMap":123,"./ReactPerf":132,"./ReactPropTypeLocationNames":133,"./ReactPropTypeLocations":134,"./ReactReconciler":137,"./ReactUpdateQueue":143,"./shouldUpdateReactComponent":187,"_process":51,"fbjs/lib/emptyObject":25,"fbjs/lib/invariant":32,"fbjs/lib/warning":43}],95:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -26463,7 +14261,7 @@ var ReactCurrentOwner = {
 };
 
 module.exports = ReactCurrentOwner;
-},{}],169:[function(require,module,exports){
+},{}],96:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -26558,7 +14356,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 module.exports = React;
 }).call(this,require('_process'))
-},{"./ReactCurrentOwner":168,"./ReactDOMTextComponent":180,"./ReactDefaultInjection":183,"./ReactInstanceHandles":195,"./ReactMount":199,"./ReactPerf":205,"./ReactReconciler":210,"./ReactUpdates":217,"./ReactVersion":218,"./findDOMNode":242,"./renderSubtreeIntoContainer":257,"_process":54,"fbjs/lib/ExecutionEnvironment":18,"fbjs/lib/warning":43}],170:[function(require,module,exports){
+},{"./ReactCurrentOwner":95,"./ReactDOMTextComponent":107,"./ReactDefaultInjection":110,"./ReactInstanceHandles":122,"./ReactMount":126,"./ReactPerf":132,"./ReactReconciler":137,"./ReactUpdates":144,"./ReactVersion":145,"./findDOMNode":169,"./renderSubtreeIntoContainer":184,"_process":51,"fbjs/lib/ExecutionEnvironment":18,"fbjs/lib/warning":43}],97:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -26609,7 +14407,7 @@ var ReactDOMButton = {
 };
 
 module.exports = ReactDOMButton;
-},{}],171:[function(require,module,exports){
+},{}],98:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -27574,7 +15372,7 @@ assign(ReactDOMComponent.prototype, ReactDOMComponent.Mixin, ReactMultiChild.Mix
 
 module.exports = ReactDOMComponent;
 }).call(this,require('_process'))
-},{"./AutoFocusUtils":135,"./CSSPropertyOperations":138,"./DOMProperty":143,"./DOMPropertyOperations":144,"./EventConstants":148,"./Object.assign":156,"./ReactBrowserEventEmitter":160,"./ReactComponentBrowserEnvironment":165,"./ReactDOMButton":170,"./ReactDOMInput":175,"./ReactDOMOption":176,"./ReactDOMSelect":177,"./ReactDOMTextarea":181,"./ReactMount":199,"./ReactMultiChild":200,"./ReactPerf":205,"./ReactUpdateQueue":216,"./canDefineProperty":238,"./escapeTextContentForBrowser":241,"./isEventSupported":253,"./setInnerHTML":258,"./setTextContent":259,"./validateDOMNesting":262,"_process":54,"fbjs/lib/invariant":32,"fbjs/lib/keyOf":36,"fbjs/lib/shallowEqual":41,"fbjs/lib/warning":43}],172:[function(require,module,exports){
+},{"./AutoFocusUtils":62,"./CSSPropertyOperations":65,"./DOMProperty":70,"./DOMPropertyOperations":71,"./EventConstants":75,"./Object.assign":83,"./ReactBrowserEventEmitter":87,"./ReactComponentBrowserEnvironment":92,"./ReactDOMButton":97,"./ReactDOMInput":102,"./ReactDOMOption":103,"./ReactDOMSelect":104,"./ReactDOMTextarea":108,"./ReactMount":126,"./ReactMultiChild":127,"./ReactPerf":132,"./ReactUpdateQueue":143,"./canDefineProperty":165,"./escapeTextContentForBrowser":168,"./isEventSupported":180,"./setInnerHTML":185,"./setTextContent":186,"./validateDOMNesting":189,"_process":51,"fbjs/lib/invariant":32,"fbjs/lib/keyOf":36,"fbjs/lib/shallowEqual":41,"fbjs/lib/warning":43}],99:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -27754,7 +15552,7 @@ var ReactDOMFactories = mapObject({
 
 module.exports = ReactDOMFactories;
 }).call(this,require('_process'))
-},{"./ReactElement":186,"./ReactElementValidator":187,"_process":54,"fbjs/lib/mapObject":37}],173:[function(require,module,exports){
+},{"./ReactElement":113,"./ReactElementValidator":114,"_process":51,"fbjs/lib/mapObject":37}],100:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -27773,7 +15571,7 @@ var ReactDOMFeatureFlags = {
 };
 
 module.exports = ReactDOMFeatureFlags;
-},{}],174:[function(require,module,exports){
+},{}],101:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -27870,7 +15668,7 @@ ReactPerf.measureMethods(ReactDOMIDOperations, 'ReactDOMIDOperations', {
 
 module.exports = ReactDOMIDOperations;
 }).call(this,require('_process'))
-},{"./DOMChildrenOperations":142,"./DOMPropertyOperations":144,"./ReactMount":199,"./ReactPerf":205,"_process":54,"fbjs/lib/invariant":32}],175:[function(require,module,exports){
+},{"./DOMChildrenOperations":69,"./DOMPropertyOperations":71,"./ReactMount":126,"./ReactPerf":132,"_process":51,"fbjs/lib/invariant":32}],102:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -28026,7 +15824,7 @@ function _handleChange(event) {
 
 module.exports = ReactDOMInput;
 }).call(this,require('_process'))
-},{"./LinkedValueUtils":155,"./Object.assign":156,"./ReactDOMIDOperations":174,"./ReactMount":199,"./ReactUpdates":217,"_process":54,"fbjs/lib/invariant":32}],176:[function(require,module,exports){
+},{"./LinkedValueUtils":82,"./Object.assign":83,"./ReactDOMIDOperations":101,"./ReactMount":126,"./ReactUpdates":144,"_process":51,"fbjs/lib/invariant":32}],103:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -28118,7 +15916,7 @@ var ReactDOMOption = {
 
 module.exports = ReactDOMOption;
 }).call(this,require('_process'))
-},{"./Object.assign":156,"./ReactChildren":162,"./ReactDOMSelect":177,"_process":54,"fbjs/lib/warning":43}],177:[function(require,module,exports){
+},{"./Object.assign":83,"./ReactChildren":89,"./ReactDOMSelect":104,"_process":51,"fbjs/lib/warning":43}],104:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -28309,7 +16107,7 @@ function _handleChange(event) {
 
 module.exports = ReactDOMSelect;
 }).call(this,require('_process'))
-},{"./LinkedValueUtils":155,"./Object.assign":156,"./ReactMount":199,"./ReactUpdates":217,"_process":54,"fbjs/lib/warning":43}],178:[function(require,module,exports){
+},{"./LinkedValueUtils":82,"./Object.assign":83,"./ReactMount":126,"./ReactUpdates":144,"_process":51,"fbjs/lib/warning":43}],105:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -28522,7 +16320,7 @@ var ReactDOMSelection = {
 };
 
 module.exports = ReactDOMSelection;
-},{"./getNodeForCharacterOffset":250,"./getTextContentAccessor":251,"fbjs/lib/ExecutionEnvironment":18}],179:[function(require,module,exports){
+},{"./getNodeForCharacterOffset":177,"./getTextContentAccessor":178,"fbjs/lib/ExecutionEnvironment":18}],106:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -28549,7 +16347,7 @@ var ReactDOMServer = {
 };
 
 module.exports = ReactDOMServer;
-},{"./ReactDefaultInjection":183,"./ReactServerRendering":214,"./ReactVersion":218}],180:[function(require,module,exports){
+},{"./ReactDefaultInjection":110,"./ReactServerRendering":141,"./ReactVersion":145}],107:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -28679,7 +16477,7 @@ assign(ReactDOMTextComponent.prototype, {
 
 module.exports = ReactDOMTextComponent;
 }).call(this,require('_process'))
-},{"./DOMChildrenOperations":142,"./DOMPropertyOperations":144,"./Object.assign":156,"./ReactComponentBrowserEnvironment":165,"./ReactMount":199,"./escapeTextContentForBrowser":241,"./setTextContent":259,"./validateDOMNesting":262,"_process":54}],181:[function(require,module,exports){
+},{"./DOMChildrenOperations":69,"./DOMPropertyOperations":71,"./Object.assign":83,"./ReactComponentBrowserEnvironment":92,"./ReactMount":126,"./escapeTextContentForBrowser":168,"./setTextContent":186,"./validateDOMNesting":189,"_process":51}],108:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -28795,7 +16593,7 @@ function _handleChange(event) {
 
 module.exports = ReactDOMTextarea;
 }).call(this,require('_process'))
-},{"./LinkedValueUtils":155,"./Object.assign":156,"./ReactDOMIDOperations":174,"./ReactUpdates":217,"_process":54,"fbjs/lib/invariant":32,"fbjs/lib/warning":43}],182:[function(require,module,exports){
+},{"./LinkedValueUtils":82,"./Object.assign":83,"./ReactDOMIDOperations":101,"./ReactUpdates":144,"_process":51,"fbjs/lib/invariant":32,"fbjs/lib/warning":43}],109:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -28863,7 +16661,7 @@ var ReactDefaultBatchingStrategy = {
 };
 
 module.exports = ReactDefaultBatchingStrategy;
-},{"./Object.assign":156,"./ReactUpdates":217,"./Transaction":234,"fbjs/lib/emptyFunction":24}],183:[function(require,module,exports){
+},{"./Object.assign":83,"./ReactUpdates":144,"./Transaction":161,"fbjs/lib/emptyFunction":24}],110:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -28963,7 +16761,7 @@ module.exports = {
   inject: inject
 };
 }).call(this,require('_process'))
-},{"./BeforeInputEventPlugin":136,"./ChangeEventPlugin":140,"./ClientReactRootIndex":141,"./DefaultEventPluginOrder":146,"./EnterLeaveEventPlugin":147,"./HTMLDOMPropertyConfig":154,"./ReactBrowserComponentMixin":159,"./ReactComponentBrowserEnvironment":165,"./ReactDOMComponent":171,"./ReactDOMTextComponent":180,"./ReactDefaultBatchingStrategy":182,"./ReactDefaultPerf":184,"./ReactEventListener":192,"./ReactInjection":193,"./ReactInstanceHandles":195,"./ReactMount":199,"./ReactReconcileTransaction":209,"./SVGDOMPropertyConfig":219,"./SelectEventPlugin":220,"./ServerReactRootIndex":221,"./SimpleEventPlugin":222,"_process":54,"fbjs/lib/ExecutionEnvironment":18}],184:[function(require,module,exports){
+},{"./BeforeInputEventPlugin":63,"./ChangeEventPlugin":67,"./ClientReactRootIndex":68,"./DefaultEventPluginOrder":73,"./EnterLeaveEventPlugin":74,"./HTMLDOMPropertyConfig":81,"./ReactBrowserComponentMixin":86,"./ReactComponentBrowserEnvironment":92,"./ReactDOMComponent":98,"./ReactDOMTextComponent":107,"./ReactDefaultBatchingStrategy":109,"./ReactDefaultPerf":111,"./ReactEventListener":119,"./ReactInjection":120,"./ReactInstanceHandles":122,"./ReactMount":126,"./ReactReconcileTransaction":136,"./SVGDOMPropertyConfig":146,"./SelectEventPlugin":147,"./ServerReactRootIndex":148,"./SimpleEventPlugin":149,"_process":51,"fbjs/lib/ExecutionEnvironment":18}],111:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -29201,7 +16999,7 @@ var ReactDefaultPerf = {
 };
 
 module.exports = ReactDefaultPerf;
-},{"./DOMProperty":143,"./ReactDefaultPerfAnalysis":185,"./ReactMount":199,"./ReactPerf":205,"fbjs/lib/performanceNow":40}],185:[function(require,module,exports){
+},{"./DOMProperty":70,"./ReactDefaultPerfAnalysis":112,"./ReactMount":126,"./ReactPerf":132,"fbjs/lib/performanceNow":40}],112:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -29403,7 +17201,7 @@ var ReactDefaultPerfAnalysis = {
 };
 
 module.exports = ReactDefaultPerfAnalysis;
-},{"./Object.assign":156}],186:[function(require,module,exports){
+},{"./Object.assign":83}],113:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2014-2015, Facebook, Inc.
@@ -29653,7 +17451,7 @@ ReactElement.isValidElement = function (object) {
 
 module.exports = ReactElement;
 }).call(this,require('_process'))
-},{"./Object.assign":156,"./ReactCurrentOwner":168,"./canDefineProperty":238,"_process":54}],187:[function(require,module,exports){
+},{"./Object.assign":83,"./ReactCurrentOwner":95,"./canDefineProperty":165,"_process":51}],114:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2014-2015, Facebook, Inc.
@@ -29937,7 +17735,7 @@ var ReactElementValidator = {
 
 module.exports = ReactElementValidator;
 }).call(this,require('_process'))
-},{"./ReactCurrentOwner":168,"./ReactElement":186,"./ReactPropTypeLocationNames":206,"./ReactPropTypeLocations":207,"./canDefineProperty":238,"./getIteratorFn":249,"_process":54,"fbjs/lib/invariant":32,"fbjs/lib/warning":43}],188:[function(require,module,exports){
+},{"./ReactCurrentOwner":95,"./ReactElement":113,"./ReactPropTypeLocationNames":133,"./ReactPropTypeLocations":134,"./canDefineProperty":165,"./getIteratorFn":176,"_process":51,"fbjs/lib/invariant":32,"fbjs/lib/warning":43}],115:[function(require,module,exports){
 /**
  * Copyright 2014-2015, Facebook, Inc.
  * All rights reserved.
@@ -29993,7 +17791,7 @@ assign(ReactEmptyComponent.prototype, {
 ReactEmptyComponent.injection = ReactEmptyComponentInjection;
 
 module.exports = ReactEmptyComponent;
-},{"./Object.assign":156,"./ReactElement":186,"./ReactEmptyComponentRegistry":189,"./ReactReconciler":210}],189:[function(require,module,exports){
+},{"./Object.assign":83,"./ReactElement":113,"./ReactEmptyComponentRegistry":116,"./ReactReconciler":137}],116:[function(require,module,exports){
 /**
  * Copyright 2014-2015, Facebook, Inc.
  * All rights reserved.
@@ -30042,7 +17840,7 @@ var ReactEmptyComponentRegistry = {
 };
 
 module.exports = ReactEmptyComponentRegistry;
-},{}],190:[function(require,module,exports){
+},{}],117:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -30122,7 +17920,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 module.exports = ReactErrorUtils;
 }).call(this,require('_process'))
-},{"_process":54}],191:[function(require,module,exports){
+},{"_process":51}],118:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -30161,7 +17959,7 @@ var ReactEventEmitterMixin = {
 };
 
 module.exports = ReactEventEmitterMixin;
-},{"./EventPluginHub":149}],192:[function(require,module,exports){
+},{"./EventPluginHub":76}],119:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -30373,7 +18171,7 @@ var ReactEventListener = {
 };
 
 module.exports = ReactEventListener;
-},{"./Object.assign":156,"./PooledClass":157,"./ReactInstanceHandles":195,"./ReactMount":199,"./ReactUpdates":217,"./getEventTarget":248,"fbjs/lib/EventListener":17,"fbjs/lib/ExecutionEnvironment":18,"fbjs/lib/getUnboundedScrollPosition":29}],193:[function(require,module,exports){
+},{"./Object.assign":83,"./PooledClass":84,"./ReactInstanceHandles":122,"./ReactMount":126,"./ReactUpdates":144,"./getEventTarget":175,"fbjs/lib/EventListener":17,"fbjs/lib/ExecutionEnvironment":18,"fbjs/lib/getUnboundedScrollPosition":29}],120:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -30412,7 +18210,7 @@ var ReactInjection = {
 };
 
 module.exports = ReactInjection;
-},{"./DOMProperty":143,"./EventPluginHub":149,"./ReactBrowserEventEmitter":160,"./ReactClass":163,"./ReactComponentEnvironment":166,"./ReactEmptyComponent":188,"./ReactNativeComponent":202,"./ReactPerf":205,"./ReactRootIndex":212,"./ReactUpdates":217}],194:[function(require,module,exports){
+},{"./DOMProperty":70,"./EventPluginHub":76,"./ReactBrowserEventEmitter":87,"./ReactClass":90,"./ReactComponentEnvironment":93,"./ReactEmptyComponent":115,"./ReactNativeComponent":129,"./ReactPerf":132,"./ReactRootIndex":139,"./ReactUpdates":144}],121:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -30537,7 +18335,7 @@ var ReactInputSelection = {
 };
 
 module.exports = ReactInputSelection;
-},{"./ReactDOMSelection":178,"fbjs/lib/containsNode":21,"fbjs/lib/focusNode":26,"fbjs/lib/getActiveElement":27}],195:[function(require,module,exports){
+},{"./ReactDOMSelection":105,"fbjs/lib/containsNode":21,"fbjs/lib/focusNode":26,"fbjs/lib/getActiveElement":27}],122:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -30842,7 +18640,7 @@ var ReactInstanceHandles = {
 
 module.exports = ReactInstanceHandles;
 }).call(this,require('_process'))
-},{"./ReactRootIndex":212,"_process":54,"fbjs/lib/invariant":32}],196:[function(require,module,exports){
+},{"./ReactRootIndex":139,"_process":51,"fbjs/lib/invariant":32}],123:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -30890,7 +18688,7 @@ var ReactInstanceMap = {
 };
 
 module.exports = ReactInstanceMap;
-},{}],197:[function(require,module,exports){
+},{}],124:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -30967,7 +18765,7 @@ var React = {
 
 module.exports = React;
 }).call(this,require('_process'))
-},{"./Object.assign":156,"./ReactChildren":162,"./ReactClass":163,"./ReactComponent":164,"./ReactDOMFactories":172,"./ReactElement":186,"./ReactElementValidator":187,"./ReactPropTypes":208,"./ReactVersion":218,"./onlyChild":255,"_process":54}],198:[function(require,module,exports){
+},{"./Object.assign":83,"./ReactChildren":89,"./ReactClass":90,"./ReactComponent":91,"./ReactDOMFactories":99,"./ReactElement":113,"./ReactElementValidator":114,"./ReactPropTypes":135,"./ReactVersion":145,"./onlyChild":182,"_process":51}],125:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -31013,7 +18811,7 @@ var ReactMarkupChecksum = {
 };
 
 module.exports = ReactMarkupChecksum;
-},{"./adler32":237}],199:[function(require,module,exports){
+},{"./adler32":164}],126:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -31866,7 +19664,7 @@ ReactPerf.measureMethods(ReactMount, 'ReactMount', {
 
 module.exports = ReactMount;
 }).call(this,require('_process'))
-},{"./DOMProperty":143,"./Object.assign":156,"./ReactBrowserEventEmitter":160,"./ReactCurrentOwner":168,"./ReactDOMFeatureFlags":173,"./ReactElement":186,"./ReactEmptyComponentRegistry":189,"./ReactInstanceHandles":195,"./ReactInstanceMap":196,"./ReactMarkupChecksum":198,"./ReactPerf":205,"./ReactReconciler":210,"./ReactUpdateQueue":216,"./ReactUpdates":217,"./instantiateReactComponent":252,"./setInnerHTML":258,"./shouldUpdateReactComponent":260,"./validateDOMNesting":262,"_process":54,"fbjs/lib/containsNode":21,"fbjs/lib/emptyObject":25,"fbjs/lib/invariant":32,"fbjs/lib/warning":43}],200:[function(require,module,exports){
+},{"./DOMProperty":70,"./Object.assign":83,"./ReactBrowserEventEmitter":87,"./ReactCurrentOwner":95,"./ReactDOMFeatureFlags":100,"./ReactElement":113,"./ReactEmptyComponentRegistry":116,"./ReactInstanceHandles":122,"./ReactInstanceMap":123,"./ReactMarkupChecksum":125,"./ReactPerf":132,"./ReactReconciler":137,"./ReactUpdateQueue":143,"./ReactUpdates":144,"./instantiateReactComponent":179,"./setInnerHTML":185,"./shouldUpdateReactComponent":187,"./validateDOMNesting":189,"_process":51,"fbjs/lib/containsNode":21,"fbjs/lib/emptyObject":25,"fbjs/lib/invariant":32,"fbjs/lib/warning":43}],127:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -32365,7 +20163,7 @@ var ReactMultiChild = {
 
 module.exports = ReactMultiChild;
 }).call(this,require('_process'))
-},{"./ReactChildReconciler":161,"./ReactComponentEnvironment":166,"./ReactCurrentOwner":168,"./ReactMultiChildUpdateTypes":201,"./ReactReconciler":210,"./flattenChildren":243,"_process":54}],201:[function(require,module,exports){
+},{"./ReactChildReconciler":88,"./ReactComponentEnvironment":93,"./ReactCurrentOwner":95,"./ReactMultiChildUpdateTypes":128,"./ReactReconciler":137,"./flattenChildren":170,"_process":51}],128:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -32398,7 +20196,7 @@ var ReactMultiChildUpdateTypes = keyMirror({
 });
 
 module.exports = ReactMultiChildUpdateTypes;
-},{"fbjs/lib/keyMirror":35}],202:[function(require,module,exports){
+},{"fbjs/lib/keyMirror":35}],129:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2014-2015, Facebook, Inc.
@@ -32495,7 +20293,7 @@ var ReactNativeComponent = {
 
 module.exports = ReactNativeComponent;
 }).call(this,require('_process'))
-},{"./Object.assign":156,"_process":54,"fbjs/lib/invariant":32}],203:[function(require,module,exports){
+},{"./Object.assign":83,"_process":51,"fbjs/lib/invariant":32}],130:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2015, Facebook, Inc.
@@ -32616,7 +20414,7 @@ var ReactNoopUpdateQueue = {
 
 module.exports = ReactNoopUpdateQueue;
 }).call(this,require('_process'))
-},{"_process":54,"fbjs/lib/warning":43}],204:[function(require,module,exports){
+},{"_process":51,"fbjs/lib/warning":43}],131:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -32710,7 +20508,7 @@ var ReactOwner = {
 
 module.exports = ReactOwner;
 }).call(this,require('_process'))
-},{"_process":54,"fbjs/lib/invariant":32}],205:[function(require,module,exports){
+},{"_process":51,"fbjs/lib/invariant":32}],132:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -32809,7 +20607,7 @@ function _noMeasure(objName, fnName, func) {
 
 module.exports = ReactPerf;
 }).call(this,require('_process'))
-},{"_process":54}],206:[function(require,module,exports){
+},{"_process":51}],133:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -32836,7 +20634,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 module.exports = ReactPropTypeLocationNames;
 }).call(this,require('_process'))
-},{"_process":54}],207:[function(require,module,exports){
+},{"_process":51}],134:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -32859,7 +20657,7 @@ var ReactPropTypeLocations = keyMirror({
 });
 
 module.exports = ReactPropTypeLocations;
-},{"fbjs/lib/keyMirror":35}],208:[function(require,module,exports){
+},{"fbjs/lib/keyMirror":35}],135:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -33216,7 +21014,7 @@ function getClassName(propValue) {
 }
 
 module.exports = ReactPropTypes;
-},{"./ReactElement":186,"./ReactPropTypeLocationNames":206,"./getIteratorFn":249,"fbjs/lib/emptyFunction":24}],209:[function(require,module,exports){
+},{"./ReactElement":113,"./ReactPropTypeLocationNames":133,"./getIteratorFn":176,"fbjs/lib/emptyFunction":24}],136:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -33368,7 +21166,7 @@ assign(ReactReconcileTransaction.prototype, Transaction.Mixin, Mixin);
 PooledClass.addPoolingTo(ReactReconcileTransaction);
 
 module.exports = ReactReconcileTransaction;
-},{"./CallbackQueue":139,"./Object.assign":156,"./PooledClass":157,"./ReactBrowserEventEmitter":160,"./ReactDOMFeatureFlags":173,"./ReactInputSelection":194,"./Transaction":234}],210:[function(require,module,exports){
+},{"./CallbackQueue":66,"./Object.assign":83,"./PooledClass":84,"./ReactBrowserEventEmitter":87,"./ReactDOMFeatureFlags":100,"./ReactInputSelection":121,"./Transaction":161}],137:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -33476,7 +21274,7 @@ var ReactReconciler = {
 };
 
 module.exports = ReactReconciler;
-},{"./ReactRef":211}],211:[function(require,module,exports){
+},{"./ReactRef":138}],138:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -33555,7 +21353,7 @@ ReactRef.detachRefs = function (instance, element) {
 };
 
 module.exports = ReactRef;
-},{"./ReactOwner":204}],212:[function(require,module,exports){
+},{"./ReactOwner":131}],139:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -33585,7 +21383,7 @@ var ReactRootIndex = {
 };
 
 module.exports = ReactRootIndex;
-},{}],213:[function(require,module,exports){
+},{}],140:[function(require,module,exports){
 /**
  * Copyright 2014-2015, Facebook, Inc.
  * All rights reserved.
@@ -33609,7 +21407,7 @@ var ReactServerBatchingStrategy = {
 };
 
 module.exports = ReactServerBatchingStrategy;
-},{}],214:[function(require,module,exports){
+},{}],141:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -33695,7 +21493,7 @@ module.exports = {
   renderToStaticMarkup: renderToStaticMarkup
 };
 }).call(this,require('_process'))
-},{"./ReactDefaultBatchingStrategy":182,"./ReactElement":186,"./ReactInstanceHandles":195,"./ReactMarkupChecksum":198,"./ReactServerBatchingStrategy":213,"./ReactServerRenderingTransaction":215,"./ReactUpdates":217,"./instantiateReactComponent":252,"_process":54,"fbjs/lib/emptyObject":25,"fbjs/lib/invariant":32}],215:[function(require,module,exports){
+},{"./ReactDefaultBatchingStrategy":109,"./ReactElement":113,"./ReactInstanceHandles":122,"./ReactMarkupChecksum":125,"./ReactServerBatchingStrategy":140,"./ReactServerRenderingTransaction":142,"./ReactUpdates":144,"./instantiateReactComponent":179,"_process":51,"fbjs/lib/emptyObject":25,"fbjs/lib/invariant":32}],142:[function(require,module,exports){
 /**
  * Copyright 2014-2015, Facebook, Inc.
  * All rights reserved.
@@ -33783,7 +21581,7 @@ assign(ReactServerRenderingTransaction.prototype, Transaction.Mixin, Mixin);
 PooledClass.addPoolingTo(ReactServerRenderingTransaction);
 
 module.exports = ReactServerRenderingTransaction;
-},{"./CallbackQueue":139,"./Object.assign":156,"./PooledClass":157,"./Transaction":234,"fbjs/lib/emptyFunction":24}],216:[function(require,module,exports){
+},{"./CallbackQueue":66,"./Object.assign":83,"./PooledClass":84,"./Transaction":161,"fbjs/lib/emptyFunction":24}],143:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2015, Facebook, Inc.
@@ -34043,7 +21841,7 @@ var ReactUpdateQueue = {
 
 module.exports = ReactUpdateQueue;
 }).call(this,require('_process'))
-},{"./Object.assign":156,"./ReactCurrentOwner":168,"./ReactElement":186,"./ReactInstanceMap":196,"./ReactUpdates":217,"_process":54,"fbjs/lib/invariant":32,"fbjs/lib/warning":43}],217:[function(require,module,exports){
+},{"./Object.assign":83,"./ReactCurrentOwner":95,"./ReactElement":113,"./ReactInstanceMap":123,"./ReactUpdates":144,"_process":51,"fbjs/lib/invariant":32,"fbjs/lib/warning":43}],144:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -34269,7 +22067,7 @@ var ReactUpdates = {
 
 module.exports = ReactUpdates;
 }).call(this,require('_process'))
-},{"./CallbackQueue":139,"./Object.assign":156,"./PooledClass":157,"./ReactPerf":205,"./ReactReconciler":210,"./Transaction":234,"_process":54,"fbjs/lib/invariant":32}],218:[function(require,module,exports){
+},{"./CallbackQueue":66,"./Object.assign":83,"./PooledClass":84,"./ReactPerf":132,"./ReactReconciler":137,"./Transaction":161,"_process":51,"fbjs/lib/invariant":32}],145:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -34284,7 +22082,7 @@ module.exports = ReactUpdates;
 'use strict';
 
 module.exports = '0.14.8';
-},{}],219:[function(require,module,exports){
+},{}],146:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -34412,7 +22210,7 @@ var SVGDOMPropertyConfig = {
 };
 
 module.exports = SVGDOMPropertyConfig;
-},{"./DOMProperty":143}],220:[function(require,module,exports){
+},{"./DOMProperty":70}],147:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -34614,7 +22412,7 @@ var SelectEventPlugin = {
 };
 
 module.exports = SelectEventPlugin;
-},{"./EventConstants":148,"./EventPropagators":152,"./ReactInputSelection":194,"./SyntheticEvent":226,"./isTextInputElement":254,"fbjs/lib/ExecutionEnvironment":18,"fbjs/lib/getActiveElement":27,"fbjs/lib/keyOf":36,"fbjs/lib/shallowEqual":41}],221:[function(require,module,exports){
+},{"./EventConstants":75,"./EventPropagators":79,"./ReactInputSelection":121,"./SyntheticEvent":153,"./isTextInputElement":181,"fbjs/lib/ExecutionEnvironment":18,"fbjs/lib/getActiveElement":27,"fbjs/lib/keyOf":36,"fbjs/lib/shallowEqual":41}],148:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -34644,7 +22442,7 @@ var ServerReactRootIndex = {
 };
 
 module.exports = ServerReactRootIndex;
-},{}],222:[function(require,module,exports){
+},{}],149:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -35234,7 +23032,7 @@ var SimpleEventPlugin = {
 
 module.exports = SimpleEventPlugin;
 }).call(this,require('_process'))
-},{"./EventConstants":148,"./EventPropagators":152,"./ReactMount":199,"./SyntheticClipboardEvent":223,"./SyntheticDragEvent":225,"./SyntheticEvent":226,"./SyntheticFocusEvent":227,"./SyntheticKeyboardEvent":229,"./SyntheticMouseEvent":230,"./SyntheticTouchEvent":231,"./SyntheticUIEvent":232,"./SyntheticWheelEvent":233,"./getEventCharCode":245,"_process":54,"fbjs/lib/EventListener":17,"fbjs/lib/emptyFunction":24,"fbjs/lib/invariant":32,"fbjs/lib/keyOf":36}],223:[function(require,module,exports){
+},{"./EventConstants":75,"./EventPropagators":79,"./ReactMount":126,"./SyntheticClipboardEvent":150,"./SyntheticDragEvent":152,"./SyntheticEvent":153,"./SyntheticFocusEvent":154,"./SyntheticKeyboardEvent":156,"./SyntheticMouseEvent":157,"./SyntheticTouchEvent":158,"./SyntheticUIEvent":159,"./SyntheticWheelEvent":160,"./getEventCharCode":172,"_process":51,"fbjs/lib/EventListener":17,"fbjs/lib/emptyFunction":24,"fbjs/lib/invariant":32,"fbjs/lib/keyOf":36}],150:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -35274,7 +23072,7 @@ function SyntheticClipboardEvent(dispatchConfig, dispatchMarker, nativeEvent, na
 SyntheticEvent.augmentClass(SyntheticClipboardEvent, ClipboardEventInterface);
 
 module.exports = SyntheticClipboardEvent;
-},{"./SyntheticEvent":226}],224:[function(require,module,exports){
+},{"./SyntheticEvent":153}],151:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -35312,7 +23110,7 @@ function SyntheticCompositionEvent(dispatchConfig, dispatchMarker, nativeEvent, 
 SyntheticEvent.augmentClass(SyntheticCompositionEvent, CompositionEventInterface);
 
 module.exports = SyntheticCompositionEvent;
-},{"./SyntheticEvent":226}],225:[function(require,module,exports){
+},{"./SyntheticEvent":153}],152:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -35350,7 +23148,7 @@ function SyntheticDragEvent(dispatchConfig, dispatchMarker, nativeEvent, nativeE
 SyntheticMouseEvent.augmentClass(SyntheticDragEvent, DragEventInterface);
 
 module.exports = SyntheticDragEvent;
-},{"./SyntheticMouseEvent":230}],226:[function(require,module,exports){
+},{"./SyntheticMouseEvent":157}],153:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -35533,7 +23331,7 @@ PooledClass.addPoolingTo(SyntheticEvent, PooledClass.fourArgumentPooler);
 
 module.exports = SyntheticEvent;
 }).call(this,require('_process'))
-},{"./Object.assign":156,"./PooledClass":157,"_process":54,"fbjs/lib/emptyFunction":24,"fbjs/lib/warning":43}],227:[function(require,module,exports){
+},{"./Object.assign":83,"./PooledClass":84,"_process":51,"fbjs/lib/emptyFunction":24,"fbjs/lib/warning":43}],154:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -35571,7 +23369,7 @@ function SyntheticFocusEvent(dispatchConfig, dispatchMarker, nativeEvent, native
 SyntheticUIEvent.augmentClass(SyntheticFocusEvent, FocusEventInterface);
 
 module.exports = SyntheticFocusEvent;
-},{"./SyntheticUIEvent":232}],228:[function(require,module,exports){
+},{"./SyntheticUIEvent":159}],155:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -35610,7 +23408,7 @@ function SyntheticInputEvent(dispatchConfig, dispatchMarker, nativeEvent, native
 SyntheticEvent.augmentClass(SyntheticInputEvent, InputEventInterface);
 
 module.exports = SyntheticInputEvent;
-},{"./SyntheticEvent":226}],229:[function(require,module,exports){
+},{"./SyntheticEvent":153}],156:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -35696,7 +23494,7 @@ function SyntheticKeyboardEvent(dispatchConfig, dispatchMarker, nativeEvent, nat
 SyntheticUIEvent.augmentClass(SyntheticKeyboardEvent, KeyboardEventInterface);
 
 module.exports = SyntheticKeyboardEvent;
-},{"./SyntheticUIEvent":232,"./getEventCharCode":245,"./getEventKey":246,"./getEventModifierState":247}],230:[function(require,module,exports){
+},{"./SyntheticUIEvent":159,"./getEventCharCode":172,"./getEventKey":173,"./getEventModifierState":174}],157:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -35770,7 +23568,7 @@ function SyntheticMouseEvent(dispatchConfig, dispatchMarker, nativeEvent, native
 SyntheticUIEvent.augmentClass(SyntheticMouseEvent, MouseEventInterface);
 
 module.exports = SyntheticMouseEvent;
-},{"./SyntheticUIEvent":232,"./ViewportMetrics":235,"./getEventModifierState":247}],231:[function(require,module,exports){
+},{"./SyntheticUIEvent":159,"./ViewportMetrics":162,"./getEventModifierState":174}],158:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -35817,7 +23615,7 @@ function SyntheticTouchEvent(dispatchConfig, dispatchMarker, nativeEvent, native
 SyntheticUIEvent.augmentClass(SyntheticTouchEvent, TouchEventInterface);
 
 module.exports = SyntheticTouchEvent;
-},{"./SyntheticUIEvent":232,"./getEventModifierState":247}],232:[function(require,module,exports){
+},{"./SyntheticUIEvent":159,"./getEventModifierState":174}],159:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -35878,7 +23676,7 @@ function SyntheticUIEvent(dispatchConfig, dispatchMarker, nativeEvent, nativeEve
 SyntheticEvent.augmentClass(SyntheticUIEvent, UIEventInterface);
 
 module.exports = SyntheticUIEvent;
-},{"./SyntheticEvent":226,"./getEventTarget":248}],233:[function(require,module,exports){
+},{"./SyntheticEvent":153,"./getEventTarget":175}],160:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -35934,7 +23732,7 @@ function SyntheticWheelEvent(dispatchConfig, dispatchMarker, nativeEvent, native
 SyntheticMouseEvent.augmentClass(SyntheticWheelEvent, WheelEventInterface);
 
 module.exports = SyntheticWheelEvent;
-},{"./SyntheticMouseEvent":230}],234:[function(require,module,exports){
+},{"./SyntheticMouseEvent":157}],161:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -36168,7 +23966,7 @@ var Transaction = {
 
 module.exports = Transaction;
 }).call(this,require('_process'))
-},{"_process":54,"fbjs/lib/invariant":32}],235:[function(require,module,exports){
+},{"_process":51,"fbjs/lib/invariant":32}],162:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -36196,7 +23994,7 @@ var ViewportMetrics = {
 };
 
 module.exports = ViewportMetrics;
-},{}],236:[function(require,module,exports){
+},{}],163:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2014-2015, Facebook, Inc.
@@ -36258,7 +24056,7 @@ function accumulateInto(current, next) {
 
 module.exports = accumulateInto;
 }).call(this,require('_process'))
-},{"_process":54,"fbjs/lib/invariant":32}],237:[function(require,module,exports){
+},{"_process":51,"fbjs/lib/invariant":32}],164:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -36301,7 +24099,7 @@ function adler32(data) {
 }
 
 module.exports = adler32;
-},{}],238:[function(require,module,exports){
+},{}],165:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -36328,7 +24126,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 module.exports = canDefineProperty;
 }).call(this,require('_process'))
-},{"_process":54}],239:[function(require,module,exports){
+},{"_process":51}],166:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -36384,7 +24182,7 @@ function dangerousStyleValue(name, value) {
 }
 
 module.exports = dangerousStyleValue;
-},{"./CSSProperty":137}],240:[function(require,module,exports){
+},{"./CSSProperty":64}],167:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -36435,7 +24233,7 @@ function deprecated(fnName, newModule, newPackage, ctx, fn) {
 
 module.exports = deprecated;
 }).call(this,require('_process'))
-},{"./Object.assign":156,"_process":54,"fbjs/lib/warning":43}],241:[function(require,module,exports){
+},{"./Object.assign":83,"_process":51,"fbjs/lib/warning":43}],168:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -36474,7 +24272,7 @@ function escapeTextContentForBrowser(text) {
 }
 
 module.exports = escapeTextContentForBrowser;
-},{}],242:[function(require,module,exports){
+},{}],169:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -36526,7 +24324,7 @@ function findDOMNode(componentOrElement) {
 
 module.exports = findDOMNode;
 }).call(this,require('_process'))
-},{"./ReactCurrentOwner":168,"./ReactInstanceMap":196,"./ReactMount":199,"_process":54,"fbjs/lib/invariant":32,"fbjs/lib/warning":43}],243:[function(require,module,exports){
+},{"./ReactCurrentOwner":95,"./ReactInstanceMap":123,"./ReactMount":126,"_process":51,"fbjs/lib/invariant":32,"fbjs/lib/warning":43}],170:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -36577,7 +24375,7 @@ function flattenChildren(children) {
 
 module.exports = flattenChildren;
 }).call(this,require('_process'))
-},{"./traverseAllChildren":261,"_process":54,"fbjs/lib/warning":43}],244:[function(require,module,exports){
+},{"./traverseAllChildren":188,"_process":51,"fbjs/lib/warning":43}],171:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -36607,7 +24405,7 @@ var forEachAccumulated = function (arr, cb, scope) {
 };
 
 module.exports = forEachAccumulated;
-},{}],245:[function(require,module,exports){
+},{}],172:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -36658,7 +24456,7 @@ function getEventCharCode(nativeEvent) {
 }
 
 module.exports = getEventCharCode;
-},{}],246:[function(require,module,exports){
+},{}],173:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -36762,7 +24560,7 @@ function getEventKey(nativeEvent) {
 }
 
 module.exports = getEventKey;
-},{"./getEventCharCode":245}],247:[function(require,module,exports){
+},{"./getEventCharCode":172}],174:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -36807,7 +24605,7 @@ function getEventModifierState(nativeEvent) {
 }
 
 module.exports = getEventModifierState;
-},{}],248:[function(require,module,exports){
+},{}],175:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -36837,7 +24635,7 @@ function getEventTarget(nativeEvent) {
 }
 
 module.exports = getEventTarget;
-},{}],249:[function(require,module,exports){
+},{}],176:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -36878,7 +24676,7 @@ function getIteratorFn(maybeIterable) {
 }
 
 module.exports = getIteratorFn;
-},{}],250:[function(require,module,exports){
+},{}],177:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -36952,7 +24750,7 @@ function getNodeForCharacterOffset(root, offset) {
 }
 
 module.exports = getNodeForCharacterOffset;
-},{}],251:[function(require,module,exports){
+},{}],178:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -36986,7 +24784,7 @@ function getTextContentAccessor() {
 }
 
 module.exports = getTextContentAccessor;
-},{"fbjs/lib/ExecutionEnvironment":18}],252:[function(require,module,exports){
+},{"fbjs/lib/ExecutionEnvironment":18}],179:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -37101,7 +24899,7 @@ function instantiateReactComponent(node) {
 
 module.exports = instantiateReactComponent;
 }).call(this,require('_process'))
-},{"./Object.assign":156,"./ReactCompositeComponent":167,"./ReactEmptyComponent":188,"./ReactNativeComponent":202,"_process":54,"fbjs/lib/invariant":32,"fbjs/lib/warning":43}],253:[function(require,module,exports){
+},{"./Object.assign":83,"./ReactCompositeComponent":94,"./ReactEmptyComponent":115,"./ReactNativeComponent":129,"_process":51,"fbjs/lib/invariant":32,"fbjs/lib/warning":43}],180:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -37162,7 +24960,7 @@ function isEventSupported(eventNameSuffix, capture) {
 }
 
 module.exports = isEventSupported;
-},{"fbjs/lib/ExecutionEnvironment":18}],254:[function(require,module,exports){
+},{"fbjs/lib/ExecutionEnvironment":18}],181:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -37203,7 +25001,7 @@ function isTextInputElement(elem) {
 }
 
 module.exports = isTextInputElement;
-},{}],255:[function(require,module,exports){
+},{}],182:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -37239,7 +25037,7 @@ function onlyChild(children) {
 
 module.exports = onlyChild;
 }).call(this,require('_process'))
-},{"./ReactElement":186,"_process":54,"fbjs/lib/invariant":32}],256:[function(require,module,exports){
+},{"./ReactElement":113,"_process":51,"fbjs/lib/invariant":32}],183:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -37266,7 +25064,7 @@ function quoteAttributeValueForBrowser(value) {
 }
 
 module.exports = quoteAttributeValueForBrowser;
-},{"./escapeTextContentForBrowser":241}],257:[function(require,module,exports){
+},{"./escapeTextContentForBrowser":168}],184:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -37283,7 +25081,7 @@ module.exports = quoteAttributeValueForBrowser;
 var ReactMount = require('./ReactMount');
 
 module.exports = ReactMount.renderSubtreeIntoContainer;
-},{"./ReactMount":199}],258:[function(require,module,exports){
+},{"./ReactMount":126}],185:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -37374,7 +25172,7 @@ if (ExecutionEnvironment.canUseDOM) {
 }
 
 module.exports = setInnerHTML;
-},{"fbjs/lib/ExecutionEnvironment":18}],259:[function(require,module,exports){
+},{"fbjs/lib/ExecutionEnvironment":18}],186:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -37415,7 +25213,7 @@ if (ExecutionEnvironment.canUseDOM) {
 }
 
 module.exports = setTextContent;
-},{"./escapeTextContentForBrowser":241,"./setInnerHTML":258,"fbjs/lib/ExecutionEnvironment":18}],260:[function(require,module,exports){
+},{"./escapeTextContentForBrowser":168,"./setInnerHTML":185,"fbjs/lib/ExecutionEnvironment":18}],187:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -37459,7 +25257,7 @@ function shouldUpdateReactComponent(prevElement, nextElement) {
 }
 
 module.exports = shouldUpdateReactComponent;
-},{}],261:[function(require,module,exports){
+},{}],188:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -37651,7 +25449,7 @@ function traverseAllChildren(children, callback, traverseContext) {
 
 module.exports = traverseAllChildren;
 }).call(this,require('_process'))
-},{"./ReactCurrentOwner":168,"./ReactElement":186,"./ReactInstanceHandles":195,"./getIteratorFn":249,"_process":54,"fbjs/lib/invariant":32,"fbjs/lib/warning":43}],262:[function(require,module,exports){
+},{"./ReactCurrentOwner":95,"./ReactElement":113,"./ReactInstanceHandles":122,"./getIteratorFn":176,"_process":51,"fbjs/lib/invariant":32,"fbjs/lib/warning":43}],189:[function(require,module,exports){
 (function (process){
 /**
  * Copyright 2015, Facebook, Inc.
@@ -38017,12 +25815,12 @@ if (process.env.NODE_ENV !== 'production') {
 
 module.exports = validateDOMNesting;
 }).call(this,require('_process'))
-},{"./Object.assign":156,"_process":54,"fbjs/lib/emptyFunction":24,"fbjs/lib/warning":43}],263:[function(require,module,exports){
+},{"./Object.assign":83,"_process":51,"fbjs/lib/emptyFunction":24,"fbjs/lib/warning":43}],190:[function(require,module,exports){
 'use strict';
 
 module.exports = require('./lib/React');
 
-},{"./lib/React":158}],264:[function(require,module,exports){
+},{"./lib/React":85}],191:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -38081,7 +25879,7 @@ function applyMiddleware() {
     };
   };
 }
-},{"./compose":267}],265:[function(require,module,exports){
+},{"./compose":194}],192:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -38133,7 +25931,7 @@ function bindActionCreators(actionCreators, dispatch) {
   }
   return boundActionCreators;
 }
-},{}],266:[function(require,module,exports){
+},{}],193:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -38263,7 +26061,7 @@ function combineReducers(reducers) {
   };
 }
 }).call(this,require('_process'))
-},{"./createStore":268,"./utils/warning":270,"_process":54,"lodash/isPlainObject":51}],267:[function(require,module,exports){
+},{"./createStore":195,"./utils/warning":197,"_process":51,"lodash/isPlainObject":49}],194:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -38304,7 +26102,7 @@ function compose() {
     if (typeof _ret === "object") return _ret.v;
   }
 }
-},{}],268:[function(require,module,exports){
+},{}],195:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -38567,7 +26365,7 @@ function createStore(reducer, initialState, enhancer) {
     replaceReducer: replaceReducer
   }, _ref2[_symbolObservable2["default"]] = observable, _ref2;
 }
-},{"lodash/isPlainObject":51,"symbol-observable":271}],269:[function(require,module,exports){
+},{"lodash/isPlainObject":49,"symbol-observable":198}],196:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -38616,7 +26414,7 @@ exports.bindActionCreators = _bindActionCreators2["default"];
 exports.applyMiddleware = _applyMiddleware2["default"];
 exports.compose = _compose2["default"];
 }).call(this,require('_process'))
-},{"./applyMiddleware":264,"./bindActionCreators":265,"./combineReducers":266,"./compose":267,"./createStore":268,"./utils/warning":270,"_process":54}],270:[function(require,module,exports){
+},{"./applyMiddleware":191,"./bindActionCreators":192,"./combineReducers":193,"./compose":194,"./createStore":195,"./utils/warning":197,"_process":51}],197:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -38642,7 +26440,7 @@ function warning(message) {
   } catch (e) {}
   /* eslint-enable no-empty */
 }
-},{}],271:[function(require,module,exports){
+},{}],198:[function(require,module,exports){
 (function (global){
 /* global window */
 'use strict';
@@ -38650,7 +26448,7 @@ function warning(message) {
 module.exports = require('./ponyfill')(global || window || this);
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./ponyfill":272}],272:[function(require,module,exports){
+},{"./ponyfill":199}],199:[function(require,module,exports){
 'use strict';
 
 module.exports = function symbolObservablePonyfill(root) {
